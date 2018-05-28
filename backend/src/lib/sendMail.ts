@@ -8,7 +8,7 @@ type MailTypes = {
     html: string
 }
 
-const sendMail = ({
+export const sendMail = ({
     to,
     from,
     subject,
