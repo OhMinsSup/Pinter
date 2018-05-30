@@ -17,7 +17,7 @@ class AuthRouter {
         type BodySchema = {
             email: string
         }
-
+        
         const schema = joi.object().keys({
             email: joi.string().email().required()
         });

@@ -9,7 +9,7 @@ type Props = {
   visible: boolean
 };
 
-const FullscreenLoader: React.SFC<Props> = ({ visible }) => {
+const FullscreenLoader: React.SFC<Props> = ({ visible }) => {  
   if (!visible) return null;
   return (
     <div className={cx("FullscreenLoader")}>

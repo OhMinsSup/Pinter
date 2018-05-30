@@ -1,16 +1,18 @@
 import { createAction, handleActions } from 'redux-actions';
 import { Record } from 'immutable';
 
-const SET_HEADER_VISIBILITY = 'base/SET_HEADER_VISIBILITY';
-const SHOW_USER_MENU = 'base/SHOW_USER_MENU';
-const HIDE_USER_MENU = 'base/HIDE_USER_MENU';
-const SET_FULLSCREEN_LOADER = 'base/SET_FULLSCREEN_LOADER';
+export enum BaseActionType {
+    SET_HEADER_VISIBILITY = 'base/SET_HEADER_VISIBILITY',
+    SHOW_USER_MENU = 'base/SHOW_USER_MENU',
+    HIDE_USER_MENU = 'base/HIDE_USER_MENU',
+    SET_FULLSCREEN_LOADER = 'base/SET_FULLSCREEN_LOADER',
+}
 
 export const actionCreators = {
-    setHeaderVisibility: createAction(SET_HEADER_VISIBILITY),
-    showUserMenu: createAction(SHOW_USER_MENU),
-    hideUserMenu: createAction(HIDE_USER_MENU),
-    setFullscreenLoader: createAction(SET_FULLSCREEN_LOADER),
+    setHeaderVisibility: createAction(BaseActionType.SET_HEADER_VISIBILITY),
+    showUserMenu: createAction(BaseActionType.SHOW_USER_MENU),
+    hideUserMenu: createAction(BaseActionType.HIDE_USER_MENU),
+    setFullscreenLoader: createAction(BaseActionType.SET_FULLSCREEN_LOADER),
 };
 
 export type SetHeaderVisibilityAction = ReturnType<typeof actionCreators.setHeaderVisibility>;
@@ -43,16 +45,16 @@ export class BaseRecordData extends BaseRecord {
 const initialState  = new BaseRecordData();
 
 export default handleActions<BaseRecordData, any>({
-    [SET_HEADER_VISIBILITY]: (state, action: SetHeaderVisibilityAction): BaseRecordData => {
+    [BaseActionType.SET_HEADER_VISIBILITY]: (state, action: SetHeaderVisibilityAction): BaseRecordData => {
         return state.set('header', action.payload) as BaseRecordData;
     },
-    [SHOW_USER_MENU]: (state, action: ShowUserMenuAction): BaseRecordData => {
+    [BaseActionType.SHOW_USER_MENU]: (state, action: ShowUserMenuAction): BaseRecordData => {
         return state.set('userMenu', true) as BaseRecordData;
     },
-    [HIDE_USER_MENU]: (state, action: HideUserMenuAction): BaseRecordData => {
+    [BaseActionType.HIDE_USER_MENU]: (state, action: HideUserMenuAction): BaseRecordData => {
         return state.set('userMenu', false) as BaseRecordData;
     },
-    [SET_FULLSCREEN_LOADER]: (state, action: SetFullscreenLoaderAction): BaseRecordData => {
+    [BaseActionType.SET_FULLSCREEN_LOADER]: (state, action: SetFullscreenLoaderAction): BaseRecordData => {
         const { payload: visibility } = action;
         return state.set('fullscreenLoader', visibility) as BaseRecordData;
     }

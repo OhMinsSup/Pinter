@@ -1,23 +1,22 @@
 import { createAction, handleActions } from 'redux-actions';
 import { Record } from 'immutable';
-import * as authAPI from '../../lib/api/auth';
 
-const SET_EMAIL_INPUT = 'auth/SET_EMAIL_INPUT';
-const SEND_AUTH_EMAIL = 'auth/SEND_AUTH_EMAIL';
-const CHANGE_REGISTER_FORM = 'auth/CHANGE_REGISTER_FORM';
-const CODE = 'auth/CODE';
-const LOCAL_REGISTER = 'auth/LOCAL_REGISTER';
-const LOCAL_LOGIN = 'auth/LOCAL_LOGIN';
-
-type ChangeRegisterFormPayload = { name: string, value: string };
+export enum AuthActionType {
+    SET_EMAIL_INPUT = 'auth/SET_EMAIL_INPUT',
+    SEND_AUTH_EMAIL = 'auth/SEND_AUTH_EMAIL',
+    CHANGE_REGISTER_FORM = 'auth/CHANGE_REGISTER_FORM',
+    CODE = 'auth/CODE',
+    LOCAL_REGISTER = 'auth/LOCAL_REGISTER',
+    LOCAL_LOGIN = 'auth/LOCAL_LOGIN',
+}
 
 export const actionCreators = {
-    setEmailInput: createAction(SET_EMAIL_INPUT, (value: string) => value),
-    sendAuthEmail: createAction(SEND_AUTH_EMAIL, authAPI.sendAuthEmailAPI),
-    changeRegisterForm : createAction(CHANGE_REGISTER_FORM, (payload: ChangeRegisterFormPayload) => payload),
-    code: createAction(CODE, authAPI.codeAPI),
-    localRegister: createAction(LOCAL_REGISTER, authAPI.localRegisterAPI),
-    localLogin: createAction(LOCAL_LOGIN, authAPI.localLoginAPI)
+    setEmailInput: createAction(AuthActionType.SET_EMAIL_INPUT, (value: string) => value),
+    sendAuthEmail: createAction(AuthActionType.SEND_AUTH_EMAIL),
+    changeRegisterForm : createAction(AuthActionType.CHANGE_REGISTER_FORM),
+    code: createAction(AuthActionType.CODE),
+    localRegister: createAction(AuthActionType.LOCAL_REGISTER),
+    localLogin: createAction(AuthActionType.LOCAL_LOGIN)
 };
 
 export type SetEmailInputAction = ReturnType<typeof actionCreators.setEmailInput>;
@@ -64,7 +63,7 @@ export interface UserSubState {
     id?: string
     username?: string
     displayName?: string
-    thumbnail: null | string
+    thumbnail?: null | string
 }
 
 export interface AuthResultSubState {
@@ -81,7 +80,6 @@ export interface AuthRecordState {
     authResult: null | AuthResultSubState
 }
 
-
 export class RegisterFormSubData extends RegisterFormSubrecord {
     public displayName: string;
     public email: string;
@@ -96,7 +94,7 @@ export class UserSubData extends UserSubrecord {
     public id: string;
     public username: string;
     public displayName: string;
-    public thumbnail: null | string
+    public thumbnail: null | string;
 
     constructor(params?: UserSubState) {
         params ? super({ ...params }) : super()
@@ -121,6 +119,7 @@ export class AuthRecordData extends AuthRecord {
     public authResult: null | AuthResultSubData
 
     constructor(params?: AuthResultSubState) {
+        console.log({...params});
         params ? super({ ...params }) : super()
     }
 }
@@ -128,62 +127,14 @@ export class AuthRecordData extends AuthRecord {
 const initialState = new AuthRecordData();
 
 export default handleActions<AuthRecordData, any>({
-    [SET_EMAIL_INPUT]: (state, action: SetEmailInputAction): AuthRecordData => {
+    [AuthActionType.SET_EMAIL_INPUT]: (state, action: SetEmailInputAction): AuthRecordData => {
         const { payload: value } = action;
         return state.set('email', value) as AuthRecordData;
+    },
+    [AuthActionType.SEND_AUTH_EMAIL]: (state, action: SendAuthEmailAction): AuthRecordData => {
+        const { payload: { data } } = action;
+        return state.set('sendEmail', true)
+                    .set('isUser', data) as AuthRecordData;
     }
 }, initialState);
 
-
-
-/*
-
-export type registerFormSubState = {
-    displayName?: string,
-    email?: string,
-    username?: string
-}
-
-export type UserSubState = {
-    id?: string,
-    username?: string,
-    displayName?: string,
-    thumbnail: null | string
-}
-
-export type AuthResultSubState = {
-    user: UserSubState,
-    token?: string
-}
-
-export type AuthRecordState = {
-    email?: string,
-    sendEmail?: boolean,
-    isUser?: boolean,
-    registerForm: registerFormSubState,
-    registerToken?: string,
-    authResult: null | AuthResultSubState
-}
-
-export type Auth = {
-    email?: string;
-    sendEmail?: boolean;
-    isUser?: boolean;
-    registerForm: {
-        displayName?: string,
-        email?: string,
-        username?: string
-    };
-    registerToken?: string;
-    authResult: null | {
-        user: {
-            id?: string,
-            username?: string,
-            displayName?: string,
-            thumbnail: null | string
-        }
-        token?: string
-    };
-}
-
-*/

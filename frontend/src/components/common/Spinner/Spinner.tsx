@@ -2,7 +2,7 @@ import * as React from 'react';
 import Icon from 'react-icon-base';
 
 type Props = {
-    children?: React.ReactNode
+    size?: string
 }
 
 const Spinner: React.SFC<Props>= (props) => {

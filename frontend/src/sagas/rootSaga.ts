@@ -1,7 +1,9 @@
 import { SagaIterator } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
-import { watchTextChange } from './authSaga';
+import { AuthSaga } from './authSaga';
 
 export const rootSaga: () => SagaIterator = function* rootSaga() {
-    yield [fork(watchTextChange)]
+    yield [
+        fork(AuthSaga)
+    ]
 }

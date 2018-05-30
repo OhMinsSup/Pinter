@@ -1,0 +1,56 @@
+@import "utils";
+
+.SocialLoginButton {
+  padding: 1rem;
+  @include media("<large") {
+    padding: 0.75rem;
+  }
+  display: flex;
+  border-radius: 2px;
+  align-items: center;
+  transition: all 0.15s ease-in;
+  cursor: pointer;
+  color: white;
+  font-size: 1rem;
+  @include media("<large") {
+    font-size: 0.85rem;
+  }
+  svg {
+    font-size: 2em;
+  }
+  .Text {
+    font-size: 1.15em;
+    font-weight: 600;
+    margin-left: 1rem;
+    &:first-letter {
+      text-transform: capitalize;
+    }
+    .Login {
+      font-weight: 400;
+    }
+  }
+  &.facebook {
+    background: $oc-blue-8;
+    border: 1px solid $oc-blue-9;
+    @include hover() {
+      background: $oc-blue-7;
+    }
+    &:active {
+      background: $oc-blue-9;
+    }
+  }
+  &.google {
+    border: 1px solid darken($oc-red-8, 5%);
+    background: $oc-red-9;
+    @include hover() {
+      background: $oc-red-8;
+    }
+    &:active {
+      background: $oc-red-9;
+    }
+  }
+
+  & + & {
+    margin-top: 1.5rem;
+  }
+}
