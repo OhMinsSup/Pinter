@@ -54,29 +54,29 @@ const AuthRecord = Record(({
 }));
 
 export interface RegisterFormSubState {
-    displayName?: string
-    email?: string
-    username?: string
+    displayName: string
+    email: string
+    username: string
 }
 
 export interface UserSubState {
-    id?: string
-    username?: string
-    displayName?: string
-    thumbnail?: null | string
+    id: string
+    username: string
+    displayName: string
+    thumbnail: null | string
 }
 
 export interface AuthResultSubState {
     user: UserSubState
-    token?: string
+    token: string
 }
 
 export interface AuthRecordState {
-    email?: string
-    sendEmail?: boolean
-    isUser?: boolean
+    email: string
+    sendEmail: boolean
+    isUser: boolean
     registerForm: RegisterFormSubState
-    registerToken?: string
+    registerToken: string
     authResult: null | AuthResultSubState
 }
 

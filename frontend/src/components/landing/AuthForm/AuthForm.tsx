@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
-import Spinner from '../../common/Spinner';
 import SocialLoginButton from '../SocialLoginButton';
 
 const CheckIcon =  require('react-icons/lib/md/check');
@@ -12,7 +11,6 @@ type Props = {
     email: string
     sendEmail: boolean
     isUser: boolean
-    sending: boolean
     onChange(e: React.ChangeEvent<HTMLInputElement>): void
     onEnterKeyPress(e: React.KeyboardEvent<HTMLInputElement>): void,
     onSendVerification(): Promise<any>
@@ -24,7 +22,6 @@ const AuthForm: React.SFC<Props> = ({
     onSendVerification,
     sendEmail, 
     isUser, 
-    sending,
     email 
 }) => {
     return (
@@ -50,11 +47,10 @@ const AuthForm: React.SFC<Props> = ({
                             placeholder="이메일을 입력해주세요"
                             value={email}
                             onChange={onChange}
-                            disabled={sending}
                             onKeyPress={onEnterKeyPress}
                         />
                         <div className={cx('Button')} onClick={onSendVerification}>
-                            { sending ? <Spinner size="3rem" /> : '시작하기'}
+                            시작하기
                         </div>
                     </div>
                 )
