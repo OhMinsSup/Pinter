@@ -58,7 +58,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     AuthActions: bindActionCreators(authActions, dispatch),
 });
 
-export default connect(
+export default connect<StateProps, DispatchProps>(
     mapStateToProps,
     mapDispatchToProps
 )(AuthFormContainer);

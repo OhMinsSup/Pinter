@@ -14,7 +14,7 @@ type Props = {
   name?: string,
   type?: string,
   placeholder?: string,
-  onChange(e: React.SyntheticEvent<HTMLInputElement>): void,
+  onChange(e: React.ChangeEvent<HTMLInputElement>): void,
 };
 
 const LabelInput: React.SFC<Props> = ({ 

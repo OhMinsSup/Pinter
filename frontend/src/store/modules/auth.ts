@@ -8,6 +8,7 @@ export enum AuthActionType {
     CODE = 'auth/CODE',
     LOCAL_REGISTER = 'auth/LOCAL_REGISTER',
     LOCAL_LOGIN = 'auth/LOCAL_LOGIN',
+    AUTO_REGISTER_FORM = 'auth/AUTO_REGISTER_FORM'
 }
 
 export const actionCreators = {
@@ -16,7 +17,8 @@ export const actionCreators = {
     changeRegisterForm : createAction(AuthActionType.CHANGE_REGISTER_FORM),
     code: createAction(AuthActionType.CODE),
     localRegister: createAction(AuthActionType.LOCAL_REGISTER),
-    localLogin: createAction(AuthActionType.LOCAL_LOGIN)
+    localLogin: createAction(AuthActionType.LOCAL_LOGIN),
+    autoRegisterForm: createAction(AuthActionType.AUTO_REGISTER_FORM)
 };
 
 export type SetEmailInputAction = ReturnType<typeof actionCreators.setEmailInput>;
@@ -25,6 +27,8 @@ export type ChangeRegisterFormAction = ReturnType<typeof actionCreators.changeRe
 export type CodeAction = ReturnType<typeof actionCreators.code>;
 export type LocalRegisterAction = ReturnType<typeof actionCreators.localRegister>;
 export type LocalLoginAction = ReturnType<typeof actionCreators.localLogin>;
+export type AutoRegisterFormAction = ReturnType<typeof actionCreators.autoRegisterForm>;
+
 
 const UserSubrecord = Record({
     id: '',
@@ -44,6 +48,19 @@ const RegisterFormSubrecord = Record({
     username: ''
 });
 
+const socialResultSubRecord = Record({
+    accessToken: '',
+    provider: ''
+});
+
+const verifySocialResultSubrecord = Record({
+    id: '',
+    thumbnail: '',
+    email: '',
+    username: '',
+    exists: false,
+});
+
 const AuthRecord = Record(({
     email: '',
     sendEmail: false,
@@ -51,7 +68,23 @@ const AuthRecord = Record(({
     registerForm: RegisterFormSubrecord(),
     registerToken: '',
     authResult: null,
+    isSocial: false,
+    socialAuthResult: null,
+    verifySocialResult: null
 }));
+
+export interface SocialResultSubState {
+    accessToken: string
+    provider: string
+}
+
+export interface VerifySocialResultSubState {
+    id: string
+    thumbnail: string
+    email: string
+    username: string
+    exists: boolean
+}
 
 export interface RegisterFormSubState {
     displayName: string
@@ -77,7 +110,31 @@ export interface AuthRecordState {
     isUser: boolean
     registerForm: RegisterFormSubState
     registerToken: string
-    authResult: null | AuthResultSubState
+    authResult: AuthResultSubState,
+    isSocial: false,
+    socialAuthResult: SocialResultSubState,
+    verifySocialResult: VerifySocialResultSubState
+}
+
+export class SocialResultSubData extends socialResultSubRecord {
+    public accessToken: string;
+    public provider: string;
+
+    constructor(params?: SocialResultSubState) {
+        params ? super({ ...params }) : super()
+    }
+}
+
+export class VerifySocialResultSubData extends verifySocialResultSubrecord {
+    public id: string;
+    public thumbnail: string;
+    public email: string;
+    public username: string;
+    public exists: boolean;
+
+    constructor(params?: VerifySocialResultSubState) {
+        params ? super({ ...params }) : super()
+    }
 }
 
 export class RegisterFormSubData extends RegisterFormSubrecord {
@@ -114,12 +171,13 @@ export class AuthRecordData extends AuthRecord {
     public email: string;
     public sendEmail: boolean;
     public isUser: boolean;
-    public registerForm: RegisterFormSubData
-    public registerToken?: string
-    public authResult: null | AuthResultSubData
+    public registerForm: RegisterFormSubData;
+    public registerToken?: string;
+    public authResult: AuthResultSubData;
+    public socialAuthResult: SocialResultSubData;
+    public verifySocialResult: VerifySocialResultSubData;
 
     constructor(params?: AuthResultSubState) {
-        console.log({...params});
         params ? super({ ...params }) : super()
     }
 }
@@ -131,10 +189,35 @@ export default handleActions<AuthRecordData, any>({
         const { payload: value } = action;
         return state.set('email', value) as AuthRecordData;
     },
+    // api
     [AuthActionType.SEND_AUTH_EMAIL]: (state, action: SendAuthEmailAction): AuthRecordData => {
         const { payload: { data } } = action;
         return state.set('sendEmail', true)
                     .set('isUser', data) as AuthRecordData;
-    }
+    },
+    [AuthActionType.CHANGE_REGISTER_FORM]: (state, action: ChangeRegisterFormAction): AuthRecordData => {
+        const { name, value } = action.payload;
+        return state.setIn(['registerForm', name], value) as AuthRecordData;
+    },
+    [AuthActionType.AUTO_REGISTER_FORM]: (state, action: AutoRegisterFormAction): AuthRecordData => {
+        const { email, username } = action.payload;
+        const registerForm = RegisterFormSubrecord({ displayName: username, email });
+        return state.withMutations(
+            s => s.set('registerForm', registerForm).set('isSocial', true),
+        ) as AuthRecordData;
+    },
+    // api
+    [AuthActionType.CODE]: (state, action: CodeAction): AuthRecordData => {
+        const { email , registerToken } =  action.payload;
+        return state.setIn(['registerForm','email'], email).set('registerToken', registerToken) as AuthRecordData;
+    },
+    // api
+    [AuthActionType.LOCAL_REGISTER]: (state, action: LocalRegisterAction): AuthRecordData => {        
+        const { auth, token } = action.payload;
+        return state.set('authResult', AuthResultSubrecord({
+            user: UserSubrecord(auth),
+            token
+        })) as AuthRecordData;
+    },
 }, initialState);
 

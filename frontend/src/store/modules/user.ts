@@ -69,6 +69,8 @@ const initialState = new UserRecordData();
 export default handleActions<UserRecordData, any>({
     [UserActionType.SET_USER]: (state, action: SetUserAction): UserRecordData => {
         const { payload: user } = action;
+        console.log(action.payload);
+        
         return state.set('user', UserSubrecord(user)) as UserRecordData;
     },
     [UserActionType.PROCESS]: (state, action: ProcessAction): UserRecordData => {

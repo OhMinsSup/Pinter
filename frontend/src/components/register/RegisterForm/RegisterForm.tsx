@@ -11,7 +11,7 @@ type Props = {
   email: string
   username: string
   emailEditable: boolean
-  onChange(e: React.SyntheticEvent<HTMLInputElement>): void
+  onChange(e: React.ChangeEvent<HTMLInputElement>): void
   onRegister(): Promise<any>
 };
 
