@@ -63,6 +63,7 @@ const verifySocialResultSubrecord = Record({
 
 const AuthRecord = Record(({
     email: '',
+    sending: false,
     sendEmail: false,
     isUser: false,
     registerForm: RegisterFormSubrecord(),
@@ -106,6 +107,7 @@ export interface AuthResultSubState {
 
 export interface AuthRecordState {
     email: string
+    sending: boolean
     sendEmail: boolean
     isUser: boolean
     registerForm: RegisterFormSubState
@@ -169,6 +171,7 @@ export class AuthResultSubData extends AuthResultSubrecord {
 
 export class AuthRecordData extends AuthRecord {
     public email: string;
+    public sending: boolean;
     public sendEmail: boolean;
     public isUser: boolean;
     public registerForm: RegisterFormSubData;
@@ -191,9 +194,10 @@ export default handleActions<AuthRecordData, any>({
     },
     // api
     [AuthActionType.SEND_AUTH_EMAIL]: (state, action: SendAuthEmailAction): AuthRecordData => {
-        const { payload: { data } } = action;
-        return state.set('sendEmail', true)
-                    .set('isUser', data) as AuthRecordData;
+        const { payload: { isUser } } = action;
+        return state.set('sendEmail', isUser ? true : false)
+                    .set('isUser', isUser) 
+                    .set('sending', true) as AuthRecordData;
     },
     [AuthActionType.CHANGE_REGISTER_FORM]: (state, action: ChangeRegisterFormAction): AuthRecordData => {
         const { name, value } = action.payload;
@@ -219,5 +223,13 @@ export default handleActions<AuthRecordData, any>({
             token
         })) as AuthRecordData;
     },
+    // api
+    [AuthActionType.LOCAL_LOGIN]: (state, action: LocalLoginAction): AuthRecordData => {
+        const { auth, token } = action.payload;        
+        return state.set('authResult', AuthResultSubrecord({
+            user: UserSubrecord(auth),
+            token
+        })) as AuthRecordData;
+    }
 }, initialState);
 

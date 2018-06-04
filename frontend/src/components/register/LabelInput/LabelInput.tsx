@@ -5,7 +5,7 @@ const LockIcon = require('react-icons/lib/md/lock-outline');
 const styles = require('./LabelInput.scss');
 const cx = classNames.bind(styles);
 
-type Props = {
+interface Props {
   label: string,
   value?: string,
   disabled?: boolean,
@@ -48,12 +48,6 @@ const LabelInput: React.SFC<Props> = ({
         </div>
     );
 };
-/*
-LabelInput.defaultProps = {
-  value: '',
-  disabled: false,
-  required: false,
-  limit: null,
-};
-*/
+
 export default LabelInput;
+

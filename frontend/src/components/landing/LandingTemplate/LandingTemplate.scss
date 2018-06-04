@@ -1,11 +1,19 @@
 @import 'utils';
 
+
+.Landing {
+    background-color: rgb(0, 0, 0);
+    background-image: url(https://s.pinimg.com/webapp/style/images/bg_multi_case_grid_no_text_white_55_percent-2000ab22.jpg);
+    background-position: 0px -700px;
+    background-size: cover;
+    padding-bottom: 1000px;
+    overflow: auto;
 .LandingTemplate {
     padding-bottom: 70px;
     padding-top: 106px;
     min-height: 533px;
     left: 50%;
-    position: absolute;
+    position: fixed;
     transform: translateX(-50%);
     .FormBox {
         box-sizing: border-box;
@@ -16,4 +24,5 @@
         padding-top: 10px;
         width: 400px;
     }
+}
 }

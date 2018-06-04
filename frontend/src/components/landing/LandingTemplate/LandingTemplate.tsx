@@ -10,9 +10,11 @@ type Props = {
 
 const LandingTemplate: React.SFC<Props> = ({ form }) => {
     return (
-        <div className={cx('LandingTemplate')}>
-            <div className={cx('FormBox')}>
-                { form }
+        <div className={cx('Landing')}>
+            <div className={cx('LandingTemplate')}>
+                <div className={cx('FormBox')}>
+                    { form }
+                </div>
             </div>
         </div>
     );

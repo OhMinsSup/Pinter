@@ -6,13 +6,13 @@ const ArrowIcon = require('react-icons/lib/md/arrow-forward');
 const styles = require('./RegisterForm.scss');
 const cx = classNames.bind(styles);
 
-type Props = {
+interface Props {
   displayName: string
   email: string
   username: string
   emailEditable: boolean
   onChange(e: React.ChangeEvent<HTMLInputElement>): void
-  onRegister(): Promise<any>
+  onRegister(): void
 };
 
 const RegisterForm: React.SFC<Props> = ({

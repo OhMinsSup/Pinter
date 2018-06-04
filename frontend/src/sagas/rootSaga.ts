@@ -1,9 +1,11 @@
 import { SagaIterator } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
-import { AuthSaga } from './authSaga';
+import { authSaga } from './authSaga';
+import { userSaga } from './userSaga';
 
 export const rootSaga: () => SagaIterator = function* rootSaga() {
     yield [
-        fork(AuthSaga)
+        fork(authSaga),
+        fork(userSaga)
     ]
 }

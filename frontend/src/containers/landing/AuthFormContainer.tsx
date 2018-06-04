@@ -34,7 +34,7 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
     }
 
     public render() {
-        const { sendEmail, isUser, email } = this.props;
+        const { sendEmail, isUser, email, sending } = this.props;
         return (
             <AuthForm 
                 onChange={this.onChange}
@@ -43,6 +43,7 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
                 sendEmail={sendEmail} 
                 isUser={isUser} 
                 email={email}
+                sending={sending}
             />
         );
     }
@@ -52,6 +53,7 @@ const mapStateToProps = ({ auth, base }: StoreState) => ({
     email: auth.email,
     sendEmail: auth.sendEmail,
     isUser: auth.isUser,
+    sending: auth.sending
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

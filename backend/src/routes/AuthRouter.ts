@@ -36,7 +36,7 @@ class AuthRouter {
             const auth: IAuth = await Auth.findByEmailOrUsername('email', email);
             
             const emailKeywords = auth ? {
-                type: 'email-login',
+                type: 'login',
                 text: '로그인',
             } : {
                 type: 'register',
@@ -233,7 +233,7 @@ class AuthRouter {
         }
 
         res.json({
-            auth: user
+            user
         });
 
     }

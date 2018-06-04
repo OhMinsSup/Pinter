@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
+import Spinner from '../../common/Spinner';
 import SocialLoginButton from '../SocialLoginButton';
 
 const CheckIcon =  require('react-icons/lib/md/check');
@@ -7,10 +8,11 @@ const LogoIcons = require('react-icons/lib/fa/pinterest-square');
 const styles = require('./AuthForm.scss');
 const cx = classNames.bind(styles);
 
-type Props = {
+interface Props {
     email: string
     sendEmail: boolean
-    isUser: boolean
+    isUser: boolean,
+    sending: boolean,
     onChange(e: React.ChangeEvent<HTMLInputElement>): void
     onEnterKeyPress(e: React.KeyboardEvent<HTMLInputElement>): void,
     onSendVerification(): Promise<any>
@@ -22,8 +24,9 @@ const AuthForm: React.SFC<Props> = ({
     onSendVerification,
     sendEmail, 
     isUser, 
-    email 
-}) => {
+    email,
+    sending 
+}) => {    
     return (
         <div className={cx('AuthForm')}>
             <div className={cx('FormHeader')}>
@@ -50,7 +53,7 @@ const AuthForm: React.SFC<Props> = ({
                             onKeyPress={onEnterKeyPress}
                         />
                         <div className={cx('Button')} onClick={onSendVerification}>
-                            시작하기
+                            { sending ? <Spinner size="3rem" /> : '시작하기'}
                         </div>
                     </div>
                 )

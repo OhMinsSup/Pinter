@@ -2,13 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import { History } from 'history';
 import * as queryString from 'query-string';
 import { actionCreators as userActions } from '../../store/modules/user';
 import { actionCreators as authActions } from '../../store/modules/auth';
 import { StoreState } from '../../store/modules';
-import storage from '../../lib/storage';
 import RegisterForm from '../../components/register/RegisterForm';
-
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -44,13 +43,12 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
       });
     }
 
-    public onRegister = async (): Promise<any> => {
+    public onRegister = (): void => {
       const {
         displayName,
         username,
         registerToken,
         AuthActions,
-        UserActions,
         isSocial
       } = this.props;
 
@@ -63,20 +61,13 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
             username,
             displayName
           }
-          await AuthActions.localRegister(auth);
+          AuthActions.localRegister(auth);
         }
-
-        const { authResult } = this.props;
-        console.log(this.props.authResult);
-        
-        if (!authResult) return;
-        const { user } = authResult;
-        
-        UserActions.setUser(user);
-        storage.set('__pinter_user__', user);
       } catch (e) {
         console.log(e);
       }
+
+      this.props.history.push('/');
     }
 
     public componentDidMount() {
