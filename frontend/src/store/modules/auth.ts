@@ -8,7 +8,11 @@ export enum AuthActionType {
     CODE = 'auth/CODE',
     LOCAL_REGISTER = 'auth/LOCAL_REGISTER',
     LOCAL_LOGIN = 'auth/LOCAL_LOGIN',
-    AUTO_REGISTER_FORM = 'auth/AUTO_REGISTER_FORM'
+    AUTO_REGISTER_FORM = 'auth/AUTO_REGISTER_FORM',
+    SOCIAL_REGISTER = 'auth/SOCIAL_REGISTER',
+    SOCIAL_LOGIN = 'auth/SOCIAL_LOGIN',
+    PROVIDER_LOGIN = 'auth/PROVIDER_LOGIN',
+    VERIFY_SOCIAL = 'auth/VERIFY_SOCIAL'
 }
 
 export const actionCreators = {
@@ -18,7 +22,11 @@ export const actionCreators = {
     code: createAction(AuthActionType.CODE),
     localRegister: createAction(AuthActionType.LOCAL_REGISTER),
     localLogin: createAction(AuthActionType.LOCAL_LOGIN),
-    autoRegisterForm: createAction(AuthActionType.AUTO_REGISTER_FORM)
+    autoRegisterForm: createAction(AuthActionType.AUTO_REGISTER_FORM),
+    socialRegister: createAction(AuthActionType.SOCIAL_REGISTER),
+    socialLogin: createAction(AuthActionType.SOCIAL_LOGIN),
+    providerLogin: createAction(AuthActionType.PROVIDER_LOGIN),
+    verifySocial: createAction(AuthActionType.VERIFY_SOCIAL)
 };
 
 export type SetEmailInputAction = ReturnType<typeof actionCreators.setEmailInput>;
@@ -28,7 +36,10 @@ export type CodeAction = ReturnType<typeof actionCreators.code>;
 export type LocalRegisterAction = ReturnType<typeof actionCreators.localRegister>;
 export type LocalLoginAction = ReturnType<typeof actionCreators.localLogin>;
 export type AutoRegisterFormAction = ReturnType<typeof actionCreators.autoRegisterForm>;
-
+export type SocialRegisterAction = ReturnType<typeof actionCreators.socialRegister>;
+export type SocialLoginAction = ReturnType<typeof actionCreators.socialLogin>;
+export type ProviderLoginAction = ReturnType<typeof actionCreators.providerLogin>;
+export type VerifySocialAction = ReturnType<typeof actionCreators.verifySocial>;
 
 const UserSubrecord = Record({
     id: '',
@@ -229,6 +240,40 @@ export default handleActions<AuthRecordData, any>({
         return state.set('authResult', AuthResultSubrecord({
             user: UserSubrecord(auth),
             token
+        })) as AuthRecordData;
+    },
+    // api
+    [AuthActionType.SOCIAL_REGISTER]: (state, action: SocialRegisterAction): AuthRecordData => {
+        const { auth, token } = action.payload;
+        return state.set('authResult', AuthResultSubrecord({
+            user: UserSubrecord(auth),
+            token
+        })) as AuthRecordData;
+    },
+    // api
+    [AuthActionType.SOCIAL_LOGIN]: (state, action: SocialLoginAction): AuthRecordData => {
+        const { auth, token } = action.payload;
+        return state.set('authResult', AuthResultSubrecord({
+            user: UserSubrecord(auth),
+            token
+        })) as AuthRecordData;
+    },
+    // api
+    [AuthActionType.PROVIDER_LOGIN]: (state, { payload }: ProviderLoginAction): AuthRecordData => {  
+        if (!payload) return state; 
+        return state.set('socialAuthResult', socialResultSubRecord({
+            accessToken: payload.response,
+            provider: payload.provider
+        })) as AuthRecordData;
+    },
+    // api
+    [AuthActionType.VERIFY_SOCIAL]: (state, action: VerifySocialAction): AuthRecordData => {
+        console.log(action.payload);
+        
+        const { profile, exists } = action.payload;
+        const { id, thumbnail, email, username } = profile;
+        return state.set('verifySocialResult', verifySocialResultSubrecord({
+            id, thumbnail, email, username, exists
         })) as AuthRecordData;
     }
 }, initialState);

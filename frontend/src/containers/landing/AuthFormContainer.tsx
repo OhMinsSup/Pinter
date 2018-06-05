@@ -2,7 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { StoreState } from '../../store/modules';
-import { actionCreators as authActions } from '../../store/modules/auth'
+import { actionCreators as baseActions } from '../../store/modules/base';
+import { actionCreators as userActions } from '../../store/modules/user';
+import { actionCreators as authActions } from '../../store/modules/auth';
 import AuthForm from '../../components/landing/AuthForm';
 
 
@@ -23,7 +25,7 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
         AuthActions.setEmailInput(value);
     }
 
-    public onSendVerification  = async () => {
+    public onSendVerification = async () => {
         const { email, AuthActions } = this.props;
 
         try {
@@ -33,6 +35,23 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
         }
     }
 
+    public onSocialLogin = async (provider: string) => {
+        const { AuthActions, BaseActions } = this.props;
+
+        BaseActions.setFullscreenLoader(true);
+
+        try {
+            await AuthActions.providerLogin(provider);
+        } catch (e) {
+            BaseActions.setFullscreenLoader(false);
+        }
+        
+        const { socialAuthResult } = this.props;
+        console.log(socialAuthResult);
+        
+        BaseActions.setFullscreenLoader(false);
+    }
+
     public render() {
         const { sendEmail, isUser, email, sending } = this.props;
         return (
@@ -40,6 +59,7 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
                 onChange={this.onChange}
                 onEnterKeyPress={this.onEnterKeyPress}
                 onSendVerification={this.onSendVerification}
+                onSocialLogin={this.onSocialLogin}
                 sendEmail={sendEmail} 
                 isUser={isUser} 
                 email={email}
@@ -53,11 +73,14 @@ const mapStateToProps = ({ auth, base }: StoreState) => ({
     email: auth.email,
     sendEmail: auth.sendEmail,
     isUser: auth.isUser,
-    sending: auth.sending
+    sending: auth.sending,
+    socialAuthResult: auth.socialAuthResult
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     AuthActions: bindActionCreators(authActions, dispatch),
+    BaseActions: bindActionCreators(baseActions, dispatch),
+    userActions: bindActionCreators(userActions, dispatch)
 });
 
 export default connect<StateProps, DispatchProps>(

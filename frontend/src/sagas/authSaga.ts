@@ -4,42 +4,22 @@ import { StoreState } from '../store/modules'
 import { AuthActionType, actionCreators as authActions } from '../store/modules/auth';
 import { actionCreators as userActions} from '../store/modules/user';
 import Storage from '../lib/storage';
-
-type SendAuthEmailPayload = {
-    data: {
-        isUser: boolean
-    }
-}
-
-type SendAuthEmailAction = {
-    payload: string
-}
+import social from '../lib/social';
 
 function* sendAuthEmailFlow() {
-    const { payload: email }: SendAuthEmailAction = yield take(AuthActionType.SEND_AUTH_EMAIL);
+    const { payload: email } = yield take(AuthActionType.SEND_AUTH_EMAIL);
     const response = yield call(AuthAPI.sendAuthEmailAPI, email);
-    const { data: { isUser } }: SendAuthEmailPayload = response; 
+    const { data: { isUser } } = response; 
     
     if (!isUser) return
     yield put(authActions.sendAuthEmail({ isUser }));
 }
 
-type CodePayload = {
-    data: {
-        email: string,
-        registerToken: string
-    }
-}
-
-type CodeAction = {
-    payload: string
-}
-
 function* codeFlow() {
-    const { payload: code }: CodeAction = yield take(AuthActionType.CODE);
+    const { payload: code } = yield take(AuthActionType.CODE);
     const response = yield call(AuthAPI.codeAPI, code);
 
-    const { data: { email, registerToken } }: CodePayload = response;
+    const { data: { email, registerToken } } = response;
 
     if (!email || !registerToken) return;
 
@@ -47,44 +27,17 @@ function* codeFlow() {
 }
 
 
-type LocalRegisterPayload = {
-    data: {
-        auth: {
-            id: string,
-            displayName: string,
-            username: string,
-            thumbnail: string
-        },
-        token: string
-    }
-}
-
-type LocalRegisterAction = {
-    payload: {
-        registerToken: string,
-        username: string,
-        displayName: string
-    }
-}
-
-type SetUserPayload = {
-    id: string
-    username: string
-    displayName: string
-    thumbnail: null | string
-}
-
 function* localRegisterFlow () {
-    const { payload: registerPayload }: LocalRegisterAction = yield take(AuthActionType.LOCAL_REGISTER);
+    const { payload: registerPayload } = yield take(AuthActionType.LOCAL_REGISTER);
     const response = yield call(AuthAPI.localRegisterAPI, registerPayload);
 
-    const { data: { auth, token } }: LocalRegisterPayload = response;
+    const { data: { auth, token } } = response;
 
     if (!auth || !token) return;
     
     yield put(authActions.localRegister({ auth, token })); 
 
-    const setUserData: SetUserPayload = yield select((state: StoreState) => state.auth.authResult.user);
+    const setUserData = yield select((state: StoreState) => state.auth.authResult.user);
     if (!setUserData) return;
         
     yield put(userActions.setUser({ setUserData }))
@@ -92,33 +45,18 @@ function* localRegisterFlow () {
     Storage.set('__pinter_user__', setUserData);
 }
 
-type LocalLoginPayload = {
-    data: {
-        auth: {
-            id: string
-            username: string,
-            displayName: string,
-            thumbnail: string
-        },
-        token: string
-    }
-}
-
-type LocalLoginAction = {
-    payload: string
-}
 
 function* localLoginFlow() {
-    const { payload: code }: LocalLoginAction = yield take(AuthActionType.LOCAL_LOGIN);
+    const { payload: code } = yield take(AuthActionType.LOCAL_LOGIN);
     
     const response = yield call(AuthAPI.localLoginAPI, code);
-    const { data: { auth, token } }: LocalLoginPayload = response;
+    const { data: { auth, token } } = response;
     
     if (!auth) return;
     
     yield put(authActions.localLogin({ auth, token }));
 
-    const setUserData: SetUserPayload = yield select((state: StoreState) => state.auth.authResult.user);
+    const setUserData = yield select((state: StoreState) => state.auth.authResult.user);
     if (!setUserData) return;
     
     yield put(userActions.setUser({ setUserData }))
@@ -126,9 +64,43 @@ function* localLoginFlow() {
     Storage.set('__pinter_user__', setUserData);
 }
 
+async function getSocialToken(response: any) {
+    let token = null;
+    try {
+        token = await response;   
+    } catch (e) {
+        console.log(e);
+    }
+    return token;
+}
+
+function* SocialLoginFlow() {
+    const { payload: provider } = yield take(AuthActionType.PROVIDER_LOGIN);
+    const token = social[provider]();
+    
+    const response = yield call(getSocialToken, token);
+
+    const providerPayload = {
+        response,
+        provider
+    };
+
+    yield put(authActions.providerLogin(providerPayload));
+
+    const providerSocialData = yield select((state: StoreState) => state.auth.socialAuthResult);
+
+    if (!providerSocialData) return;
+
+    const verifySocialreResponse = yield call(AuthAPI.verifySocialAPI, providerSocialData);
+    console.log(verifySocialreResponse);
+    
+    // yield put(authActions.verifySocial({ socialAccessToken, socialProvider }));
+}
+
 export function* authSaga() {
     yield fork(sendAuthEmailFlow);
     yield fork(codeFlow);
     yield fork(localRegisterFlow);
     yield fork(localLoginFlow);
+    yield fork(SocialLoginFlow);
 }

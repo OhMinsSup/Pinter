@@ -8,6 +8,7 @@ const cx = classNames.bind(styles);
 
 type Props = {
   type: 'facebook' | 'google' ,
+  onSocialLogin(provider: string): void
 };
 
 const providers = {
@@ -20,11 +21,11 @@ const providers = {
 };
 
 const SocialLoginButton: React.SFC<Props> = (props) => {
-  const { type } = props;
+  const { type, onSocialLogin } = props;
   const { icon: Icon } = providers[type];
 
   return (
-    <div className={cx('SocialLoginButton', type)}>
+    <div className={cx('SocialLoginButton', type)} onClick={() => onSocialLogin(type)}>
       <div className={cx('icon')}>
         <Icon />
       </div>

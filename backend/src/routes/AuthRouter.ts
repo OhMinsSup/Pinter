@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import * as joi from 'joi';
 import { generateToken, decodeToken } from '../lib/token';
 import { sendMail } from '../lib/sendMail';
+import getSocialProfile, { Profile } from '../lib/social';
 import Auth, { IAuth } from '../models/Auth';
 import EmailAuth, { IEmailAuth } from '../models/EmailAuth';
 
@@ -104,7 +105,7 @@ class AuthRouter {
 
             const { email } = decoded;
 
-            const [emailExists, usernameExists] = await Promise.all([
+            const [emailExists, usernameExists]: Array<IAuth> = await Promise.all([
                 Auth.findByEmailOrUsername('email', email),
                 Auth.findByEmailOrUsername('username', username)
             ]);
@@ -213,7 +214,7 @@ class AuthRouter {
                 new: true        
             }).exec();
         } catch (e) {
-            return res.status(500).json(e);
+            res.status(500).json(e);
         }
     }
 
@@ -239,21 +240,202 @@ class AuthRouter {
     }
 
     private async socialRegister(req: Request, res: Response): Promise<any> {
-        res.json('테스트');
+        type BodySchema = {
+            socialEmail: string,
+            accessToken: string,
+            displayName: string,
+            username: string
+        }
 
+        type ParamsSchema = {
+            provider: string
+        }
+
+        const schema = joi.object().keys({
+            socialEmail: joi.string(),
+            accessToken: joi.string().required(),
+            displayName: joi.string().min(1).max(40),
+            username: joi.string().min(3).max(16).required()
+        });
+
+        const result = joi.validate(req.body, schema);
+
+        if (result.error) {
+            return res.status(400).json({
+                name: 'WRONG_SCHEMA',
+                payload: result.error,
+            });
+        }
+        
+        const { provider }: ParamsSchema = req.params;
+        const { socialEmail, displayName, username, accessToken}: BodySchema = req.body;
+
+        let profile: Profile = null;
+
+        try {
+            profile = await getSocialProfile(provider, accessToken);
+        } catch (e) {
+            res.status(500).json(e);
+        }
+
+        const { id, thumbnail, email } = profile;
+        const socialId = id;
+
+        try {
+            const [emailExists, usernameExists]: Array<IAuth> = await Promise.all([
+                Auth.findByEmailOrUsername('email', email),
+                Auth.findByEmailOrUsername('username', username)
+            ]);
+            
+            if (emailExists || usernameExists) {
+                return res.status(409).json({
+                    name: 'DUPLICATED_ACCOUNT',
+                    payload: emailExists ? 'email' : 'username'
+                });
+            }
+
+            const socialExists: IAuth = await Auth.findBySocialId(provider, socialId);
+
+            if (socialExists) {
+                return res.status(409).json({
+                    name: 'SOCIAL_ACCOUNT_EXISTS'
+                });
+            }
+
+            const auth: IAuth = await Auth.createSocialAuth(
+                provider,
+                accessToken,
+                username,
+                email,
+                socialId,
+                thumbnail,
+                displayName
+            );
+
+            const token: string = await auth.generate(auth);
+            res.cookie('access_token', token, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 60 * 24 * 7
+            });
+
+            res.json({
+                auth: {
+                    id: auth._id,
+                    username: auth.username,
+                    displayName: auth.profile.displayName,
+                    thumbnail: auth.profile.thumbnail
+                },
+                token
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
     }
 
     private async socialLogin(req: Request, res: Response): Promise<any> {
-        res.json('테스트');
+        type BodySchema = {
+            accessToken: string
+        }
+        type ParamsSchema = {
+            provider: string
+        }
+        const { accessToken }: BodySchema = req.body;
+        const { provider }: ParamsSchema = req.params;
 
+        let profile: Profile = null;
+
+        try {
+            profile = await getSocialProfile(provider, accessToken);
+        } catch (e) {
+            res.status(500).json(e);
+        }
+
+        if (!profile) {
+            return res.status(401).json({
+                name: 'WRONG_CREDENTIALS'
+            });
+        }
+
+        const socialId = profile.id;
+
+        try {
+            let auth: IAuth = await Auth.findBySocialId(provider, socialId); 
+
+            if (!auth) {
+                auth = await Auth.findByEmailOrUsername('email', profile.email);
+                if (!auth) {
+                    return res.status(401).json({
+                        name: 'NOT_REGISTERED'
+                    });
+                }
+
+                await Auth.socialLogin(
+                    provider,
+                    socialId,
+                    accessToken
+                );
+            }
+
+            const token: string = await auth.generate(auth);
+            res.cookie('access_token', token, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 60 * 24 * 7
+            });
+
+            res.json({
+                auth: {
+                    id: auth._id,
+                    username: auth.username,
+                    displayName: auth.profile.displayName,
+                    thumbnail: auth.profile.thumbnail
+                },
+                token
+            })
+        } catch (e) {
+            res.status(500).json(e);
+        }
     }
 
     private async verifySocial(req: Request, res: Response): Promise<any> {
-        res.json('테스트');
+        type BodySchema = {
+            accessToken: string
+        }
+        type ParamsSchema = {
+            provider: string
+        }
+        const { accessToken }: BodySchema = req.body;
+        const { provider }: ParamsSchema = req.params;
 
+        let profile: Profile = null;
+
+        try {
+            profile = await getSocialProfile(provider, accessToken);
+        } catch (e) {
+            res.status(500).json(e);
+        }
+
+        if (!profile) {
+            return res.status(401).json({
+                name: 'WRONG_CREDENTIALS'
+            });
+        }
+
+        try {
+            const [socailAuth, auth]: Array<IAuth> = await Promise.all([
+                Auth.findByEmailOrUsername('email', profile.email),
+                Auth.findBySocialId(provider, profile.id)
+            ]);
+
+            res.json({
+                profile,
+                exists: !!(socailAuth || auth)
+              });
+        } catch (e) {
+            res.status(500).json(e);
+        }
     }
 
-    public routes() {
+    public routes(): void {
         const { router } = this;
 
         router.post('/send-auth-email', this.sendAuthEmail);

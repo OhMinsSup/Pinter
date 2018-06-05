@@ -15,13 +15,15 @@ interface Props {
     sending: boolean,
     onChange(e: React.ChangeEvent<HTMLInputElement>): void
     onEnterKeyPress(e: React.KeyboardEvent<HTMLInputElement>): void,
-    onSendVerification(): Promise<any>
+    onSendVerification(): Promise<any>,
+    onSocialLogin(provider: string): void
 }
 
 const AuthForm: React.SFC<Props> = ({ 
     onChange,
     onEnterKeyPress,
     onSendVerification,
+    onSocialLogin,
     sendEmail, 
     isUser, 
     email,
@@ -62,8 +64,8 @@ const AuthForm: React.SFC<Props> = ({
                 <div className={cx('or')}>OR</div>
             </div>
             <div className={cx('SocialButtons')}>
-                <SocialLoginButton type="google"/>
-                <SocialLoginButton type="facebook"/>
+                <SocialLoginButton type="google" onSocialLogin={onSocialLogin}/>
+                <SocialLoginButton type="facebook" onSocialLogin={onSocialLogin}/>
             </div>
         </div>
     );

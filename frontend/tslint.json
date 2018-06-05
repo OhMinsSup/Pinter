@@ -25,6 +25,7 @@
     "triple-equals":false,
     "no-console":false,
     "no-shadowed-variable": false,
+    "jsx-no-lambda": false,
     "prefer-const":false,
     "only-arrow-functions": false,
     "curly": false,
