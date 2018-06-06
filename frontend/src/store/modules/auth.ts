@@ -244,7 +244,7 @@ export default handleActions<AuthRecordData, any>({
     },
     // api
     [AuthActionType.SOCIAL_REGISTER]: (state, action: SocialRegisterAction): AuthRecordData => {
-        const { auth, token } = action.payload;
+        const { auth, token } = action.payload;      
         return state.set('authResult', AuthResultSubrecord({
             user: UserSubrecord(auth),
             token
@@ -267,9 +267,7 @@ export default handleActions<AuthRecordData, any>({
         })) as AuthRecordData;
     },
     // api
-    [AuthActionType.VERIFY_SOCIAL]: (state, action: VerifySocialAction): AuthRecordData => {
-        console.log(action.payload);
-        
+    [AuthActionType.VERIFY_SOCIAL]: (state, action: VerifySocialAction): AuthRecordData => {        
         const { profile, exists } = action.payload;
         const { id, thumbnail, email, username } = profile;
         return state.set('verifySocialResult', verifySocialResultSubrecord({

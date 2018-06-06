@@ -1,16 +1,21 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import { bindActionCreators, Dispatch, compose } from 'redux';
+import { withRouter } from 'react-router-dom';
+import { History } from 'history';
 import { StoreState } from '../../store/modules';
 import { actionCreators as baseActions } from '../../store/modules/base';
 import { actionCreators as userActions } from '../../store/modules/user';
 import { actionCreators as authActions } from '../../store/modules/auth';
 import AuthForm from '../../components/landing/AuthForm';
 
-
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type AuthFormContainerProps = StateProps & DispatchProps;
+type OwnProps = {
+    history: History
+};
+
+type AuthFormContainerProps = StateProps & DispatchProps & OwnProps;
 
 class AuthFormContainer extends React.Component<AuthFormContainerProps> {
     public onEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -46,9 +51,7 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
             BaseActions.setFullscreenLoader(false);
         }
         
-        const { socialAuthResult } = this.props;
-        console.log(socialAuthResult);
-        
+        // history.push('/register');
         BaseActions.setFullscreenLoader(false);
     }
 
@@ -83,7 +86,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     userActions: bindActionCreators(userActions, dispatch)
 });
 
-export default connect<StateProps, DispatchProps>(
-    mapStateToProps,
-    mapDispatchToProps
+export default compose(
+    withRouter,
+    connect<StateProps, DispatchProps, OwnProps>(
+        mapStateToProps,
+        mapDispatchToProps
+    )
 )(AuthFormContainer);
+

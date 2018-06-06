@@ -74,7 +74,7 @@ async function getSocialToken(response: any) {
     return token;
 }
 
-function* SocialLoginFlow() {
+function* socialLoginFlow() {
     const { payload: provider } = yield take(AuthActionType.PROVIDER_LOGIN);
     const token = social[provider]();
     
@@ -91,10 +91,45 @@ function* SocialLoginFlow() {
 
     if (!providerSocialData) return;
 
-    const verifySocialreResponse = yield call(AuthAPI.verifySocialAPI, providerSocialData);
-    console.log(verifySocialreResponse);
+    const { data: verifySocialPayload } = yield call(AuthAPI.verifySocialAPI, providerSocialData);
+
+    yield put(authActions.verifySocial(verifySocialPayload));
+
+    const verifySocialData = yield select((state: StoreState) => state.auth.verifySocialResult);
+
+    if (!verifySocialData) return;
+
+    const { exists } = verifySocialData;
     
-    // yield put(authActions.verifySocial({ socialAccessToken, socialProvider }));
+    if (exists) {
+        const { data: socialLoginPayload } = yield call(AuthAPI.socialLoginAPI, providerSocialData);
+        yield put(authActions.socialLogin(socialLoginPayload));
+
+        const socialLoginData = yield select((state: StoreState) => state.auth.authResult);
+        yield put(userActions.setUser({ socialLoginData }));
+        Storage.set('__pinter_user__', socialLoginData);
+    } else {
+        const { email, username } = verifySocialData;
+
+        if (!email || !username) return;
+        
+        yield put(authActions.autoRegisterForm({ email, username }));
+    }
+}
+
+function* socialRegisterFlow() {
+    const { payload: { accessToken, provider, username, displayName } } = yield take(AuthActionType.SOCIAL_REGISTER);
+
+
+    const { data } = yield call(AuthAPI.socialRegisterAPI, { accessToken, provider, username, displayName });
+    yield put(authActions.socialRegister(data));
+
+    const setUserData = yield select((state: StoreState) => state.auth.authResult.user);
+    if (!setUserData) return;
+    
+    yield put(userActions.setUser({ setUserData }));
+
+    Storage.set('__pinter_user__', setUserData);
 }
 
 export function* authSaga() {
@@ -102,5 +137,6 @@ export function* authSaga() {
     yield fork(codeFlow);
     yield fork(localRegisterFlow);
     yield fork(localLoginFlow);
-    yield fork(SocialLoginFlow);
+    yield fork(socialLoginFlow);
+    yield fork(socialRegisterFlow)
 }

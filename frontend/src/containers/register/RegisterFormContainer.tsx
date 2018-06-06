@@ -54,7 +54,10 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
 
       try {
         if (isSocial) {
-          console.log('소셜 인증');
+          const { socialAuthResult  } = this.props;
+          if (!socialAuthResult) return;
+          const { accessToken, provider } = socialAuthResult;
+          AuthActions.socialRegister({ accessToken, provider, displayName, username });
         } else {
           const auth = {
             registerToken,
