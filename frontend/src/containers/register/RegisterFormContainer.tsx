@@ -29,7 +29,7 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
       }
 
       try {
-        await AuthActions.code(code);
+        await AuthActions.code({ code });
       } catch (e) {
         console.log(e);
       }
@@ -54,22 +54,17 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
 
       try {
         if (isSocial) {
-          const { socialAuthResult  } = this.props;
+          const { socialAuthResult } = this.props;
           if (!socialAuthResult) return;
+          
           const { accessToken, provider } = socialAuthResult;
           AuthActions.socialRegister({ accessToken, provider, displayName, username });
         } else {
-          const auth = {
-            registerToken,
-            username,
-            displayName
-          }
-          AuthActions.localRegister(auth);
+          AuthActions.localRegister({ registerToken, username, displayName });
         }
       } catch (e) {
         console.log(e);
       }
-
       this.props.history.push('/');
     }
 

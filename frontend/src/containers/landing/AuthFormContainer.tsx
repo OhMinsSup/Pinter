@@ -34,24 +34,20 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
         const { email, AuthActions } = this.props;
 
         try {
-            await AuthActions.sendAuthEmail(email);
+            await AuthActions.sendAuthEmail({ email });
         } catch (e) {
             console.log(e);
         }
     }
 
     public onSocialLogin = async (provider: string) => {
-        const { AuthActions, BaseActions } = this.props;
-
+        const { AuthActions, BaseActions, history } = this.props;
         BaseActions.setFullscreenLoader(true);
-
         try {
-            await AuthActions.providerLogin(provider);
+            await AuthActions.providerLogin({ provider, history });
         } catch (e) {
             BaseActions.setFullscreenLoader(false);
         }
-        
-        // history.push('/register');
         BaseActions.setFullscreenLoader(false);
     }
 

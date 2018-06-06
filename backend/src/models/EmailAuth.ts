@@ -30,7 +30,7 @@ EmailAuthSchema.statics.verificationEmail = function(email: string): Promise<any
     const emailAuth = new this({
         email: email
     });
-
+    
     return emailAuth.save();
 }
 

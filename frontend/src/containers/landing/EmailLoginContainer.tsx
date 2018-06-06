@@ -22,7 +22,7 @@ class EmailLoginContainer extends React.Component<EmailLoginContainerProps> {
         const { code } = queryString.parse(search);
         const { AuthActions } = this.props;
         try {
-            AuthActions.localLogin(code);
+            AuthActions.localLogin({ code });
             this.props.history.push('/');
 
         } catch (e) {

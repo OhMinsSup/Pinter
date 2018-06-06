@@ -260,9 +260,11 @@ export default handleActions<AuthRecordData, any>({
     },
     // api
     [AuthActionType.PROVIDER_LOGIN]: (state, { payload }: ProviderLoginAction): AuthRecordData => {  
+        console.log(payload);
+        
         if (!payload) return state; 
         return state.set('socialAuthResult', socialResultSubRecord({
-            accessToken: payload.response,
+            accessToken: payload.accessToken,
             provider: payload.provider
         })) as AuthRecordData;
     },
