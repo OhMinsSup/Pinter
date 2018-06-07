@@ -3,9 +3,11 @@ import * as express from 'express';
 import * as mongoose from 'mongoose';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
+import * as path from 'path';
 import * as config from './config/config';
 import { jwtMiddleware } from './lib/middleware/jwtMiddleware';
 import AuthRouter from './routes/AuthRouter';
+import FileRouter from './routes/FileRouter';
 
 class Server {
     public app: express.Application;
@@ -19,8 +21,7 @@ class Server {
 
     private middleware(): void {
         const { app } = this;
-
-        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
         app.use(bodyParser.json());
         app.use(cookieParser());
         app.use((req, res, next): void => {
@@ -53,6 +54,7 @@ class Server {
         const { app } = this;
 
         app.use('/auth', AuthRouter);
+        app.use('/file', FileRouter);
     }   
 }
 

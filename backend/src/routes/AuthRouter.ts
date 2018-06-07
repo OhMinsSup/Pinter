@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router, NextFunction } from 'express';
 import * as joi from 'joi';
 import { generateToken, decodeToken } from '../lib/token';
 import { sendMail } from '../lib/sendMail';
@@ -14,7 +14,7 @@ class AuthRouter {
         this.routes();
     }
 
-    private async sendAuthEmail(req: Request, res: Response): Promise<any> {
+    private async sendAuthEmail(req: Request, res: Response, next: NextFunction): Promise<any> {
         type BodySchema = {
             email: string
         }
@@ -66,7 +66,7 @@ class AuthRouter {
         }
     }
 
-    private async register(req: Request, res: Response): Promise<any> {
+    private async register(req: Request, res: Response, next: NextFunction): Promise<any> {
         type BodySchema = {
             registerToken: string,
             displayName: string,
@@ -141,7 +141,7 @@ class AuthRouter {
         }
     }
 
-    private async login(req: Request, res: Response): Promise<any> {
+    private async login(req: Request, res: Response, next: NextFunction): Promise<any> {
         type BodySchema = {
             code: string
         }
@@ -190,7 +190,7 @@ class AuthRouter {
         }
     }
 
-    private async code(req: Request, res: Response): Promise<any> {
+    private async code(req: Request, res: Response, next: NextFunction): Promise<any> {
         type ParamsSchema = {
             code: string
         }
@@ -218,7 +218,7 @@ class AuthRouter {
         }
     }
 
-    private async logout(req: Request, res: Response): Promise<any> {
+    private async logout(req: Request, res: Response, next: NextFunction): Promise<any> {
         res.cookie('access_token', null, {
             httpOnly: true,
             maxAge: 0
@@ -226,7 +226,7 @@ class AuthRouter {
         return res.status(204);
     }
 
-    private async check(req: Request, res: Response): Promise<any> {
+    private async check(req: Request, res: Response, next: NextFunction): Promise<any> {
         const user = req['user'];
 
         if (!user) {
@@ -239,7 +239,7 @@ class AuthRouter {
 
     }
 
-    private async socialRegister(req: Request, res: Response): Promise<any> {
+    private async socialRegister(req: Request, res: Response, next: NextFunction): Promise<any> {
         type BodySchema = {
             socialEmail: string,
             accessToken: string,
@@ -332,7 +332,7 @@ class AuthRouter {
         }
     }
 
-    private async socialLogin(req: Request, res: Response): Promise<any> {
+    private async socialLogin(req: Request, res: Response, next: NextFunction): Promise<any> {
         type BodySchema = {
             accessToken: string
         }
@@ -396,7 +396,7 @@ class AuthRouter {
         }
     }
 
-    private async verifySocial(req: Request, res: Response): Promise<any> {
+    private async verifySocial(req: Request, res: Response, next: NextFunction): Promise<any> {
         type BodySchema = {
             accessToken: string
         }
