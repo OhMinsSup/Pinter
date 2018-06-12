@@ -3,11 +3,11 @@ import * as express from 'express';
 import * as mongoose from 'mongoose';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
-import * as path from 'path';
 import * as config from './config/config';
 import { jwtMiddleware } from './lib/middleware/jwtMiddleware';
+import needAuth from './lib/middleware/needAuth';
 import AuthRouter from './routes/AuthRouter';
-import FileRouter from './routes/FileRouter';
+import PinRouter from './routes/PinRouter';
 
 class Server {
     public app: express.Application;
@@ -50,11 +50,10 @@ class Server {
     }
 
     private routes(): void {
-        const router: express.Router = express.Router();
         const { app } = this;
 
         app.use('/auth', AuthRouter);
-        app.use('/file', FileRouter);
+        app.use('/pin', needAuth, PinRouter);
     }   
 }
 
