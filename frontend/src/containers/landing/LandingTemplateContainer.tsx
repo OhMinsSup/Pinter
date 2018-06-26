@@ -13,7 +13,8 @@ type LandingTemplateContainerProps = StateProps & OwnProps
 
 class LandingTemplateContainer extends React.Component<LandingTemplateContainerProps> {
     public render() {
-        if (this.props.user) return null;
+        if (!this.props.user) return null;
+        // if (this.props.user) return null;
         
         const { form } = this.props;
         return <LandingTemplate form={form}/>;

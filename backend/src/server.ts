@@ -5,7 +5,6 @@ import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as config from './config/config';
 import { jwtMiddleware } from './lib/middleware/jwtMiddleware';
-import needAuth from './lib/middleware/needAuth';
 import AuthRouter from './routes/AuthRouter';
 import PinRouter from './routes/PinRouter';
 
@@ -53,7 +52,7 @@ class Server {
         const { app } = this;
 
         app.use('/auth', AuthRouter);
-        app.use('/pin', needAuth, PinRouter);
+        app.use('/pin', PinRouter);
     }   
 }
 
