@@ -1,11 +1,13 @@
-import { Request, Response, Router, NextFunction } from 'express';
+import { Request, Response, Router } from 'express';
 import * as joi from 'joi';
 import * as filesize from 'filesize';
 import * as multer from 'multer';
 import * as AWS from 'aws-sdk';
 import * as config from '../config/config';
+import Auth, { IAuth } from '../models/Auth';
 import Pin, { IPin } from '../models/Pin';
 import needAuth from '../lib/middleware/needAuth';
+import { serializePin } from '../lib/serialize';
 
 const s3 = new AWS.S3({
     region: 'ap-northeast-2',
@@ -143,14 +145,57 @@ class PinRouter {
             pinFile.description = description;
             pinFile.save();
 
-            res.json(pinFile.toJSON());
+            const { _id: pinId } = pinFile;
+
+            const pinWithData = await Pin.findById(pinId).populate('user','profile');
+
+            if (!pinWithData) {
+                return res.status(409).json({
+                    name: '핀이 존재하지 않습니다.'
+                });
+            }
+
+            res.json(pinWithData.toJSON());
         } catch (e) {
             return res.status(500).json(e);
         }
     };
 
-    private async pinList (req: Request, res: Response): Promise<any> {
-        res.json(`테스트 함수`);
+    private async listPin (req: Request, res: Response): Promise<any> {
+        const { username } = req.params;
+        const { cursor } = req.query;
+        let userId: string | null = null;
+
+        if (username) {
+            const user: IAuth = await Auth.findByEmailOrUsername('username', username);
+
+            if (!user) {
+                return res.status(409).json({
+                    name: '존재하지 않는 유저입니다.'
+                });
+            }
+            userId = user._id;
+        }
+
+        const query = {
+            user: userId,
+            cursor
+        }
+
+        try {
+            const pins: Array<IPin> = await Pin.listPins(query);
+            const next = pins.length === 20 ? `/pin/${username ? `${username}/mypin/` : ''}?cursor=${pins[19]._id}` : null;
+            const pinsWithData = pins.map(serializePin);
+
+            res.setHeader('Count', pinsWithData.length);
+
+            res.json({
+                next,
+                pinsWithData
+            });
+        } catch (e) {
+            return res.status(500).json(e);
+        }
     }
     
     public routes(): void {
@@ -158,7 +203,8 @@ class PinRouter {
 
         router.post('/upload/', needAuth, upload.single('file'), this.pinImageUpload);
         router.post('/url/', needAuth, this.pinImageUrl);
-        router.get('/', this.pinList);
+        router.get('/', this.listPin);
+        router.get('/:username/mypin', this.listPin);
     }
 }
 
