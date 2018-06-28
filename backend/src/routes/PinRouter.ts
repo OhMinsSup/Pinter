@@ -6,6 +6,7 @@ import * as AWS from 'aws-sdk';
 import * as config from '../config/config';
 import Auth, { IAuth } from '../models/Auth';
 import Pin, { IPin } from '../models/Pin';
+import Thema, { IThema } from '../models/Thema';
 import needAuth from '../lib/middleware/needAuth';
 import { serializePin } from '../lib/serialize';
 
@@ -26,6 +27,52 @@ class PinRouter {
     constructor() {
         this.router = Router();
         this.routes();
+    }
+
+    private async pinThemaSetting (req: Request, res: Response): Promise<any> {
+        type BodySchema = {
+            pinThema: string
+        }
+
+        const schema = joi.object().keys({
+            pinThema: joi.string().required()
+        });
+
+        const result: any = joi.validate(req.body, schema);
+
+        if (result.error) {
+            return res.status(400).json({
+                name: 'WRONG_SCHEMA',
+                payload: result.error,
+            });
+        }
+
+        const { pinThema }: BodySchema = req.body;
+        const { pinId } = req.params;
+
+        try {
+            const pinExists: IThema = await Thema.findByPin(pinId);
+
+            if (!pinExists) {
+                return res.status(409).json({
+                    name: '핀이 존재하지 않습니다.'
+                });
+            }
+
+            const thema: IThema = new Thema({
+                pin: pinId,
+                thema: pinThema
+            });
+
+            thema.save();
+            const { _id: themaId } = thema;
+
+            const themaWithData = await Thema.findById(themaId);
+            
+            res.json(themaWithData);
+        } catch (e) {
+            return res.status(500).json(e);
+        }
     }
 
     private async pinImageUrl (req: Request, res: Response): Promise<any> {
@@ -203,8 +250,12 @@ class PinRouter {
 
         router.post('/upload/', needAuth, upload.single('file'), this.pinImageUpload);
         router.post('/url/', needAuth, this.pinImageUrl);
+        
         router.get('/', this.listPin);
         router.get('/:username/mypin', this.listPin);
+
+        router.post('/:pinId/thema', this.pinThemaSetting);
+
     }
 }
 
