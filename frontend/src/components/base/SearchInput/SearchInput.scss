@@ -1,0 +1,93 @@
+@import 'utils';
+
+.search-input-wrapper {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    box-sizing: border-box;
+    padding-left: 16px;
+    padding-right: 16px;   
+    .wrapper {
+        border-radius: 4px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: $oc-gray-2;
+        .flex-wrapper {
+            display: flex;
+            flex-direction: row;
+            .search {
+                flex: 1 1 auto;
+                min-width: 0;
+                min-height: 0;
+                box-sizing: border-box;
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                .input-wrapper {
+                    height: 40px;
+                    flex: 1 1 auto;
+                    min-height: 0;
+                    min-width: 0;
+                    align-items: center;
+                    box-sizing: border-box;
+                    position: relative;
+                    display: flex;
+                    flex-direction: row;
+                    .icons {
+                        height: 100%;
+                        align-items: center;
+                        box-sizing: border-box;
+                        left: 0;
+                        top: 0;
+                        display: flex;
+                        flex-direction: row;
+                        position: absolute;
+                        padding-left: 16px;
+                        padding-right: 16px;
+                        svg {
+                            display: block;
+                            color: $oc-gray-4;
+                            fill: currentColor;
+                            stroke-width: 0;
+                            font-size: 1.75rem;
+                            vertical-align: middle;
+                            height: 20;
+                            width: 20;
+                            overflow: hidden;
+                        }
+                    }
+                    .input {
+                        width: 100%;
+                        height: 100%;
+                        box-sizing: border-box;
+                        display: block;
+                        .search-box-input {
+                            background-color: transparent;
+                            border: 0;
+                            border-radius: 4px;
+                            box-shadow: none;
+                            box-sizing: border-box;
+                            color: #555;
+                            font-size: 16px;
+                            font-weight: 600;
+                            height: 100%;
+                            line-height: 20px;
+                            outline: none;
+                            padding: 0 40px 0 52px;
+                            width: 100%;
+                        }
+                    }
+
+                    .blank {
+                        width: 100%;
+                        top: calc(100% + 4px);
+                        box-sizing: border-box;
+                        left: 0;
+                        position: absolute;
+                    }
+                }
+            }
+        }
+    }
+}

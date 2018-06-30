@@ -29,13 +29,13 @@ class PinRouter {
         this.routes();
     }
 
-    private async pinThemaSetting (req: Request, res: Response): Promise<any> {
+    private async PinThema (req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            pinThema: string
+            thema: string
         }
 
         const schema = joi.object().keys({
-            pinThema: joi.string().required()
+            thema: joi.string().required()
         });
 
         const result: any = joi.validate(req.body, schema);
@@ -47,11 +47,11 @@ class PinRouter {
             });
         }
 
-        const { pinThema }: BodySchema = req.body;
+        const { thema }: BodySchema = req.body;
         const { pinId } = req.params;
-
+        
         try {
-            const pinExists: IThema = await Thema.findByPin(pinId);
+            const pinExists: IPin = await Pin.findById(pinId); 
 
             if (!pinExists) {
                 return res.status(409).json({
@@ -59,23 +59,20 @@ class PinRouter {
                 });
             }
 
-            const thema: IThema = new Thema({
+            const newThema: IThema = new Thema({
                 pin: pinId,
-                thema: pinThema
+                thema: thema
             });
 
-            thema.save();
-            const { _id: themaId } = thema;
-
-            const themaWithData = await Thema.findById(themaId);
-            
-            res.json(themaWithData);
+            newThema.save();
+        
+            res.json(newThema.toJSON());
         } catch (e) {
             return res.status(500).json(e);
         }
     }
 
-    private async pinImageUrl (req: Request, res: Response): Promise<any> {
+    private async PinImageUrl (req: Request, res: Response): Promise<any> {
         type BodySchema = {
             title: string,
             description: string,
@@ -127,7 +124,7 @@ class PinRouter {
         }
     }
 
-    private async pinImageUpload (req: Request, res: Response): Promise<any> {
+    private async PinImageUpload (req: Request, res: Response): Promise<any> {
         type BodySchema = {
             title: string,
             description: string,
@@ -208,7 +205,7 @@ class PinRouter {
         }
     };
 
-    private async listPin (req: Request, res: Response): Promise<any> {
+    private async ListPin (req: Request, res: Response): Promise<any> {
         const { username } = req.params;
         const { cursor } = req.query;
         let userId: string | null = null;
@@ -248,13 +245,11 @@ class PinRouter {
     public routes(): void {
         const { router } = this;        
 
-        router.post('/upload/', needAuth, upload.single('file'), this.pinImageUpload);
-        router.post('/url/', needAuth, this.pinImageUrl);
-        
-        router.get('/', this.listPin);
-        router.get('/:username/mypin', this.listPin);
-
-        router.post('/:pinId/thema', this.pinThemaSetting);
+        router.post('/upload/', needAuth, upload.single('file'), this.PinImageUpload);
+        router.post('/url/', needAuth, this.PinImageUrl);
+        router.post('/:pinId/thema', this.PinThema);
+        router.get('/', this.ListPin);
+        router.get('/:username/mypin', this.ListPin);
 
     }
 }
