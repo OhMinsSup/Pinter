@@ -1,24 +1,26 @@
-import { Request, Response, Router, NextFunction } from 'express';
+import { Request, Response, Router } from 'express';
 import * as joi from 'joi';
-import { generateToken, decodeToken } from '../lib/token';
+import User, { IUser } from '../database/models/User';
+import EmailAuth, { IEmailAuth } from '../database/models/EmailAuth';
+import UserProfile, { IUserProfile } from '../database/models/UserProfile';
+import SocailProfile, { ISocialProfile } from '../database/models/SocialProfile';
 import { sendMail } from '../lib/sendMail';
+import { generateToken, decodeToken } from '../lib/token';
+import { findByEmailOrUsername, findCode, use, generate, getProfile } from '../database/service/User';
 import getSocialProfile, { Profile } from '../lib/social';
-import Auth, { IAuth } from '../models/Auth';
-import EmailAuth, { IEmailAuth } from '../models/EmailAuth';
 
-class AuthRouter {
+class Auth {
     public router: Router
 
     constructor() {
         this.router = Router();
         this.routes();
     }
-
-    private async sendAuthEmail(req: Request, res: Response, next: NextFunction): Promise<any> {
+    private async sendAuthEmail(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             email: string
         }
-        
+
         const schema = joi.object().keys({
             email: joi.string().email().required()
         });
@@ -34,18 +36,19 @@ class AuthRouter {
 
         try {
             const { email }: BodySchema = req.body;
-            const auth: IAuth = await Auth.findByEmailOrUsername('email', email);
-            
+            const auth: IUser = await findByEmailOrUsername('email', email);
             const emailKeywords = auth ? {
-                type: 'login',
-                text: '로그인',
+                type: 'email-login',
+                text: '로그인'
             } : {
-                type: 'register',
-                text: '회원가입',
-            }
+                type: 'email-register',
+                text: '회원가입'
+            };
 
-            const verification: IEmailAuth = await EmailAuth.verificationEmail(email);
-            
+            const verification = await EmailAuth.build({
+                email
+            }).save();
+
             await sendMail({
                 to: email,
                 from: 'veloss <verification@gmail.com>',
@@ -66,7 +69,28 @@ class AuthRouter {
         }
     }
 
-    private async register(req: Request, res: Response, next: NextFunction): Promise<any> {
+    private async code(req: Request, res: Response) {
+        const { code } = req.params;
+
+        try {
+            const auth: IEmailAuth = await findCode(code);
+
+            if (!auth) return res.status(404);
+    
+            const { email, code: emailCode } = auth;
+            const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' })
+            await use(emailCode);
+
+            res.json({
+                email,
+                registerToken
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async localRegister(req: Request, res: Response) {
         type BodySchema = {
             registerToken: string,
             displayName: string,
@@ -87,40 +111,45 @@ class AuthRouter {
                 payload: result.error,
             });
         }
-
-        const {
-            registerToken,
-            displayName,
-            username
-        }: BodySchema = req.body;
+        const { registerToken, username, displayName }: BodySchema = req.body;
 
         try {
-            let decoded: any = await decodeToken(registerToken);
-        
+            let decoded = await decodeToken(registerToken);
+
             if (!decoded) {
                 return res.status(400).json({
-                    name: 'INVALID_TOKEN'
+                    name: '토큰 발급 안됨'
                 });
             }
 
             const { email } = decoded;
 
-            const [emailExists, usernameExists]: Array<IAuth> = await Promise.all([
-                Auth.findByEmailOrUsername('email', email),
-                Auth.findByEmailOrUsername('username', username)
+            const [emailExists, usernameExists]: Array<IUser> = await Promise.all([
+                findByEmailOrUsername('email', email),
+                findByEmailOrUsername('username', username)
             ]);
 
             if (emailExists || usernameExists) {
                 res.status(409).json({
-                    name: 'DUPLICATED_ACCOUNT',
+                    name: '중복된 계정',
                     payload: emailExists ? 'email' : 'username'
                 });
                 return;
             }
 
-            const auth: IAuth = await Auth.createAuth(username, email, displayName);            
+            // TODO: 썸네일 지정
+            const auth: IUser = await User.build({
+                username,
+                email
+            }).save();
 
-            const token: string = await auth.generate(auth);
+            await UserProfile.build({
+                fk_user_id: auth.id,
+                display_name: displayName
+            }).save();
+
+
+            const token: string = await generate(auth);
 
             res.cookie('access_token', token, {
                 httpOnly: true,
@@ -128,97 +157,75 @@ class AuthRouter {
             });
 
             res.json({
-                auth: {
-                    id: auth._id,
+                user: {
+                    id: auth.id,
                     username: auth.username,
-                    displayName: auth.profile.displayName,
-                    thumbnail: auth.profile.thumbnail
+                    displayName
                 },
                 token
             });
-        } catch(e) {
+        } catch (e) {
             res.status(500).json(e);
         }
     }
 
-    private async login(req: Request, res: Response, next: NextFunction): Promise<any> {
+    private async localLogin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             code: string
         }
+
         const { code }: BodySchema = req.body;
-        
+
         if (typeof code !== 'string') {
             return res.status(400);
         }
 
         try {
-            const auth: IEmailAuth = await EmailAuth.findByCode(code);
-            
-            if (!auth) {
+            const auth: IEmailAuth = await findCode(code);
+
+            if(!auth) {
                 return res.status(404);
             }
 
-            const { email } = auth;            
-            const auths: IAuth = await Auth.findByEmailOrUsername('email', email);
+            const { email } = auth;
+            const user: IUser = await findByEmailOrUsername('email', email);
 
-            if (!auths) {
+            if (!user) {
                 return res.status(401);
             }
 
-            const token = await auths.generate(auths);
-
+            const token: string = await generate(user);
+            const profile: IUserProfile = await getProfile(user.id);
             res.cookie('access_token', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
 
             res.json({
-                auth: {
-                    id: auths._id,
-                    username: auths.username,
-                    displayName: auths.profile.displayName,
-                    thumbnail: auths.profile.thumbnail
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    displayName: profile.display_name,
+                    thumbnail: profile.thumbnail
                 },
                 token
             });
-
-            await EmailAuth.findOneAndUpdate({ code: auth.code }, { $set: { logged: true } }, { 
-                new: true        
-            }).exec();
         } catch (e) {
             res.status(500).json(e);
         }
     }
-
-    private async code(req: Request, res: Response, next: NextFunction): Promise<any> {
-        type ParamsSchema = {
-            code: string
+    
+    private async check(req: Request, res: Response): Promise<any> {
+        const user = req['user'];
+        if (!user) {
+            return res.status(401);
         }
-        const { code }: ParamsSchema = req.params;
-        
-        try {
-            const auth: IEmailAuth = await EmailAuth.findByCode(code);
-            
-            if (!auth) {
-                return res.status(404);
-            }
-            
-            const { email } = auth;
-            const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' });
-            res.json({
-                email,
-                registerToken
-            });
-            
-            await EmailAuth.findOneAndUpdate(auth.code, { $set: { logged: true } }, { 
-                new: true        
-            }).exec();
-        } catch (e) {
-            res.status(500).json(e);
-        }
+        res.json({
+            user
+        });
     }
 
-    private async logout(req: Request, res: Response, next: NextFunction): Promise<any> {
+    private async logout(res: Response): Promise<any> {
         res.cookie('access_token', null, {
             httpOnly: true,
             maxAge: 0
@@ -226,20 +233,8 @@ class AuthRouter {
         return res.status(204);
     }
 
-    private async check(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const user = req['user'];
 
-        if (!user) {
-            return res.status(401);
-        }
-
-        res.json({
-            user
-        });
-
-    }
-
-    private async socialRegister(req: Request, res: Response, next: NextFunction): Promise<any> {
+    private async socialRegister (req: Request, res: Response): Promise<any> {
         type BodySchema = {
             socialEmail: string,
             accessToken: string,
@@ -247,12 +242,8 @@ class AuthRouter {
             username: string
         }
 
-        type ParamsSchema = {
-            provider: string
-        }
-
         const schema = joi.object().keys({
-            socialEmail: joi.string(),
+            socialEmail: joi.string().email(),
             accessToken: joi.string().required(),
             displayName: joi.string().min(1).max(40),
             username: joi.string().min(3).max(16).required()
@@ -267,8 +258,8 @@ class AuthRouter {
             });
         }
         
-        const { provider }: ParamsSchema = req.params;
-        const { socialEmail, displayName, username, accessToken}: BodySchema = req.body;
+        const { provider } = req.params;
+        const { socialEmail, displayName, username, accessToken }: BodySchema = req.body;
 
         let profile: Profile = null;
 
@@ -278,52 +269,75 @@ class AuthRouter {
             res.status(500).json(e);
         }
 
-        const { id, thumbnail, email } = profile;
-        const socialId = id;
+        const { id: socialId, thumbnail, email } = profile;
 
         try {
-            const [emailExists, usernameExists]: Array<IAuth> = await Promise.all([
-                Auth.findByEmailOrUsername('email', email),
-                Auth.findByEmailOrUsername('username', username)
+            const [emailExists, usernameExists]: Array<IUser> = await Promise.all([
+                findByEmailOrUsername('email', email),
+                findByEmailOrUsername('username', username)
             ]);
-            
+
             if (emailExists || usernameExists) {
-                return res.status(409).json({
-                    name: 'DUPLICATED_ACCOUNT',
+                res.status(409).json({
+                    name: '중복된 계정',
                     payload: emailExists ? 'email' : 'username'
                 });
+                return;
             }
 
-            const socialExists: IAuth = await Auth.findBySocialId(provider, socialId);
+            const socialExists: ISocialProfile = await SocailProfile.findOne({
+                include: [
+                    {
+                        model: User
+                    }
+                ],
+                where: {
+                    social_id: socialId
+                }
+            });
 
             if (socialExists) {
                 return res.status(409).json({
-                    name: 'SOCIAL_ACCOUNT_EXISTS'
+                    name: '이미 가입한 소셜 계정'
                 });
             }
 
-            const auth: IAuth = await Auth.createSocialAuth(
-                provider,
-                accessToken,
+            const user: IUser = await User.build({
                 username,
-                email,
-                socialId,
-                thumbnail,
-                displayName
-            );
+                email: email || socialEmail
+            }).save();
+            // TODO: 썸네일 지정
 
-            const token: string = await auth.generate(auth);
+            await UserProfile.build({
+
+            }).save();
+
+            await SocailProfile.build({
+                fk_user_id: user.id,
+                social_id: socialId,
+                provider,
+                access_token: accessToken 
+            }).save();
+
+            const profile = await UserProfile.findOne({
+                where: {
+                    fk_user_id: user.id
+                }
+            });
+
+            const token: string = await generate(user);
+
             res.cookie('access_token', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
 
             res.json({
-                auth: {
-                    id: auth._id,
-                    username: auth.username,
-                    displayName: auth.profile.displayName,
-                    thumbnail: auth.profile.thumbnail
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    displayName,
+                    thumbnail: profile.thumbnail
                 },
                 token
             });
@@ -332,15 +346,13 @@ class AuthRouter {
         }
     }
 
-    private async socialLogin(req: Request, res: Response, next: NextFunction): Promise<any> {
+    private async socialLogin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             accessToken: string
         }
-        type ParamsSchema = {
-            provider: string
-        }
+
         const { accessToken }: BodySchema = req.body;
-        const { provider }: ParamsSchema = req.params;
+        const { provider } = req.params;
 
         let profile: Profile = null;
 
@@ -352,42 +364,58 @@ class AuthRouter {
 
         if (!profile) {
             return res.status(401).json({
-                name: 'WRONG_CREDENTIALS'
+                name: '프로필이 존재하지 않습니다.'
             });
         }
 
         const socialId = profile.id;
 
         try {
-            let auth: IAuth = await Auth.findBySocialId(provider, socialId); 
+            let user: ISocialProfile | IUser = await SocailProfile.findOne({
+                include: [
+                    {
+                        model: User
+                    }
+                ],
+                where: {
+                    social_id: socialId
+                }
+            }).then(user => (user ? user.user : null));
 
-            if (!auth) {
-                auth = await Auth.findByEmailOrUsername('email', profile.email);
-                if (!auth) {
+            if (!user) {
+                user = await findByEmailOrUsername('email', profile.email);
+                if (!user) {
                     return res.status(401).json({
-                        name: 'NOT_REGISTERED'
+                        name: '등록되어 있지 않습니다.'
                     });
                 }
-
-                await Auth.socialLogin(
+                await SocailProfile.build({
+                    fk_user_id: user.id,
+                    social_id: socialId,
                     provider,
-                    socialId,
-                    accessToken
-                );
+                    access_token: accessToken
+                }).save();
             }
 
-            const token: string = await auth.generate(auth);
+            const userProfile: IUserProfile = await UserProfile.findOne({
+                where: {
+                    fk_user_id: user.id
+                }
+            });
+
+            const token: string = await generate(user);
+
             res.cookie('access_token', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
 
             res.json({
-                auth: {
-                    id: auth._id,
-                    username: auth.username,
-                    displayName: auth.profile.displayName,
-                    thumbnail: auth.profile.thumbnail
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    displayName: userProfile.display_name,
+                    thumbnail: userProfile.thumbnail
                 },
                 token
             })
@@ -396,15 +424,13 @@ class AuthRouter {
         }
     }
 
-    private async verifySocial(req: Request, res: Response, next: NextFunction): Promise<any> {
+    private async verifySocial(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             accessToken: string
         }
-        type ParamsSchema = {
-            provider: string
-        }
+
         const { accessToken }: BodySchema = req.body;
-        const { provider }: ParamsSchema = req.params;
+        const { provider } = req.params;
 
         let profile: Profile = null;
 
@@ -416,20 +442,29 @@ class AuthRouter {
 
         if (!profile) {
             return res.status(401).json({
-                name: 'WRONG_CREDENTIALS'
+                name: '프로필이 존재하지 않습니다.'
             });
         }
 
         try {
-            const [socailAuth, auth]: Array<IAuth> = await Promise.all([
-                Auth.findByEmailOrUsername('email', profile.email),
-                Auth.findBySocialId(provider, profile.id)
+            const [socialAuth, user]: Array<IUser | ISocialProfile> = await Promise.all([
+                SocailProfile.findOne({
+                    include: [
+                        {
+                            model: User
+                        }
+                    ],
+                    where: {
+                        social_id: profile.id
+                    }
+                }).then(user => (user ? user.user : null)),
+                findByEmailOrUsername('email', profile.email),
             ]);
 
             res.json({
                 profile,
-                exists: !!(socailAuth || auth)
-              });
+                exists: !!(socialAuth || user)
+            });
         } catch (e) {
             res.status(500).json(e);
         }
@@ -439,17 +474,17 @@ class AuthRouter {
         const { router } = this;
 
         router.post('/send-auth-email', this.sendAuthEmail);
-        router.post('/email-register', this.register);
-        router.post('/email-login', this.login);
-        router.post('/logout', this.logout);
-        
+        router.post('/email-register', this.localRegister);
+        router.post('/email-login', this.localLogin);
         router.get('/code/:code', this.code);
+
+        router.post('/logout', this.logout);
         router.get('/check', this.check);
-        
+
         router.post('/register/:provider(facebook|google)', this.socialRegister);
         router.post('/login/:provider(facebook|google)', this.socialLogin);
         router.post('/verify-social/:provider(facebook|google)', this.verifySocial);
     }
 }
 
-export default new AuthRouter().router;
+export default new Auth().router;

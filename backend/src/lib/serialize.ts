@@ -1,4 +1,4 @@
-import { IPin } from '../models/Pin';
+/*import { IPin } from '../models/Pin';
 import { IAuth } from '../models/Auth';
 
 function serializePin (pin: IPin) {
@@ -31,4 +31,4 @@ function serializePin (pin: IPin) {
 
 export {
     serializePin
-};
+};*/

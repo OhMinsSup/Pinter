@@ -19,7 +19,7 @@ class Core extends React.Component<CoreProps>{
       UserActions.process();
       return;
     }
-
+    
     UserActions.setUser(storageUser);
 
     try {

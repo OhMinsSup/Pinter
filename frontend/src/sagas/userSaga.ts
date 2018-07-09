@@ -8,9 +8,17 @@ function* checkUserFlow() {
     yield take(UserActionType.CHECK_USER);
 
     const response = yield call(UserAPI.checkAPI);    
-    const { data: { user } }: CheckUserTypes = response;
+    const { data: { user: { username, thumbnail, _id: id, displayName } } }: CheckUserTypes = response;
     
+    const user = {
+        username, 
+        thumbnail, 
+        id, 
+        displayName
+    };
+
     if (!user) return;
+
     
     yield put(userActions.checkUser({ user }));
 }

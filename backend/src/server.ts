@@ -1,12 +1,10 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
-import * as mongoose from 'mongoose';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
-import * as config from './config/config';
+import sequelize from './database/db';
 import { jwtMiddleware } from './lib/middleware/jwtMiddleware';
-import AuthRouter from './routes/AuthRouter';
-import PinRouter from './routes/PinRouter';
+import Auth from './routes/auth';
 
 class Server {
     public app: express.Application;
@@ -37,22 +35,16 @@ class Server {
     }
 
     private initializeDb(): void {
-        const MONGO_URL: string = config.MONGODB_URL_WEB;
-        (<any>mongoose).Promise = global.Promise;
-        mongoose.connect(MONGO_URL)
-        .then(() => {
-            console.log('connected to mongoDB');
-        })
-        .catch((e) => {
-            console.log("MongoDB connection error. Please make sure MongoDB is running. " + e);
-        });  
+        // force: true
+        sequelize.sync({ force: true }).then(() => {
+            console.log('DB Connection has been established');
+        });
     }
 
     private routes(): void {
         const { app } = this;
 
-        app.use('/auth', AuthRouter);
-        app.use('/pin', PinRouter);
+        app.use('/auth', Auth);
     }   
 }
 

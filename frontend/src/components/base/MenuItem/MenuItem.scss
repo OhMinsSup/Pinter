@@ -1,0 +1,44 @@
+@import 'utils';
+
+.menuItem-wrapper {
+    display: block;
+    position: relative;
+    box-sizing: border-box;
+    .wrapper {
+        color: #717171;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        .item-wrapper {
+            background-color: transparent;
+            box-sizing: border-box;
+            border-radius: 999px;
+            .item {
+                justify-content: center;
+                align-items: center;
+                box-sizing: border-box;
+                padding: 8px;
+                flex-direction: row;
+                display: flex;
+                .text-wrapper {
+                    box-sizing: border-box;
+                    padding-left: 8px;
+                    padding-right: 8px;
+                    padding-bottom: 4px;
+                    padding-top: 4px;
+                    display: block;
+                    .text {
+                        text-align: left;
+                        color: #555;
+                        font-size: 1.25rem;
+                        line-height: -5;
+                    }
+                }
+            }
+
+            &:hover {
+                background-color: $oc-gray-2;
+            }
+        }
+    }
+}

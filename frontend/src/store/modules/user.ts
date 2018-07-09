@@ -21,7 +21,7 @@ export type ProcessAction = ReturnType<typeof actionCreators.process>;
 export type LogoutAction = ReturnType<typeof actionCreators.logout>;
 
 const UserSubrecord = Record({
-    id: '',
+    _id: '',
     username: '',
     displayName: '',
     thumbnail: null,
@@ -33,7 +33,7 @@ const UserRecord = Record({
 });
 
 export interface UserSubState {
-    id?: string
+    _id?: string
     username?: string
     displayName?: string
     thumbnail?: null | string
@@ -45,7 +45,7 @@ export interface UserRecordState {
 }
 
 export class UserSubData extends UserSubrecord {
-    public id: string;
+    public _id: string;
     public username: string;
     public displayName: string;
     public thumbnail: null | string;
@@ -67,9 +67,9 @@ export class UserRecordData extends UserRecord {
 const initialState = new UserRecordData();
 
 export default handleActions<UserRecordData, any>({
-    [UserActionType.SET_USER]: (state, action: SetUserAction): UserRecordData => {
-        const { payload: { setUserData } } = action;        
-        return state.set('user', UserSubrecord(setUserData)) as UserRecordData;
+    [UserActionType.SET_USER]: (state, action: SetUserAction): UserRecordData => {        
+        const { payload: { user } } = action; 
+        return state.set('user', UserSubrecord(user)) as UserRecordData;
     },
     [UserActionType.PROCESS]: (state, action: ProcessAction): UserRecordData => {
         return state.set('processed', true) as UserRecordData;

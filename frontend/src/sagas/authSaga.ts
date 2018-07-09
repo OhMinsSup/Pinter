@@ -102,10 +102,10 @@ function* socialLoginFlow() {
         const { data: socialLogin }: SocialLoginTypes = yield call(AuthAPI.socialLoginAPI, providerSocialData);
     
         yield put(authActions.socialLogin(socialLogin));
-        const socialLoginData: AuthResultSubState = yield select((state: StoreState) => state.auth.authResult);
+        const user: AuthResultSubState = yield select((state: StoreState) => state.auth.authResult);
     
-        yield put(userActions.setUser({ socialLoginData }));
-        Storage.set('__pinter_user__', socialLoginData);
+        yield put(userActions.setUser({ user }));
+        Storage.set('__pinter_user__', user);
 
     } else {
         const { email, username } = verifySocialData;
