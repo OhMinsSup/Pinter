@@ -9,8 +9,8 @@ import { generateToken, decodeToken } from '../lib/token';
 import { findByEmailOrUsername, findCode, use, generate, getProfile } from '../database/service/User';
 import getSocialProfile, { Profile } from '../lib/social';
 
-class Auth {
-    public router: Router
+class AuthRouter {
+    public router: Router;
 
     constructor() {
         this.router = Router();
@@ -94,13 +94,15 @@ class Auth {
         type BodySchema = {
             registerToken: string,
             displayName: string,
-            username: string
+            username: string,
+            shortBio: string,
         }
 
         const schema = joi.object().keys({
             registerToken: joi.string().required(),
             displayName: joi.string().min(1).max(40),
-            username: joi.string().min(3).max(16).required()
+            username: joi.string().min(3).max(16).required(),
+            shortBio: joi.string().max(140),
         });
 
         const result: any = joi.validate(req.body, schema);
@@ -111,7 +113,7 @@ class Auth {
                 payload: result.error,
             });
         }
-        const { registerToken, username, displayName }: BodySchema = req.body;
+        const { registerToken, username, displayName, shortBio }: BodySchema = req.body;
 
         try {
             let decoded = await decodeToken(registerToken);
@@ -145,7 +147,8 @@ class Auth {
 
             await UserProfile.build({
                 fk_user_id: auth.id,
-                display_name: displayName
+                display_name: displayName,
+                short_bio: shortBio
             }).save();
 
 
@@ -239,14 +242,16 @@ class Auth {
             socialEmail: string,
             accessToken: string,
             displayName: string,
-            username: string
+            username: string,
+            shortBio: string,
         }
 
         const schema = joi.object().keys({
             socialEmail: joi.string().email(),
             accessToken: joi.string().required(),
             displayName: joi.string().min(1).max(40),
-            username: joi.string().min(3).max(16).required()
+            username: joi.string().min(3).max(16).required(),
+            shortBio: joi.string().max(140),
         });
 
         const result = joi.validate(req.body, schema);
@@ -259,7 +264,7 @@ class Auth {
         }
         
         const { provider } = req.params;
-        const { socialEmail, displayName, username, accessToken }: BodySchema = req.body;
+        const { socialEmail, displayName, username, accessToken, shortBio }: BodySchema = req.body;
 
         let profile: Profile = null;
 
@@ -309,7 +314,10 @@ class Auth {
             // TODO: 썸네일 지정
 
             await UserProfile.build({
-
+                fk_user_id: user.id,
+                display_name: displayName,
+                short_bio: shortBio,
+                thumbnail: thumbnail,
             }).save();
 
             await SocailProfile.build({
@@ -487,4 +495,4 @@ class Auth {
     }
 }
 
-export default new Auth().router;
+export default new AuthRouter().router;

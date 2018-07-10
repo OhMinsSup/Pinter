@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, Default, Unique, HasMany, ForeignKey } from 'sequelize-typescript';
 import UserProfile from './UserProfile';
+import Pin from './Pin';
 
 export interface IUser {
     id: string;
@@ -31,6 +32,9 @@ class User extends Model<User> {
 
     @HasMany(() => UserProfile)
     public profiles: UserProfile[];
+
+    @HasMany(() => Pin)
+    public pins: Pin[];
 }
 
 export default User;

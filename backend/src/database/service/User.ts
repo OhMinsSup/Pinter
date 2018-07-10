@@ -57,7 +57,7 @@ async function generate(token: TokenPayload) {
         displayName,
         thumbnail
     };    
-    return generateToken({ user });
+    return generateToken(user);
 }
 
 export {

@@ -4,7 +4,8 @@ import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import sequelize from './database/db';
 import { jwtMiddleware } from './lib/middleware/jwtMiddleware';
-import Auth from './routes/auth';
+import Auth from './routes/AuthRouter';
+import Pin from './routes/PinRouter';
 
 class Server {
     public app: express.Application;
@@ -36,7 +37,7 @@ class Server {
 
     private initializeDb(): void {
         // force: true
-        sequelize.sync({ force: true }).then(() => {
+        sequelize.sync({ }).then(() => {
             console.log('DB Connection has been established');
         });
     }
@@ -45,6 +46,7 @@ class Server {
         const { app } = this;
 
         app.use('/auth', Auth);
+        app.use('/pin', Pin);
     }   
 }
 

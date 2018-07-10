@@ -5,6 +5,7 @@ export interface IUserProfile {
     id: string;
     display_name: string;
     thumbnail: string;
+    short_bio: string;
     fk_user_id: string;
 }
 
@@ -29,6 +30,9 @@ class UserProfile extends Model<UserProfile> {
     @Column(DataType.STRING)
     public thumbnail: string;
     
+    @Column(DataType.STRING)
+    public short_bio: string;
+
     @ForeignKey(() => User)
     public fk_user_id: string;
 
