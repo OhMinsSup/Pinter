@@ -1,5 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
-import { Record } from 'immutable';
+import produce from 'immer';
 
 export enum BaseActionType {
     SET_HEADER_VISIBILITY = 'base/SET_HEADER_VISIBILITY',
@@ -9,53 +9,48 @@ export enum BaseActionType {
 }
 
 export const actionCreators = {
-    setHeaderVisibility: createAction(BaseActionType.SET_HEADER_VISIBILITY),
-    showUserMenu: createAction(BaseActionType.SHOW_USER_MENU),
-    hideUserMenu: createAction(BaseActionType.HIDE_USER_MENU),
-    setFullscreenLoader: createAction(BaseActionType.SET_FULLSCREEN_LOADER),
+    setHeaderVisibility: createAction(BaseActionType.SET_HEADER_VISIBILITY, (visible: boolean) => visible),
+    showUserMenu: createAction(BaseActionType.SHOW_USER_MENU, (visible: boolean) => visible),
+    hideUserMenu: createAction(BaseActionType.HIDE_USER_MENU, (visible: boolean) => visible),
+    setFullscreenLoader: createAction(BaseActionType.SET_FULLSCREEN_LOADER, (visible: boolean) => visible),
 };
 
-export type SetHeaderVisibilityAction = ReturnType<typeof actionCreators.setHeaderVisibility>;
-export type ShowUserMenuAction = ReturnType<typeof actionCreators.showUserMenu>;
-export type HideUserMenuAction = ReturnType<typeof actionCreators.hideUserMenu>;
-export type SetFullscreenLoaderAction = ReturnType<typeof actionCreators.setFullscreenLoader>;
+type SetHeaderVisibilityAction = ReturnType<typeof actionCreators.setHeaderVisibility>;
+type SetFullscreenLoaderAction = ReturnType<typeof actionCreators.setFullscreenLoader>;
 
-const BaseRecord = Record({
+export interface BaseState {
+    userMenu?: boolean;
+    header?: boolean;
+    fullscreenLoader?: boolean;
+}
+
+const initialState: BaseState = {
     userMenu: false,
     header: true,
     fullscreenLoader: false,
-});
+};
 
-export interface BaseRecordState {
-    userMenu: boolean
-    header: boolean
-    fullscreenLoader: boolean
-}
-
-export class BaseRecordData extends BaseRecord {
-    public userMenu: boolean
-    public header: boolean
-    public fullscreenLoader: boolean
-
-    constructor(params?: BaseRecordState) {
-        params ? super({ ...params }) : super()
-    }
-}
-
-const initialState  = new BaseRecordData();
-
-export default handleActions<BaseRecordData, any>({
-    [BaseActionType.SET_HEADER_VISIBILITY]: (state, action: SetHeaderVisibilityAction): BaseRecordData => {
-        return state.set('header', action.payload) as BaseRecordData;
+export default handleActions<BaseState, any>({
+    [BaseActionType.SET_HEADER_VISIBILITY]: (state, action: SetHeaderVisibilityAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.userMenu = action.payload;
+        })
     },
-    [BaseActionType.SHOW_USER_MENU]: (state, action: ShowUserMenuAction): BaseRecordData => {
-        return state.set('userMenu', true) as BaseRecordData;
+    [BaseActionType.SHOW_USER_MENU]: (state) => {
+        return produce(state, (draft) => {
+            draft.userMenu = true;
+        })
     },
-    [BaseActionType.HIDE_USER_MENU]: (state, action: HideUserMenuAction): BaseRecordData => {
-        return state.set('userMenu', false) as BaseRecordData;
+    [BaseActionType.HIDE_USER_MENU]: (state) => {
+        return produce(state, (draft) => {
+            draft.userMenu = false;
+        })
     },
-    [BaseActionType.SET_FULLSCREEN_LOADER]: (state, action: SetFullscreenLoaderAction): BaseRecordData => {
-        const { payload: visibility } = action;
-        return state.set('fullscreenLoader', visibility) as BaseRecordData;
+    [BaseActionType.SET_FULLSCREEN_LOADER]: (state, action: SetFullscreenLoaderAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.fullscreenLoader = action.payload;
+        })
     }
 }, initialState);

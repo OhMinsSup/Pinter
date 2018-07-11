@@ -37,7 +37,7 @@ class Server {
 
     private initializeDb(): void {
         // force: true
-        sequelize.sync({ }).then(() => {
+        sequelize.sync({ force: true }).then(() => {
             console.log('DB Connection has been established');
         });
     }

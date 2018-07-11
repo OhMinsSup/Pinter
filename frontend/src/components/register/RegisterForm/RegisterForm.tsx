@@ -7,9 +7,9 @@ const styles = require('./RegisterForm.scss');
 const cx = classNames.bind(styles);
 
 interface Props {
-  displayName: string
-  email: string
-  username: string
+  displayName?: string
+  email?: string
+  username?: string
   emailEditable: boolean
   onChange(e: React.ChangeEvent<HTMLInputElement>): void
   onRegister(): void

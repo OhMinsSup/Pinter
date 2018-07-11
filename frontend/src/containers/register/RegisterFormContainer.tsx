@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch, compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { History } from 'history';
 import * as queryString from 'query-string';
-import { actionCreators as userActions } from '../../store/modules/user';
+// import { actionCreators as userActions } from '../../store/modules/user';
 import { actionCreators as authActions } from '../../store/modules/auth';
 import { StoreState } from '../../store/modules';
 import RegisterForm from '../../components/register/RegisterForm';
@@ -20,7 +20,7 @@ type RegisterFormContainerProps = StateProps & DispatchProps & OwnProps;
 class RegisterFormContainer extends React.Component<RegisterFormContainerProps> {
     public initialize = async () => { 
       const { search } = this.props.location;
-      const { AuthActions } = this.props;
+     const { AuthActions } = this.props;
       const { code } = queryString.parse(search);
       
       if (!code) {
@@ -29,7 +29,7 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
       }
 
       try {
-        await AuthActions.code({ code });
+       await AuthActions.codeRequest(code);
       } catch (e) {
         console.log(e);
       }
@@ -51,21 +51,26 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
         AuthActions,
         isSocial
       } = this.props;
-
+      
       try {
         if (isSocial) {
-          const { socialAuthResult } = this.props;
-          if (!socialAuthResult) return;
+     //     const { socialAuthResult } = this.props;
+   //       if (!socialAuthResult) return;
           
-          const { accessToken, provider } = socialAuthResult;
-          AuthActions.socialRegister({ accessToken, provider, displayName, username });
+     //     const { accessToken, provider } = socialAuthResult;
+     //     AuthActions.socialRegister({ accessToken, provider, displayName, username });
         } else {
-          AuthActions.localRegister({ registerToken, username, displayName });
+          AuthActions.localRegisterRequest({ registerToken, username, displayName });
         }
+
+        const { authResult } = this.props;
+        console.log(authResult);
+        
+        if (!authResult) return;
       } catch (e) {
         console.log(e);
       }
-      this.props.history.push('/');
+     // this.props.history.push('/');
     }
 
     public componentDidMount() {
@@ -94,14 +99,14 @@ const mapStateToProps = ({ auth }: StoreState) => ({
   username: auth.registerForm.username,
   registerToken: auth.registerToken,
   authResult: auth.authResult,
-  socialAuthResult: auth.socialAuthResult,
+  locialAuthResult: auth.socialAuthResult,
   isSocial: auth.isSocial,
   socialEmail: auth.verifySocialResult && auth.verifySocialResult.email,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   AuthActions: bindActionCreators(authActions, dispatch),
-  UserActions: bindActionCreators(userActions, dispatch)
+//  UserActions: bindActionCreators(userActions, dispatch)
 });
 
 export default  compose( 

@@ -1,17 +1,15 @@
 import { combineReducers } from 'redux';
-import auth, { AuthRecordState } from './auth';
-import base, { BaseRecordState } from './base';
-import user, { UserRecordState } from './user';
+import base, { BaseState } from './base';
+import auth, { AuthState} from './auth';
 
-export default combineReducers({
-    auth: auth,
+
+export default combineReducers({ 
     base: base,
-    user: user
-});
+    auth: auth
+ });
 
 // 스토어의 상태 타입 정의
 export interface StoreState {
-    auth: AuthRecordState
-    base: BaseRecordState
-    user: UserRecordState
+    base: BaseState;
+    auth: AuthState;
 }

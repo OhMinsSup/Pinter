@@ -24,6 +24,7 @@
     "no-trailing-whitespace":false,
     "triple-equals":false,
     "no-console":false,
+    "no-empty": false,
     "no-shadowed-variable": false,
     "jsx-no-lambda": false,
     "prefer-const":false,
