@@ -1,12 +1,18 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
-// import social from '../../lib/social';
+import social from '../../lib/social';
+import { History } from 'history';
 
 export enum AuthActionType {
     SET_EMAIL_INPUT = 'auth/SET_EMAIL_INPUT',
     AUTO_REGISTER_FORM = 'auth/AUTO_REGISTER_FORM',
     CHANGE_REGISTER_FORM = 'auth/CHANGE_REGISTER_FORM',
-    
+
+    PROVIDER_LOGIN_REQUEST = 'auth/PROVIDER_LOGIN_REQUEST',
+    PROVIDER_LOGIN_SUCCESS = 'auth/PROVIDER_LOGIN_SUCCESS',
+    PROVIDER_LOGIN_FAILING = 'auth/PROVIDER_LOGIN_FAILING',
+
+
     SEND_AUTH_EMAIL_REQUEST = 'auth/SEND_AUTH_EMAIL_REQUEST',
     SEND_AUTH_EMAIL_PENDING = 'auth/SEND_AUTH_EMAIL_PENDING',
     SEND_AUTH_EMAIL_SUCCESS = 'auth/SEND_AUTH_EMAIL_SUCCESS',
@@ -18,16 +24,23 @@ export enum AuthActionType {
 
     LOCAL_REGISTER_REQUEST = 'auth/LOCAL_REGISTER_REQUEST',
     LOCAL_REGISTER_SUCCESS = 'auth/LOCAL_REGISTER_SUCCESS',
-    LOCAL_REGISTER_FAILING = 'auth/LOCAL_REGISTER_FAILING'
+    LOCAL_REGISTER_FAILING = 'auth/LOCAL_REGISTER_FAILING',
 
-    /*
-    LOCAL_REGISTER = 'auth/LOCAL_REGISTER',
-    LOCAL_LOGIN = 'auth/LOCAL_LOGIN',
-    SOCIAL_REGISTER = 'auth/SOCIAL_REGISTER',
-    SOCIAL_LOGIN = 'auth/SOCIAL_LOGIN',
-    PROVIDER_LOGIN = 'auth/PROVIDER_LOGIN',
-    VERIFY_SOCIAL = 'auth/VERIFY_SOCIAL'
-    */
+    LOCAL_LOGIN_REQUEST = 'auth/LOCAL_LOGIN_REQUEST',
+    LOCAL_LOGIN_SUCCESS = 'auth/LOCAL_LOGIN_SUCCESS',
+    LOCAL_LOGIN_FAILING = 'auth/LOCAL_LOGIN_FAILING',
+
+    SOCIAL_REGISTER_REQUEST = 'auth/SOCIAL_REGISTER_REQUEST',
+    SOCIAL_REGISTER_SUCCESS = 'auth/SOCIAL_REGISTER_SUCCESS',
+    SOCIAL_REGISTER_FAILING = 'auth/SOCIAL_REGISTER_FAILING',
+
+    SOCIAL_LOGIN_REQUEST = 'auth/SOCIAL_LOGIN_REQUEST',
+    SOCIAL_LOGIN_SUCCESS = 'auth/SOCIAL_LOGIN_SUCCESS',
+    SOCIAL_LOGIN_FAILING = 'auth/SOCIAL_LOGIN_FAILING',
+
+    VERIFY_SOCIAL_REQUEST = 'auth/VERIFY_SOCIAL_REQUEST',
+    VERIFY_SOCIAL_SUCCESS = 'auth/VERIFY_SOCIAL_SUCCESS',
+    VERIFY_SOCIAL_FAILING = 'auth/VERIFY_SOCIAL_FAILING',
 }
 
 type ChangeRegisterFormPayload  = { name: string, value: string };
@@ -35,10 +48,26 @@ type AutoCompleteFormPayload = { email: string,  name: string };
 type CodePayload = { email: string, registerToken: string };
 type LocalRegisterRequestPayload = { registerToken?: string, username?: string, displayName?: string  };
 type LocalRegisterSuccessPayload = { user: UserSubState, token: string }
+type LocalLoginSuccessPayload = { user: UserSubState, token: string };
+type SocialRegisterRequestPayload = { provider?: string, accessToken?: string, displayName?: string, username?: string, socialEmail?: string };
+type SocialRegisterSuccessPayload = { user: UserSubState, token: string };
+type ProviderLoginRequestPayload = { provider: string, history: History };
+type ProviderLoginSuccessPayload = { token: string, provider: string };
+
 export const actionCreators = {
     setEmailInput: createAction(AuthActionType.SET_EMAIL_INPUT, (value: string) => value),
     autoRegisterForm: createAction(AuthActionType.AUTO_REGISTER_FORM, (payload: AutoCompleteFormPayload) => payload),
     changeRegisterForm : createAction(AuthActionType.CHANGE_REGISTER_FORM, (payload: ChangeRegisterFormPayload) => payload),
+    providerLoginRequest: createAction(AuthActionType.PROVIDER_LOGIN_REQUEST, (value: ProviderLoginRequestPayload) => {
+        const payload = {
+            token: social[value.provider](),
+            provider: value.provider,
+            history: history
+        }
+        return payload;
+    }),
+    providerLoginSuccess: createAction(AuthActionType.PROVIDER_LOGIN_SUCCESS, (payload: ProviderLoginSuccessPayload) => payload),
+    providerLoginFailing: createAction(AuthActionType.PROVIDER_LOGIN_FAILING),
     sendAuthEmailRequest: createAction(AuthActionType.SEND_AUTH_EMAIL_REQUEST, (email: string) => email),
     sendAuthEmailPending: createAction(AuthActionType.SEND_AUTH_EMAIL_PENDING, (sending: boolean) => sending),
     sendAuthEmailFailing: createAction(AuthActionType.SEND_AUTH_EMAIL_FAILING),
@@ -48,15 +77,16 @@ export const actionCreators = {
     codeFailing: createAction(AuthActionType.CODE_FAILING),
     localRegisterRequest: createAction(AuthActionType.LOCAL_REGISTER_REQUEST, (payload: LocalRegisterRequestPayload) => payload),
     localRegisterSuccess: createAction(AuthActionType.LOCAL_REGISTER_SUCCESS, (payload: LocalRegisterSuccessPayload) => payload),
-    localRegisterFailing: createAction(AuthActionType.LOCAL_REGISTER_FAILING)
+    localRegisterFailing: createAction(AuthActionType.LOCAL_REGISTER_FAILING),
+    localLoginRequest: createAction(AuthActionType.LOCAL_LOGIN_REQUEST, (code: string) => code),
+    localLoginSuccess: createAction(AuthActionType.LOCAL_LOGIN_SUCCESS, (payload: LocalLoginSuccessPayload) => payload),
+    localLoginFailing: createAction(AuthActionType.LOCAL_LOGIN_FAILING),
+    socialRegisterRequest: createAction(AuthActionType.SOCIAL_REGISTER_REQUEST, (payload: SocialRegisterRequestPayload) => payload),
+    socialRegisterSuccess: createAction(AuthActionType.SOCIAL_REGISTER_SUCCESS, (payload: SocialRegisterSuccessPayload) => payload),
+    socialRegisterFailing: createAction(AuthActionType.SOCIAL_REGISTER_FAILING)
 
     /*
-    code: createAction(AuthActionType.CODE, (code: string) => code),
-    localRegister: createAction(AuthActionType.LOCAL_REGISTER, (payload: AuthAPI.typePayload.LocalRegisterPayload) => payload),
-    localLogin: createAction(AuthActionType.LOCAL_LOGIN, (code: string) => code),
-    socialRegister: createAction(AuthActionType.SOCIAL_REGISTER, (payload: AuthAPI.typePayload.SocialRegisterPayload) => payload),
     socialLogin: createAction(AuthActionType.SOCIAL_LOGIN, (payload: AuthAPI.typePayload.SocialPayload) => payload),
-    providerLogin: createAction(AuthActionType.PROVIDER_LOGIN, (provider: string) =>  social[provider](), provider => provider),
     verifySocial: createAction(AuthActionType.VERIFY_SOCIAL, (payload: AuthAPI.typePayload.SocialPayload) => payload)
     */
 };
@@ -68,12 +98,11 @@ type SendAuthEmailPendingAction = ReturnType<typeof actionCreators.sendAuthEmail
 type SendAuthEmailSuccessAction = ReturnType<typeof actionCreators.sendAuthEmailSuccess>;
 type CodeSuccessAction = ReturnType<typeof actionCreators.codeSuccess>;
 type LocalRegisterSuccessAction = ReturnType<typeof actionCreators.localRegisterSuccess>;
+type LocalLoginSuccessAction = ReturnType<typeof actionCreators.localLoginSuccess>;
+type SocialRegisterSuccessAction = ReturnType<typeof actionCreators.socialRegisterSuccess>;
+type ProviderLoginSuccessAction = ReturnType<typeof actionCreators.providerLoginSuccess>;
 /*
-type CodeAction = ReturnType<typeof actionCreators.code>;
-type LocalLoginAction = ReturnType<typeof actionCreators.localLogin>;
-type SocialRegisterAction = ReturnType<typeof actionCreators.socialRegister>;
 type SocialLoginAction = ReturnType<typeof actionCreators.socialLogin>;
-type ProviderLoginAction = ReturnType<typeof actionCreators.providerLogin>;
 type VerifySocialAction = ReturnType<typeof actionCreators.verifySocial>;
 */
 
@@ -111,13 +140,12 @@ export type AuthState = {
         displayName?: string,
         email?: string,
         username?: string,
-        shortBio?: string
     },
     isSocial: boolean,
     registerToken?: string
     authResult: AuthResultSubState,
-    socialAuthResult?: SocialResultSubState,
-    verifySocialResult?: VerifySocialResultSubState
+    socialAuthResult: SocialResultSubState,
+    verifySocialResult: VerifySocialResultSubState
 }
 
 const initialState: AuthState = {
@@ -129,7 +157,6 @@ const initialState: AuthState = {
         displayName: '',
         email: '',
         username: '',
-        shortBio: '',
     },
     isSocial: false,
     registerToken: '',
@@ -175,7 +202,6 @@ export default handleActions<AuthState, any>({
                 displayName: action.payload.name,
                 email: action.payload.email,
                 username: '',
-                shortBio: ''
             }
             draft.isSocial = true;
         });
@@ -228,5 +254,47 @@ export default handleActions<AuthState, any>({
                 token: action.payload.token
             }
         })
+    },
+    [AuthActionType.LOCAL_LOGIN_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            return draft;
+        });
+    },
+    [AuthActionType.LOCAL_LOGIN_SUCCESS]: (state, action: LocalLoginSuccessAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.authResult = {
+                user: action.payload.user,
+                token: action.payload.token
+            }
+        });
+    },
+    [AuthActionType.SOCIAL_REGISTER_SUCCESS]: (state, action: SocialRegisterSuccessAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.authResult = {
+                user: action.payload.user,
+                token: action.payload.token
+            }
+        });
+    },
+    [AuthActionType.SOCIAL_REGISTER_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            return draft;
+        });
+    },
+    [AuthActionType.PROVIDER_LOGIN_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            return draft;
+        });
+    },
+    [AuthActionType.PROVIDER_LOGIN_SUCCESS]: (state, action: ProviderLoginSuccessAction) => {
+        return produce(state, (draft) => {
+            if(action.payload === undefined) return;
+            draft.socialAuthResult = {
+                accessToken: action.payload.token,
+                provider: action.payload.provider
+            }
+        });
     }
 }, initialState);

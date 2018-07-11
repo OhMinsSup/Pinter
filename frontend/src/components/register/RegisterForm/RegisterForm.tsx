@@ -12,7 +12,7 @@ interface Props {
   username?: string
   emailEditable: boolean
   onChange(e: React.ChangeEvent<HTMLInputElement>): void
-  onRegister(): void
+  onRegister(): Promise<void>
 };
 
 const RegisterForm: React.SFC<Props> = ({

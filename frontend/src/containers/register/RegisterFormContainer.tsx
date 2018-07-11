@@ -4,7 +4,6 @@ import { bindActionCreators, Dispatch, compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { History } from 'history';
 import * as queryString from 'query-string';
-// import { actionCreators as userActions } from '../../store/modules/user';
 import { actionCreators as authActions } from '../../store/modules/auth';
 import { StoreState } from '../../store/modules';
 import RegisterForm from '../../components/register/RegisterForm';
@@ -43,7 +42,7 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
       });
     }
 
-    public onRegister = (): void => {
+    public onRegister = async (): Promise<void> => {
       const {
         displayName,
         username,
@@ -54,23 +53,18 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
       
       try {
         if (isSocial) {
-     //     const { socialAuthResult } = this.props;
-   //       if (!socialAuthResult) return;
+          const { socialAuthResult } = this.props;
+          if (!socialAuthResult) return;
           
-     //     const { accessToken, provider } = socialAuthResult;
-     //     AuthActions.socialRegister({ accessToken, provider, displayName, username });
+          const { accessToken, provider } = socialAuthResult;
+          AuthActions.socialRegisterRequest({ accessToken, provider, displayName, username });
         } else {
           AuthActions.localRegisterRequest({ registerToken, username, displayName });
         }
-
-        const { authResult } = this.props;
-        console.log(authResult);
-        
-        if (!authResult) return;
+        this.props.history.push('/');
       } catch (e) {
         console.log(e);
       }
-     // this.props.history.push('/');
     }
 
     public componentDidMount() {
@@ -79,7 +73,7 @@ class RegisterFormContainer extends React.Component<RegisterFormContainerProps> 
 
     public render() {
       const {onChange, onRegister} = this;
-      const { displayName, email, username, isSocial, socialEmail  } = this.props;
+      const { displayName, email, username, isSocial, socialEmail } = this.props;
     return (
       <RegisterForm
         onChange={onChange}
@@ -99,17 +93,16 @@ const mapStateToProps = ({ auth }: StoreState) => ({
   username: auth.registerForm.username,
   registerToken: auth.registerToken,
   authResult: auth.authResult,
-  locialAuthResult: auth.socialAuthResult,
+  socialAuthResult: auth.socialAuthResult,
   isSocial: auth.isSocial,
   socialEmail: auth.verifySocialResult && auth.verifySocialResult.email,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   AuthActions: bindActionCreators(authActions, dispatch),
-//  UserActions: bindActionCreators(userActions, dispatch)
 });
 
-export default  compose( 
+export default compose( 
   withRouter,
   connect<StateProps, DispatchProps, OwnProps>(
     mapStateToProps,

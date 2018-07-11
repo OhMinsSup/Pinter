@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { History } from 'history';
 import { StoreState } from '../../store/modules';
 import { actionCreators as baseActions } from '../../store/modules/base';
-// import { actionCreators as userActions } from '../../store/modules/user';
 import { actionCreators as authActions } from '../../store/modules/auth';
 import AuthForm from '../../components/landing/AuthForm';
 
@@ -42,10 +41,10 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
     }
 
     public onSocialLogin = async (provider: string) => {
-        const {/* AuthActions,*/ BaseActions, /*history */} = this.props;
+        const { AuthActions, BaseActions, history } = this.props;
         BaseActions.setFullscreenLoader(true);
         try {
-           // await AuthActions.providerLogin({ provider, history });
+           await AuthActions.providerLoginRequest({ provider, history });
         } catch (e) {
             BaseActions.setFullscreenLoader(false);
         }
@@ -74,13 +73,11 @@ const mapStateToProps = ({ auth }: StoreState) => ({
     sendEmail: auth.sendEmail,
     isUser: auth.isUser,
     sending: auth.sending,
-    // socialAuthResult: auth.socialAuthResult
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     AuthActions: bindActionCreators(authActions, dispatch),
     BaseActions: bindActionCreators(baseActions, dispatch),
- //   userActions: bindActionCreators(userActions, dispatch)
 });
 
 export default compose(

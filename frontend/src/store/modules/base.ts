@@ -10,8 +10,8 @@ export enum BaseActionType {
 
 export const actionCreators = {
     setHeaderVisibility: createAction(BaseActionType.SET_HEADER_VISIBILITY, (visible: boolean) => visible),
-    showUserMenu: createAction(BaseActionType.SHOW_USER_MENU, (visible: boolean) => visible),
-    hideUserMenu: createAction(BaseActionType.HIDE_USER_MENU, (visible: boolean) => visible),
+    showUserMenu: createAction(BaseActionType.SHOW_USER_MENU),
+    hideUserMenu: createAction(BaseActionType.HIDE_USER_MENU),
     setFullscreenLoader: createAction(BaseActionType.SET_FULLSCREEN_LOADER, (visible: boolean) => visible),
 };
 

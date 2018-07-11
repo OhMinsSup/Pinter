@@ -30,3 +30,37 @@ export type LocalRegisterPayload = {
     error: any
 }
 
+export type SocialRegisterRequestPayload = {
+    payload: {
+        provider: string, 
+        accessToken :string, 
+        displayName: string, 
+        username: string, 
+        socialEmail: string
+    },
+    data: {
+        user: UserSubState,
+        token: string
+    },
+    error: any
+}
+
+export type LocalLoginPayload = {
+    payload: string,
+    data: {
+        user: UserSubState,
+        token: string
+    },
+    error: any
+}
+
+export type ProviderPayload = {
+    payload: {
+        token: string,
+        provider: string,
+        history: History
+    }
+    data: {
+        accessToken: string
+    }
+}

@@ -1,15 +1,21 @@
-import { call, put, fork, take, cancelled } from 'redux-saga/effects';
+import { call, put, fork, take, select } from 'redux-saga/effects';
 
 import { 
     AuthActionType,
-    actionCreators as authActions 
+    actionCreators as authActions, 
 } from '../store/modules/auth';
+import {
+    UserSubState,
+    actionCreators as userActions
+} from '../store/modules/user';
 import * as AuthPayload from './types/auth';
 import * as AuthAPI from '../lib/api/auth';
+import { StoreState } from '../store/modules';
+import storage from '../lib/storage';
 
 function* sendAuthEmailFlow() {    
     const { payload: email }: AuthPayload.SendAuthEmailPayload = yield take(AuthActionType.SEND_AUTH_EMAIL_REQUEST);
-    
+        
     yield put(authActions.sendAuthEmailPending(true));
 
     const { data: { isUser }, error }: AuthPayload.SendAuthEmailPayload = yield call(AuthAPI.sendAuthEmailAPI, email);
@@ -21,7 +27,6 @@ function* sendAuthEmailFlow() {
     yield put(authActions.sendAuthEmailSuccess(isUser)); 
    
     yield put(authActions.sendAuthEmailPending(false));
-    yield cancelled();
 }
 
 function* codeFlow() {
@@ -35,12 +40,10 @@ function* codeFlow() {
     }
     
     yield put(authActions.codeSuccess({ email, registerToken }));
-    yield cancelled();
 }
 
 function* localRegisterFlow () {
     const { payload: { registerToken, username, displayName } }: AuthPayload.LocalRegisterPayload = yield take(AuthActionType.LOCAL_REGISTER_REQUEST);
-    
     const { data: { user, token }, error }: AuthPayload.LocalRegisterPayload = yield call(AuthAPI.localRegisterAPI, { registerToken, username, displayName });
 
     if (!user || !token && error) {
@@ -49,11 +52,63 @@ function* localRegisterFlow () {
     }
 
     yield put(authActions.localRegisterSuccess({ user, token }));
-    yield cancelled();
+
+    const userData: UserSubState = yield select((state: StoreState) => state.auth.authResult.user);
+
+    if (!userData) return;
+
+    yield put(userActions.setUser(userData));
+    storage.set('__pinter_user__', userData);
+}
+
+function* localLoginFlow () {
+    const { payload: code }: AuthPayload.LocalLoginPayload = yield take(AuthActionType.LOCAL_LOGIN_REQUEST);
+    const { data: { user, token }, error }: AuthPayload.LocalLoginPayload = yield call(AuthAPI.localLoginAPI, code);
+
+    if (!user || !token && error) {
+        yield put(authActions.localLoginFailing());
+        return;
+    }
+
+    yield put(authActions.localLoginSuccess({ user, token }));
+}
+
+function* socialRegisterFlow () {
+    const { payload: { displayName, accessToken, provider, username, socialEmail } }: AuthPayload.SocialRegisterRequestPayload = yield take(AuthActionType.SOCIAL_REGISTER_REQUEST);
+    const { data: { user, token } }: AuthPayload.SocialRegisterRequestPayload = yield call(AuthAPI.socialRegisterAPI, { displayName, username, accessToken, provider, socialEmail });
+
+    if (!token || !user) {
+        yield put(authActions.socialRegisterFailing());
+        return;
+    }
+
+    yield put(authActions.socialRegisterSuccess({ user, token }));
+    
+    const userData: UserSubState = yield select((state: StoreState) => state.auth.authResult.user);
+    if (!userData) return;
+
+    yield put(userActions.setUser(userData));
+    storage.set('__pinter_user__', userData);
+}
+
+function* providerLoginFlow () {
+    const { payload: { token, provider, history } }: AuthPayload.ProviderPayload = yield take(AuthActionType.PROVIDER_LOGIN_REQUEST);
+    console.log(history);
+
+    yield put(authActions.providerLoginSuccess({ token, provider }));
+
+    yield fork(verfiySocialFlow, history);
+}
+
+function* verfiySocialFlow(history: History) {
+    const {} = yield select((state: StoreState) => state.auth.socialAuthResult)
 }
 
 export default function* auth() {
     yield fork(sendAuthEmailFlow);
     yield fork(codeFlow);
     yield fork(localRegisterFlow);
+    yield fork(localLoginFlow);
+    yield fork(socialRegisterFlow);
+    yield fork(providerLoginFlow);
 }
