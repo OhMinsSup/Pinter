@@ -56,11 +56,35 @@ export type LocalLoginPayload = {
 
 export type ProviderPayload = {
     payload: {
-        token: string,
         provider: string,
-        history: History
+        history: any
     }
     data: {
-        accessToken: string
+        accessToken?: string,
+        provider?: string
+    },
+    error: any
+}
+
+export type VerifySocialPayload = {
+    payload: any,
+    data: {
+        profile: {
+            id: string
+            thumbnail: string
+            email: string
+            username: string
+        },
+        exists: boolean
+    },
+    error: any
+}
+
+export type SocialLoginPayload = {
+    payload: any,
+    data: {
+        user: UserSubState,
+        token: string    
     }
+    error: any
 }

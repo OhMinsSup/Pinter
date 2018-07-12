@@ -2,8 +2,13 @@ import { call, put, fork, take, select } from 'redux-saga/effects';
 
 import { 
     AuthActionType,
-    actionCreators as authActions, 
+    SocialResultSubState, 
+    VerifySocialResultSubState,
+    actionCreators as authActions,
 } from '../store/modules/auth';
+import {
+    actionCreators as baseActions
+} from '../store/modules/base';
 import {
     UserSubState,
     actionCreators as userActions
@@ -12,6 +17,7 @@ import * as AuthPayload from './types/auth';
 import * as AuthAPI from '../lib/api/auth';
 import { StoreState } from '../store/modules';
 import storage from '../lib/storage';
+import social from '../lib/social';
 
 function* sendAuthEmailFlow() {    
     const { payload: email }: AuthPayload.SendAuthEmailPayload = yield take(AuthActionType.SEND_AUTH_EMAIL_REQUEST);
@@ -91,17 +97,56 @@ function* socialRegisterFlow () {
     storage.set('__pinter_user__', userData);
 }
 
-function* providerLoginFlow () {
-    const { payload: { token, provider, history } }: AuthPayload.ProviderPayload = yield take(AuthActionType.PROVIDER_LOGIN_REQUEST);
-    console.log(history);
-
-    yield put(authActions.providerLoginSuccess({ token, provider }));
-
-    yield fork(verfiySocialFlow, history);
+async function getSocialToken(response: any) {
+    let token = null;
+    try {
+        token = await response;   
+    } catch (e) {
+        console.log(e);
+    }
+    return token;
 }
 
-function* verfiySocialFlow(history: History) {
-    const {} = yield select((state: StoreState) => state.auth.socialAuthResult)
+function* providerLoginFlow () {
+    const { payload: { provider, history } }: AuthPayload.ProviderPayload = yield take(AuthActionType.PROVIDER_LOGIN_REQUEST);
+    const token = social[provider]();    
+    const accessToken: string = yield call(getSocialToken, token);
+    
+    if (!provider || !accessToken) {
+        yield put(authActions.providerLoginFailing());
+        return;
+    }
+
+    yield put(authActions.providerLoginSuccess({ accessToken, provider }));
+    const socialAuthResultData: SocialResultSubState = yield select((state: StoreState) => state.auth.socialAuthResult);
+
+    if (!socialAuthResultData) return;
+
+    const { data: { profile, exists }, error }:AuthPayload.VerifySocialPayload = yield call(AuthAPI.verifySocialAPI, socialAuthResultData);
+    
+    if (!profile || exists === undefined && error ) {
+        yield put(authActions.verifySocialFailing());
+        return;
+    }
+
+    yield put(authActions.verifySocialSuccess({ profile, exists }));
+    const verifySocialResultData: VerifySocialResultSubState = yield select((state: StoreState) => state.auth.verifySocialResult);
+    const { exists: socialExists } = verifySocialResultData;
+
+    if (socialExists) {
+        const { data: { user, token } }: AuthPayload.SocialLoginPayload = yield call(AuthAPI.socialLoginAPI, socialAuthResultData)
+        yield put(authActions.socialLoginSuccess({ user, token }));
+        const authResultData: UserSubState = yield select((state: StoreState) => state.auth.authResult);
+        yield put(userActions.setUser(authResultData));
+        storage.set('__pinter_user__', authResultData);
+    } else {
+        const { email, username: name } = verifySocialResultData;
+        if (!email || !name) return;
+        yield put(authActions.autoRegisterForm({ email, name }));
+        history.push('/email-register');
+    }
+
+    yield put(baseActions.setFullscreenLoader(false));
 }
 
 export default function* auth() {

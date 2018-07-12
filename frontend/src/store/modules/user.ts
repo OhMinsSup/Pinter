@@ -2,6 +2,7 @@ import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 
 export enum UserActionType {
+    CHECK_USER_REQUEST = 'user/CHECK_USER_REQUEST',
     CHECK_USER_SUCCESS = 'user/CHECK_USER_SUCCESS',
     CHECK_USER_FAILING = 'user/CHECK_USER_FAILING',
     SET_USER = 'user/SET_USER',
@@ -9,9 +10,10 @@ export enum UserActionType {
     LOGOUT = 'user/LOGOUT'
 }
 
-type CheckUserPayload = { user: UserSubState, processed: boolean };
+type CheckUserPayload = { user: UserSubState };
 
 export const actionCreators = {
+    checkUserRequest: createAction(UserActionType.CHECK_USER_REQUEST),
     checkUserSuccess: createAction(UserActionType.CHECK_USER_SUCCESS, (payload: CheckUserPayload) => payload),
     checkUserFailing: createAction(UserActionType.CHECK_USER_FAILING),
     setUser: createAction(UserActionType.SET_USER, (payload: UserSubState) => payload),

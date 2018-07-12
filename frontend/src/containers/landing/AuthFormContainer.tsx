@@ -48,7 +48,6 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
         } catch (e) {
             BaseActions.setFullscreenLoader(false);
         }
-        BaseActions.setFullscreenLoader(false);
     }
 
     public render() {
