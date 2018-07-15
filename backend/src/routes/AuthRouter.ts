@@ -1,13 +1,11 @@
 import { Request, Response, Router } from 'express';
 import * as joi from 'joi';
-import User, { IUser } from '../database/models/User';
-import EmailAuth, { IEmailAuth } from '../database/models/EmailAuth';
-import UserProfile, { IUserProfile } from '../database/models/UserProfile';
-import SocailProfile, { ISocialProfile } from '../database/models/SocialProfile';
 import { sendMail } from '../lib/sendMail';
 import { generateToken, decodeToken } from '../lib/token';
-import { findByEmailOrUsername, findCode, use, generate, getProfile } from '../database/service/User';
 import getSocialProfile, { Profile } from '../lib/social';
+import User, { IUser } from '../database/models/User';
+import EmailAuth, { IEmailAuth } from '../database/models/EmailAuth';
+import { create } from 'domain';
 
 class AuthRouter {
     public router: Router;
@@ -16,6 +14,7 @@ class AuthRouter {
         this.router = Router();
         this.routes();
     }
+
     private async sendAuthEmail(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             email: string
@@ -33,10 +32,10 @@ class AuthRouter {
                 payload: result.error,
             });
         }
-
+        
         try {
             const { email }: BodySchema = req.body;
-            const auth: IUser = await findByEmailOrUsername('email', email);
+            const auth: IUser = await User.findByEmailOrUsername('email', email);
             const emailKeywords = auth ? {
                 type: 'email-login',
                 text: '로그인'
@@ -45,9 +44,9 @@ class AuthRouter {
                 text: '회원가입'
             };
 
-            const verification = await EmailAuth.build({
+            const verification = await EmailAuth.create({
                 email
-            }).save();
+            });
 
             await sendMail({
                 to: email,
@@ -60,7 +59,6 @@ class AuthRouter {
                 <a href="http://localhost:3000/${emailKeywords.type}?code=${verification.code}" style="text-decoration: none; width: 400px; text-align:center; display:block; margin: 0 auto; margin-top: 1rem; background: #845ef7; padding-top: 1rem; color: white; font-size: 1.25rem; padding-bottom: 1rem; font-weight: 600; border-radius: 4px;">계속하기</a>
                 <div style="text-align: center; margin-top: 1rem; color: #868e96; font-size: 0.85rem;"><div>위 버튼을 클릭하시거나, 다음 링크를 열으세요: <br/> <a style="color: #b197fc;" href="http://localhost:3000/${emailKeywords.type}?code=${verification.code}">http://localhost:3000/${emailKeywords.type}?code=${verification.code}</a></div><br/><div>이 링크는 24시간동안 유효합니다. </div></div>`
             });
-
             res.json({
                 isUser: !!auth
             })
@@ -69,40 +67,17 @@ class AuthRouter {
         }
     }
 
-    private async code(req: Request, res: Response) {
-        const { code } = req.params;
-
-        try {
-            const auth: IEmailAuth = await findCode(code);
-
-            if (!auth) return res.status(404);
-    
-            const { email, code: emailCode } = auth;
-            const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' })
-            await use(emailCode);
-
-            res.json({
-                email,
-                registerToken
-            });
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    }
-
-    private async localRegister(req: Request, res: Response) {
+    private async localRegister(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             registerToken: string,
             displayName: string,
             username: string,
-            shortBio: string,
         }
 
         const schema = joi.object().keys({
             registerToken: joi.string().required(),
             displayName: joi.string().min(1).max(40),
             username: joi.string().min(3).max(16).required(),
-            shortBio: joi.string().max(140),
         });
 
         const result: any = joi.validate(req.body, schema);
@@ -113,7 +88,8 @@ class AuthRouter {
                 payload: result.error,
             });
         }
-        const { registerToken, username, displayName, shortBio }: BodySchema = req.body;
+
+        const { registerToken, username, displayName }: BodySchema = req.body;
 
         try {
             let decoded = await decodeToken(registerToken);
@@ -127,9 +103,10 @@ class AuthRouter {
             const { email } = decoded;
 
             const [emailExists, usernameExists]: Array<IUser> = await Promise.all([
-                findByEmailOrUsername('email', email),
-                findByEmailOrUsername('username', username)
+                User.findByEmailOrUsername('email', email),
+                User.findByEmailOrUsername('username', username)
             ]);
+
 
             if (emailExists || usernameExists) {
                 res.status(409).json({
@@ -139,20 +116,15 @@ class AuthRouter {
                 return;
             }
 
-            // TODO: 썸네일 지정
-            const auth: IUser = await User.build({
+            const auth: IUser = await User.create({
                 username,
-                email
-            }).save();
+                email,
+                profile: {
+                    displayName: displayName
+                }
+            });
 
-            await UserProfile.build({
-                fk_user_id: auth.id,
-                display_name: displayName,
-                short_bio: shortBio
-            }).save();
-
-
-            const token: string = await generate(auth);
+            const token: string = await auth.generate(auth);
 
             res.cookie('access_token', token, {
                 httpOnly: true,
@@ -161,9 +133,9 @@ class AuthRouter {
 
             res.json({
                 user: {
-                    id: auth.id,
+                    id: auth._id,
                     username: auth.username,
-                    displayName
+                    displayName: auth.profile.displayName
                 },
                 token
             });
@@ -184,21 +156,21 @@ class AuthRouter {
         }
 
         try {
-            const auth: IEmailAuth = await findCode(code);
-
+            const auth: IEmailAuth = await EmailAuth.findCode(code);
+            
             if(!auth) {
                 return res.status(404);
             }
 
             const { email } = auth;
-            const user: IUser = await findByEmailOrUsername('email', email);
-
+            const user: IUser = await User.findByEmailOrUsername('email', email);
+            
             if (!user) {
                 return res.status(401);
             }
 
-            const token: string = await generate(user);
-            const profile: IUserProfile = await getProfile(user.id);
+            const token: string = await user.generate(user);
+
             res.cookie('access_token', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7
@@ -208,21 +180,46 @@ class AuthRouter {
                 user: {
                     id: user.id,
                     username: user.username,
-                    displayName: profile.display_name,
-                    thumbnail: profile.thumbnail
+                    displayName: user.profile.displayName,
+                    thumbnail: user.profile.thumbnail
                 },
                 token
+            });
+
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async code(req: Request, res: Response): Promise<any> {
+        const { code } = req.params;
+
+        try {
+            const auth: IEmailAuth = await EmailAuth.findCode(code);
+
+            if (!auth) return res.status(404);
+
+            const { email, code: emailCode } = auth;
+            console.log(email, emailCode);
+            
+            const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' })
+            await EmailAuth.use(emailCode);
+
+            res.json({
+                email,
+                registerToken
             });
         } catch (e) {
             res.status(500).json(e);
         }
     }
-    
+
     private async check(req: Request, res: Response): Promise<any> {
         const user = req['user'];
         if (!user) {
             return res.status(401);
         }
+
         res.json({
             user
         });
@@ -236,14 +233,12 @@ class AuthRouter {
         return res.status(204);
     }
 
-
     private async socialRegister (req: Request, res: Response): Promise<any> {
         type BodySchema = {
             socialEmail: string,
             accessToken: string,
             displayName: string,
             username: string,
-            shortBio: string,
         }
 
         const schema = joi.object().keys({
@@ -251,7 +246,6 @@ class AuthRouter {
             accessToken: joi.string().required(),
             displayName: joi.string().min(1).max(40),
             username: joi.string().min(3).max(16).required(),
-            shortBio: joi.string().max(140),
         });
 
         const result = joi.validate(req.body, schema);
@@ -264,7 +258,7 @@ class AuthRouter {
         }
         
         const { provider } = req.params;
-        const { socialEmail, displayName, username, accessToken, shortBio }: BodySchema = req.body;
+        const { socialEmail, displayName, username, accessToken }: BodySchema = req.body;
 
         let profile: Profile = null;
 
@@ -278,8 +272,8 @@ class AuthRouter {
 
         try {
             const [emailExists, usernameExists]: Array<IUser> = await Promise.all([
-                findByEmailOrUsername('email', email),
-                findByEmailOrUsername('username', username)
+                User.findByEmailOrUsername('email', email),
+                User.findByEmailOrUsername('username', username)
             ]);
 
             if (emailExists || usernameExists) {
@@ -290,16 +284,7 @@ class AuthRouter {
                 return;
             }
 
-            const socialExists: ISocialProfile = await SocailProfile.findOne({
-                include: [
-                    {
-                        model: User
-                    }
-                ],
-                where: {
-                    social_id: socialId
-                }
-            });
+            const socialExists: IUser = await User.findBySocial(provider, socialId);
 
             if (socialExists) {
                 return res.status(409).json({
@@ -307,33 +292,22 @@ class AuthRouter {
                 });
             }
 
-            const user: IUser = await User.build({
-                username,
-                email: email || socialEmail
-            }).save();
-            // TODO: 썸네일 지정
-
-            await UserProfile.build({
-                fk_user_id: user.id,
-                display_name: displayName,
-                short_bio: shortBio,
-                thumbnail: thumbnail,
-            }).save();
-
-            await SocailProfile.build({
-                fk_user_id: user.id,
-                social_id: socialId,
-                provider,
-                access_token: accessToken 
-            }).save();
-
-            const profile = await UserProfile.findOne({
-                where: {
-                    fk_user_id: user.id
-                }
+            const auth: IUser = await User.create({
+                username: username,
+                email: email,
+                profile: {
+                    displayName: displayName,
+                    thumbnail: thumbnail
+                },
+                social: {
+                    [provider]: {
+                        id: socialId,
+                        accessToken: accessToken
+                    },
+                },
             });
 
-            const token: string = await generate(user);
+            const token: string = await auth.generate(auth);
 
             res.cookie('access_token', token, {
                 httpOnly: true,
@@ -342,10 +316,10 @@ class AuthRouter {
 
             res.json({
                 user: {
-                    id: user.id,
-                    username: user.username,
-                    displayName,
-                    thumbnail: profile.thumbnail
+                    id: auth._id,
+                    username: auth.username,
+                    displayName: auth.profile.displayName,
+                    thumbnail: auth.profile.thumbnail
                 },
                 token
             });
@@ -379,39 +353,26 @@ class AuthRouter {
         const socialId = profile.id;
 
         try {
-            let user: ISocialProfile | IUser = await SocailProfile.findOne({
-                include: [
-                    {
-                        model: User
-                    }
-                ],
-                where: {
-                    social_id: socialId
-                }
-            }).then(user => (user ? user.user : null));
+            let user: IUser = await User.findBySocial(provider, socialId);
 
             if (!user) {
-                user = await findByEmailOrUsername('email', profile.email);
+                user = await User.findByEmailOrUsername('email', profile.email);
                 if (!user) {
                     return res.status(401).json({
                         name: '등록되어 있지 않습니다.'
                     });
                 }
-                await SocailProfile.build({
-                    fk_user_id: user.id,
-                    social_id: socialId,
-                    provider,
-                    access_token: accessToken
-                }).save();
+                await User.create({
+                    social: {
+                        [provider]: {
+                            id: socialId,
+                            accessToken: accessToken
+                        },
+                    },
+                });
             }
 
-            const userProfile: IUserProfile = await UserProfile.findOne({
-                where: {
-                    fk_user_id: user.id
-                }
-            });
-
-            const token: string = await generate(user);
+            const token: string = await user.generate(user);
 
             res.cookie('access_token', token, {
                 httpOnly: true,
@@ -420,10 +381,10 @@ class AuthRouter {
 
             res.json({
                 user: {
-                    id: user.id,
+                    id: user._id,
                     username: user.username,
-                    displayName: userProfile.display_name,
-                    thumbnail: userProfile.thumbnail
+                    displayName: user.profile.displayName,
+                    thumbnail: user.profile.thumbnail
                 },
                 token
             })
@@ -441,6 +402,7 @@ class AuthRouter {
         const { provider } = req.params;
 
         let profile: Profile = null;
+         
 
         try {
             profile = await getSocialProfile(provider, accessToken);
@@ -455,18 +417,9 @@ class AuthRouter {
         }
 
         try {
-            const [socialAuth, user]: Array<IUser | ISocialProfile> = await Promise.all([
-                SocailProfile.findOne({
-                    include: [
-                        {
-                            model: User
-                        }
-                    ],
-                    where: {
-                        social_id: profile.id
-                    }
-                }).then(user => (user ? user.user : null)),
-                findByEmailOrUsername('email', profile.email),
+            const [socialAuth, user]: Array<IUser> = await Promise.all([
+                User.findBySocial(provider, profile.id),
+                User.findByEmailOrUsername('email', profile.email),
             ]);
 
             res.json({

@@ -5,8 +5,16 @@ import * as multer from 'multer';
 import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
 import * as config from '../config/config';
-import PinImage from '../database/models/PinImage';
 import needAuth from '../lib/middleware/needAuth';
+import User, { IUser } from '../database/models/User';
+import Pin, { IPin } from '../database/models/Pin';
+import Tag, { ITag } from '../database/models/Tag';
+import {
+    filterUnique
+} from '../lib/common';
+import {
+    serializePin
+} from '../lib/serialize';
 
 const s3 = new AWS.S3({
     region: 'ap-northeast-2',
@@ -27,7 +35,7 @@ class PinRouter {
         this.router = Router();
         this.routes();
     }
-
+    
     private async createSignedUrl(req: Request, res: Response): Promise<any> {
         const { file } = req;
 
@@ -50,7 +58,8 @@ class PinRouter {
         }
 
         try {
-            const filePath: string = `pinter-file/${displayName}/${file.originalname}`;
+            const { _id: id }: IUser = await User.findById(userId);
+            const filePath: string = `pinter-file/${displayName}/${id}/${file.originalname}`;
 
             const response = await s3.upload({
                 Bucket: 'pinterfiles',
@@ -74,13 +83,16 @@ class PinRouter {
         type BodySchema = {
             relationUrl: string,
             description: string,
-            url: string
+            url: string,
+            tags: Array<string>
+            // TODO: Categories
         }
 
         const schema = joi.object().keys({
             relationUrl: joi.string(),
             description: joi.string().max(200),
-            url: joi.string()
+            url: joi.string().required(),
+            tags: joi.array().items(joi.string()).required(),
         });
 
         const result: any = joi.validate(req.body, schema);
@@ -92,21 +104,37 @@ class PinRouter {
             });
         }
 
-        const { relationUrl, description, url }: BodySchema = req.body;
-        const userId: string = req['user'].id;
+        const { relationUrl, description, url, tags }: BodySchema = req.body;
+        const userId: string = req['user']._id;
+        const uniqueTags: Array<string> = filterUnique(tags);
 
-        try {
-            
+        try {            
+            const pin = new Pin({
+                relation_url: relationUrl,
+                description: description,
+                url: url,
+                user: userId
+            });
+
+            const pinId = pin._id;            
+            const tagIds: Array<ITag> = await Promise.all(uniqueTags.map(tag => Tag.getTagId(tag, userId, pinId)));
+            pin.tags = tagIds;
+            pin.save();
+
+           const pinData: IPin = await Pin.readPinById(pinId);
+           const serialized = serializePin(pinData);
+
+            res.json(serialized);
         } catch (e) {
             res.status(500).json(e)
         }
     }
-
+    
     public routes(): void {
         const { router } = this;
 
         router.post('/create-signed-url', needAuth, upload.single('file'), this.createSignedUrl);
-        router.post('/', this.writePin);
+        router.post('/', needAuth, this.writePin);
     }
 }
 

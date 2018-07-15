@@ -1,39 +1,50 @@
-import { Table, Column, Model, DataType, Default, Unique } from 'sequelize-typescript';
-import * as shortid from 'shortid'; 
+import { Schema, model, Document, Model } from 'mongoose';
+import * as shortid from 'shortid';
 
-
-export interface IEmailAuth {
-    id: string;
-    code: string;
-    email: string;
-    logged: boolean;
+export interface IEmailAuth extends Document {
+    _id: string
+    code?: string
+    email?: string
+    logged?: boolean
 }
 
-@Table({
-    timestamps: true,
-    tableName: 'email_auth',
-    modelName: 'email_auth',
-    freezeTableName: true,
-})
-class EmailAuth extends Model<EmailAuth> {
-    @Default(DataType.UUIDV1)
-    @Column({
-        type: DataType.UUID,
-        primaryKey: true
-    })
-    public id: string;
-
-    @Unique
-    @Default(shortid.generate)
-    @Column(DataType.STRING)
-    public code: string;
-
-    @Column(DataType.STRING)
-    public email: string;
-
-    @Default(false)
-    @Column(DataType.BOOLEAN)
-    public logged: boolean;
+export interface IEmailAuthModel extends Model<IEmailAuth> {
+    findCode(code: string): Promise<any>;
+    use(code: string): Promise<any>;
 }
 
-export default EmailAuth;
+const EmailAuth = new Schema({
+    code: {
+        type: String,
+        unique: true,
+        default: shortid.generate
+    },
+    email: String,
+    logged: {
+        type: Boolean,
+        default: false
+    }
+});
+
+EmailAuth.statics.findCode = function(code: string): Promise<any> {
+    return this.findOne({
+        code: code,
+        logged: false
+    });
+}
+
+EmailAuth.statics.use = function(code: string): Promise<any> {
+    return this.findOneAndUpdate(code, 
+        { 
+            $set: { 
+                logged: true 
+            } 
+        }, 
+        {
+            new: true
+        }).exec();
+}
+
+const EmailAuthModel = model<IEmailAuth>('EmailAuth', EmailAuth) as IEmailAuthModel;
+
+export default EmailAuthModel;

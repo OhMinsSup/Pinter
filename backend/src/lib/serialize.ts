@@ -1,34 +1,27 @@
-/*import { IPin } from '../models/Pin';
-import { IAuth } from '../models/Auth';
+import { pick }  from 'lodash';
 
-function serializePin (pin: IPin) {
+export const serializePin = (data: any) => {
     const {
-        _id: pinId,
-        filename,
-        filepath,
-        title,
+        id,
+        relation_url,
         description,
-        user: {
-            profile: {
-                thumbnail,
-                displayName
-            },
-            _id: userId
-        }
-    } = pin
-
+        url,
+        created_at,
+        updated_at,
+        user
+    } = data;
+    const tags = data.tags.name(tag => tag.name);
+    // TODO 카테고리
     return {
-        pinId,
-        filename,
-        filepath,
-        title,
+        id,
+        relation_url,
         description,
-        thumbnail,
-        displayName,
-        userId
-    };
+        url,
+        created_at,
+        updated_at,
+        user: {
+            ...pick(user, ['id', 'username']),
+            ...pick(user.user_profile, ['display_name', 'thumbnail']),
+        }
+    }
 }
-
-export {
-    serializePin
-};*/
