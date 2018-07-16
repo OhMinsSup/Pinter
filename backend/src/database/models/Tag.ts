@@ -1,35 +1,24 @@
 import { Schema, model, Document, Model } from 'mongoose';
-import { IPin } from './Pin';
-import { IUser } from './User';
 
 export interface ITag extends Document {
     _id: string;
-    user?: IUser,
-    pin?: IPin,
     name?: string;
 }
 
 export interface ITagModel extends Model<ITag> {
     findByTagName(name: string): Promise<any>;
-    getTagId(name: string, userId: string, pinId: string): Promise<any>;
+    getTagId(name: string): Promise<any>;
+    bulkGetId(names: Array<string>): Promise<any>;
 }
 
 const Tag = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
-    pin: {
-        type: Schema.Types.ObjectId,
-        ref: 'Pin'
-    },
     name: {
         type: String,
         lowercase: true
     }
 });
 
-Tag.statics.findByTagName = async function (name: string): Promise<any> {
+Tag.statics.findByTagName = function (name: string): Promise<any> {
    return this.findOne({
     $and: [
         {   
@@ -48,7 +37,7 @@ Tag.statics.findByTagName = async function (name: string): Promise<any> {
    });
 }
 
-Tag.statics.getTagId = async function(name: string, userId: string, pinId: string): Promise<any> {
+Tag.statics.getTagId = async function(name: string): Promise<any> {
     try {
         let tag = await this.findOne({
             $and: [
@@ -69,13 +58,37 @@ Tag.statics.getTagId = async function(name: string, userId: string, pinId: strin
 
         if (!tag) {
             tag = await this.create({ 
-                user: userId,
-                pin: pinId,
                 name: name 
             });
         }
 
         return tag._id;
+    } catch (e) {
+        throw e;
+    }
+}
+
+Tag.statics.bulkGetId = async function(names: Array<string>): Promise<any> {
+    if (names.length === 0) return [];
+
+    try {
+        const tagData = await this.find({
+            $or: [ 
+                { name: names },
+            ]
+        });
+
+        const missingTags = names.filter(name => tagData.findIndex(tag => tag.name === name) === -1);
+        console.log(missingTags, 'gkgk');
+        const newTagIds = missingTags.map(name => console.log(name));
+        
+
+        /*        
+        const missingTags = names.filter(name => tagData.findIndex(tag => tag.name === name) === -1);
+        const newTagIds = (await this.create(missingTags.map(name => ({ name })))).map(tag => tag._id);
+        const tagIds = tagData.map(tag => tag._id);
+        return tagIds.concat(newTagIds);
+        */ 
     } catch (e) {
         throw e;
     }
