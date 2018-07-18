@@ -7,6 +7,7 @@ import * as config from './config/config';
 import { jwtMiddleware } from './lib/middleware/jwtMiddleware';
 import Auth from './routes/AuthRouter';
 import Pin from './routes/PinRouter';
+import Like from './routes/LikeRouter';
 
 class Server {
     public app: express.Application;
@@ -37,7 +38,6 @@ class Server {
     }
 
     private initializeDb(): void {
-        //force: true
         const MONGO_URL: string = config.MONGODB_WEB_URL;
         (<any>mongoose).Promise = global.Promise;
         mongoose.connect(MONGO_URL, { useNewUrlParser: true })
@@ -54,6 +54,7 @@ class Server {
 
         app.use('/auth', Auth);
         app.use('/pin', Pin);
+        app.use('/pin/likes', Like);
     }   
 }
 

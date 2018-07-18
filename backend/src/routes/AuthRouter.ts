@@ -5,7 +5,6 @@ import { generateToken, decodeToken } from '../lib/token';
 import getSocialProfile, { Profile } from '../lib/social';
 import User, { IUser } from '../database/models/User';
 import EmailAuth, { IEmailAuth } from '../database/models/EmailAuth';
-import { create } from 'domain';
 
 class AuthRouter {
     public router: Router;
@@ -199,9 +198,7 @@ class AuthRouter {
 
             if (!auth) return res.status(404);
 
-            const { email, code: emailCode } = auth;
-            console.log(email, emailCode);
-            
+            const { email, code: emailCode } = auth;            
             const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' })
             await EmailAuth.use(emailCode);
 

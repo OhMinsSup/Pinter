@@ -10,12 +10,15 @@ export interface IPin extends Document {
     relation_url?: string;
     url?: string;
     tags?: Array<ITag>;
+    likes?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
 export interface IPinModel extends Model<IPin> {
     readPinById(pinId: string): Promise<any>;
+    like(pinId: string): Promise<any>;
+    unlike(pinId: string): Promise<any>;
 }
 
 const Pin = new Schema({
@@ -23,32 +26,42 @@ const Pin = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    tags: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Pin_Tag'
-        }
-    ],
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tag'
+    }],
     description: String,
     relation_url: String,
     url: String,
+    likes: {
+        type: Number,
+        default: 0
+    }
 }, { 
     timestamps: true 
 });
 
-Pin.statics.readPinById = async function(pinId: string): Promise<any> {
-    return await this.findOne({
-        _id: pinId
-    })
+Pin.statics.readPinById = function(pinId: string): Promise<any> {    
+    return this.findById(pinId)
     .populate('user')
     .populate({
         path: 'tags',
-        select: 'tag',
-        populate: {
-            path: 'tag',
-            model: 'Tag'
-        }
-    });
+        populate: [{
+            path: 'tags'
+        }]
+    })
+}
+
+Pin.statics.like = function(pinId: string): Promise<any> {
+    return this.findByIdAndUpdate(pinId, {
+        $inc: { likes: 1 }
+    }, { new: true });
+}
+
+Pin.statics.unlike = function(pinId: string): Promise<any> {
+    return this.findByIdAndUpdate(pinId, {
+        $inc: { likes: -1 }
+    }, { new: true });
 }
 
 const PinModel = model<IPin>('Pin', Pin) as IPinModel;
