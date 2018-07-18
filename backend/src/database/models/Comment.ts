@@ -12,6 +12,7 @@ export interface IComment extends Document {
 
 export interface ICommentModel extends Model<IComment> {
     readComment(commentId: string): Promise<any>;
+    getCommentList(pinId: string, cursor?: string): Promise<any>;
 }
 
 const Comment = new Schema({
@@ -42,6 +43,24 @@ Comment.statics.readComment = function(commentId: string): Promise<any> {
         }]
     })
 };
+
+Comment.statics.getCommentList = function(pinId: string, cursor?: string): Promise<any> {
+    const query = Object.assign(
+        {},
+        cursor ? { _id: { $lt: cursor }, pin: pinId } : { pin: pinId }
+    );
+
+    return this.find(query)
+    .populate('user')
+    .populate({
+        path: 'has_tags',
+        populate: [{
+            path: 'has_tags'
+        }]
+    })
+    .sort({_id: -1}) 
+    .limit(10); 
+}
 
 const CommentModel = model<IComment>('Comment', Comment) as ICommentModel;
 

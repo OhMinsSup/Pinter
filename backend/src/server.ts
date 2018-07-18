@@ -9,6 +9,8 @@ import Auth from './routes/AuthRouter';
 import Pin from './routes/PinRouter';
 import Like from './routes/LikeRouter';
 import Comment from './routes/CommentRouter';
+import Common from './routes/CommonRouter';
+import Board from './routes/BoardRouter';
 
 class Server {
     public app: express.Application;
@@ -54,9 +56,11 @@ class Server {
         const { app } = this;
 
         app.use('/auth', Auth);
+        app.use('/common', Common);
         app.use('/pin', Pin);
         app.use('/pin/likes', Like);
         app.use('/pin/comments', Comment);
+        app.use('/board', Board);
     }   
 }
 

@@ -5,6 +5,7 @@ import { generateToken, decodeToken } from '../lib/token';
 import getSocialProfile, { Profile } from '../lib/social';
 import User, { IUser } from '../database/models/User';
 import EmailAuth, { IEmailAuth } from '../database/models/EmailAuth';
+import Count from '../database/models/Count';
 
 class AuthRouter {
     public router: Router;
@@ -124,6 +125,7 @@ class AuthRouter {
             });
 
             const token: string = await auth.generate(auth);
+            await Count.create();
 
             res.cookie('access_token', token, {
                 httpOnly: true,
@@ -305,6 +307,7 @@ class AuthRouter {
             });
 
             const token: string = await auth.generate(auth);
+            await Count.create();
 
             res.cookie('access_token', token, {
                 httpOnly: true,

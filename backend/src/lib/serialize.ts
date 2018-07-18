@@ -41,7 +41,27 @@ const serializeLike = (data: any) => {
 }
 
 const serializeComment = (data: any) => {
+    const {
+        _id: commentId,
+        user,
+        text,
+        createdAt
+    } = data;
 
+    const tagId = data.has_tags.map(tag => tag._id);
+    const tagName = data.has_tags.map(tag => tag.profile.displayName);
+
+    return {
+        commentId,
+        text,
+        createdAt,
+        tagId,
+        tagName,
+        user: {
+            ...pick(user, ['_id','username']),
+            ...pick(user.profile, ['displayName', 'thumbnail'])
+        }
+    }
 }
 
 export {

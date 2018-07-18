@@ -9,6 +9,7 @@ import needAuth from '../lib/middleware/needAuth';
 import User, { IUser } from '../database/models/User';
 import Pin, { IPin } from '../database/models/Pin';
 import Tag, { ITag } from '../database/models/Tag';
+import Count from '../database/models/Count';
 import {
     filterUnique,
     checkPinExistancy
@@ -122,7 +123,8 @@ class PinRouter {
             pin.save();
             
             const pinData = await Pin.readPinById(pinId);            
-            const serialized = serializePin(pinData);            
+            const serialized = serializePin(pinData);  
+            await Count.pinCount(userId);          
             res.json(serialized);
         } catch (e) {
             res.status(500).json(e)
@@ -185,6 +187,7 @@ class PinRouter {
 
     private async deletePin(req: Request, res: Response): Promise<any> {
         const pinId = req['pin']._id;
+        const userId: string = req['user']._id;
 
         try {
             const { tags } = await Pin.findOne({ _id: pinId })
@@ -195,7 +198,37 @@ class PinRouter {
             await Pin.deleteOne({
                 _id: pinId
             });
+            await Count.unpinCount(userId)
             res.status(204);
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async readPin(req: Request, res: Response): Promise<any> {
+        const pinId = req['pin']._id;
+
+        try {
+            const pin: IPin = await Pin.readPinById(pinId);
+            res.json(serializePin(pin))
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async listPin(req: Request, res: Response): Promise<any> {
+        const { username } = req.params;
+        const { cursor } = req.params;
+
+        try {
+            const { _id : userId }: IUser = await User.findByDisplayName(username);
+            const pin: Array<IPin> = await Pin.readPinList(userId, cursor);
+            const next = pin.length === 25 ? `/pin/${username ? `${username}`: '' }?cusor=${pin[24]._id}` : null;
+            const pinWithData = pin.map(serializePin);
+            res.json({
+                next,
+                pinWithData
+            });
         } catch (e) {
             res.status(500).json(e);
         }
@@ -207,8 +240,12 @@ class PinRouter {
         router.post('/create-signed-url', needAuth, upload.single('file'), this.createSignedUrl);
         router.post('/', needAuth, this.writePin);
 
-        router.delete('/:id/', needAuth, checkPinExistancy, this.deletePin);
-        router.patch('/:id/', needAuth, checkPinExistancy, this.updatePin);
+        router.get('/:id', needAuth, checkPinExistancy, this.readPin);
+        router.get('/', needAuth, this.listPin);
+        router.get('/:username', needAuth, this.listPin);
+
+        router.delete('/:id', needAuth, checkPinExistancy, this.deletePin);
+        router.patch('/:id', needAuth, checkPinExistancy, this.updatePin);
     }
 }
 

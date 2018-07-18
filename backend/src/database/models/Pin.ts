@@ -11,6 +11,7 @@ export interface IPin extends Document {
     url?: string;
     tags?: Array<ITag>;
     likes?: number;
+    comments?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -19,6 +20,9 @@ export interface IPinModel extends Model<IPin> {
     readPinById(pinId: string): Promise<any>;
     like(pinId: string): Promise<any>;
     unlike(pinId: string): Promise<any>;
+    readPinList(userId?: string, cursor?: string): Promise<any>;
+    comment(pinId: string): Promise<any>;
+    uncomment(pinId: string): Promise<any>;
 }
 
 const Pin = new Schema({
@@ -34,6 +38,10 @@ const Pin = new Schema({
     relation_url: String,
     url: String,
     likes: {
+        type: Number,
+        default: 0
+    },
+    comments: {
         type: Number,
         default: 0
     }
@@ -52,6 +60,26 @@ Pin.statics.readPinById = function(pinId: string): Promise<any> {
     })
 }
 
+Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<any> {
+    const query = Object.assign(
+        {},
+        cursor ? { _id: { $lt: cursor } } : { },
+        userId ? { user: userId } : { },
+        userId && cursor ? { _id: { $lt: cursor }, user: userId } : { } 
+    );
+
+    return this.find(query)
+    .populate('user')
+    .populate({
+        path: 'tags',
+        populate: [{
+            path: 'tags'
+        }]
+    })
+    .sort({ _id: -1 })
+    .limit(25);
+}
+
 Pin.statics.like = function(pinId: string): Promise<any> {
     return this.findByIdAndUpdate(pinId, {
         $inc: { likes: 1 }
@@ -61,6 +89,18 @@ Pin.statics.like = function(pinId: string): Promise<any> {
 Pin.statics.unlike = function(pinId: string): Promise<any> {
     return this.findByIdAndUpdate(pinId, {
         $inc: { likes: -1 }
+    }, { new: true });
+}
+
+Pin.statics.comment = function(pinId: string): Promise<any> {
+    return this.findByIdAndUpdate(pinId, {
+        $inc: { comments: 1 }
+    }, { new: true });
+}
+
+Pin.statics.uncomment = function(pinId: string): Promise<any> {
+    return this.findByIdAndUpdate(pinId, {
+        $inc: { comments: -1 }
     }, { new: true });
 }
 

@@ -1,17 +1,22 @@
 import { Request, Response, Router } from 'express';
 import * as joi from 'joi';
-import Comment from '../database/models/Comment';
-import User, { IUser } from '../database/models/User';
+import Comment, { IComment } from '../database/models/Comment';
+import User from '../database/models/User';
+import Pin from '../database/models/Pin';
 import needAuth from '../lib/middleware/needAuth';
 import {
     checkPinExistancy
 } from '../lib/common';
+import {
+    serializeComment
+} from '../lib/serialize';
 
 class CommentRouter {
     public router: Router;
     
     constructor() {
         this.router = Router();
+        this.routes();
     }
 
     private async writeComment(req: Request, res: Response): Promise<any> {
@@ -39,33 +44,74 @@ class CommentRouter {
         const userId: string = req['user']._id;
 
         try {
-            const tagUserNames = await Promise.all(tags.map(tag => User.findOne(tag).select('_id')));
+            const tagUserNames = await Promise.all(tags.map(tag => User.findOne({ 'profile.displayName': tag }).select('_id')));
+            const tagIds = tagUserNames.map(id => id).filter(e => e);
+            
             const comment = await Comment.create({ 
                 pin: pinId, 
                 user: userId, 
                 text: text,
-                has_tags: tagUserNames 
+                has_tags: tagIds 
             });
-
+            
             if (!comment) {
                 return res.status(500);
             }
 
+            await Pin.comment(pinId);
             const commentWithData = await Comment.readComment(comment._id);
-            res.json(commentWithData);
+            res.json(serializeComment(commentWithData));
         } catch (e) {
             res.status(500).json(e);
         }
     }
+    
+    private async deleteComment(req: Request, res: Response): Promise<any> {
+        // comment id vlaue
+        const { commentId } = req.params;
+        const pinId: string = req['pin']._id;
 
-    private async test(req: Request, res: Response): Promise<any>  {
+        try {
+            const comment = await Comment.findById(commentId);
 
+            if (!comment) {
+                return res.status(404).json({
+                    name: '존재하지않는 댓글은 삭제할 수 없습니다.'
+                });
+            }
+
+            await Pin.uncomment(pinId);
+            comment.remove();
+            res.status(204);
+        } catch (e) {
+            res.status(500).json(e);
+        }
+
+    }
+
+    private async getCommentList(req: Request, res: Response): Promise<any>  {
+        const pinId: string = req['pin']._id;
+        const { cursor } = req.query;
+
+        try {
+            const comment: Array<IComment> = await Comment.getCommentList(pinId, cursor);
+            const next = comment.length === 10 ? `/pin/comments/${pinId}/?cursor=${comment[9]._id}` : null;
+            const commentWithData = comment.map(serializeComment);
+            res.json({
+                next,
+                commentWithData
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
     }
 
     public routes(): void {
         const { router } = this;
 
         router.post('/:id', needAuth, checkPinExistancy, this.writeComment);
+        router.delete('/:id/:commentId', needAuth, checkPinExistancy, this.deleteComment);
+        router.get('/:id', needAuth, checkPinExistancy, this.getCommentList);
     }
 }
 
