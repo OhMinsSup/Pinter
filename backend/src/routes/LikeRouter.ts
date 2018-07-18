@@ -1,8 +1,12 @@
 import { Request, Response, Router } from 'express';
 import Pin from '../database/models/Pin';
 import Like, { ILike } from '../database/models/Like';
+import { IUser } from '../database/models/User';
 import needAuth from '../lib/middleware/needAuth';
 import { checkPinExistancy } from '../lib/common';
+import {
+    serializeLike
+} from '../lib/serialize';
 
 class LikeRouter {
     public router: Router;
@@ -12,8 +16,26 @@ class LikeRouter {
         this.routes();
     }
 
+    private async likeList(req: Request, res: Response): Promise<any> {
+        const pinId: string = req['pin']._id;
+        const userId: string = req['user']._id;
+        const { cursor } = req.query;
+
+        try {
+            const user: Array<IUser> = await Like.getLikeUserList(pinId, userId, cursor);
+            const next = user.length === 10 ? `/pin/likes/${pinId}/?cursor=${user[9]._id}` : null;
+            const usersWithData = user.map(serializeLike);
+            res.json({
+                next,
+                usersWithData
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
     private async getLike(req: Request, res: Response): Promise<any> {
-        const pinId = req['pin']._id;
+        const pinId: string = req['pin']._id;
         const userId: string = req['user']._id;
 
         let liked = false;
@@ -34,7 +56,7 @@ class LikeRouter {
     }
 
     private async likePin(req: Request, res: Response): Promise<any> {
-        const pinId = req['pin']._id;
+        const pinId: string = req['pin']._id;
         const userId: string = req['user']._id;
 
         try {
@@ -62,7 +84,7 @@ class LikeRouter {
     }
 
     private async unlikePin(req: Request, res: Response): Promise<any> {
-        const pinId = req['pin']._id;
+        const pinId: string = req['pin']._id;
         const userId: string = req['user']._id;
 
         const exists: ILike = await Like.checkExists(userId, pinId);
@@ -84,7 +106,8 @@ class LikeRouter {
 
     public routes(): void {
         const { router } = this;
-
+        
+        router.get('/:id/list', needAuth, checkPinExistancy, this.likeList);
         router.get('/:id', needAuth, checkPinExistancy, this.getLike);
         router.post('/:id', needAuth, checkPinExistancy, this.likePin);
         router.delete('/:id', needAuth, checkPinExistancy, this.unlikePin);

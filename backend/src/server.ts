@@ -8,6 +8,7 @@ import { jwtMiddleware } from './lib/middleware/jwtMiddleware';
 import Auth from './routes/AuthRouter';
 import Pin from './routes/PinRouter';
 import Like from './routes/LikeRouter';
+import Comment from './routes/CommentRouter';
 
 class Server {
     public app: express.Application;
@@ -55,6 +56,7 @@ class Server {
         app.use('/auth', Auth);
         app.use('/pin', Pin);
         app.use('/pin/likes', Like);
+        app.use('/pin/comments', Comment);
     }   
 }
 

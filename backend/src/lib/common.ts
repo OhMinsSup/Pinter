@@ -23,14 +23,3 @@ export const checkPinExistancy = async (req: Request, res: Response, next: NextF
     }
     return next();
 } 
-
-// 3개의 컬력션 연결
-    /*
-    .populate({
-        path: 'tags',
-        populate: {
-            path: 'tag',
-            model: 'Tag'
-        }
-    });
-    */

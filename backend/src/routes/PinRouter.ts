@@ -159,10 +159,10 @@ class PinRouter {
         
         if (tags) {
             const currentTags = await Tag.getTagNames(pinId);
-            const tagNames = currentTags.map(tag => tag.name);
-            const tagDiff = diff(tagNames.sort(), tags.sort()) || [];
-            const tagsToRemove = tagDiff.filter(info => info[0] === '-').map(info => info[1]);
-            const tagsToAdd = tagDiff.filter(info => info[0] === '+').map(info => info[1]);
+            const tagNames: Array<string> = currentTags.map(tag => tag.name);
+            const tagDiff: Array<string> = diff(tagNames.sort(), tags.sort()) || [];
+            const tagsToRemove: Array<string> = tagDiff.filter(info => info[0] === '-').map(info => info[1]);
+            const tagsToAdd: Array<string> = tagDiff.filter(info => info[0] === '+').map(info => info[1]);
 
             try {
                 await Tag.removeTagsFromPin(pinId, tagsToRemove);

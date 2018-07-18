@@ -1,6 +1,6 @@
 import { pick }  from 'lodash';
-/*
-export const serializePin = (data: any) => {
+
+const serializePin = (data: any) => {
     const {
         _id: pinId,
         relation_url,
@@ -10,8 +10,7 @@ export const serializePin = (data: any) => {
         updatedAt,
         user,
     } = data;    
-    const tags = data.tags.map(tag => tag.tag.name);
-
+    const tags = data.tags.map(tag => tag.name);
     return {
         pinId,
         relation_url,
@@ -26,31 +25,27 @@ export const serializePin = (data: any) => {
         },
     }
 }
-*/
 
-export const serializePin = (data: any) => {
-    const {
-        _id: pinId,
-        relation_url,
-        description,
-        url,
-        createdAt,
-        updatedAt,
+const serializeLike = (data: any) => {
+    const { 
+        _id: likeId,
         user,
-    } = data;    
-    const tags = data.tags.map(tag => tag.name);
-
+    } = data;
     return {
-        pinId,
-        relation_url,
-        description,
-        url,
-        createdAt,
-        updatedAt,
-        tags,
+        likeId,
         user: {
-            ...pick(user, ['_id', 'username']),
-            ...pick(user.profile, ['displayName', 'thumbnail']),
-        },
+            ...pick(user, ['_id','username']),
+            ...pick(user.profile, ['displayName', 'thumbnail'])
+        }
     }
+}
+
+const serializeComment = (data: any) => {
+
+}
+
+export {
+    serializeLike,
+    serializePin,
+    serializeComment
 }

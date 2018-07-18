@@ -9,7 +9,8 @@ export interface ILike extends Document {
 }
 
 export interface ILikeModel extends Model<ILike> {
-    checkExists(userId: string, pinId: string): Promise<any>
+    checkExists(userId: string, pinId: string): Promise<any>;
+    getLikeUserList(pinId: string, userId: string, cursor?: string): Promise<any>;
 }
 
 const Like = new Schema({
@@ -30,6 +31,22 @@ Like.statics.checkExists = function(userId: string, pinId: string): Promise<any>
             { 'pin': pinId }
         ]
     });
+}
+
+Like.statics.getLikeUserList = function(pinId: string, userId: string, cursor?: string): Promise<any> {
+    const query = Object.assign(
+        {},
+        cursor ? { _id: { $lt: cursor }, pin: pinId } : { pin: pinId }
+    );
+
+    const projection = {
+        $ne: { user: userId }
+    };
+
+    return this.find(query, projection)
+    .populate('user')
+    .sort({_id: -1}) 
+    .limit(10); 
 }
 
 const LikeModel = model<ILike>('Like', Like) as ILikeModel;
