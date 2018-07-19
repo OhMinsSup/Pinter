@@ -21,7 +21,7 @@ class LandingTemplateContainer extends React.Component<LandingTemplateContainerP
 }
 
 const mapStateToProps = ({ user }: StoreState) => ({
-     user: user.user
+     user: user.user && user.user
 });
 
 export default connect(

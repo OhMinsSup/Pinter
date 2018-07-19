@@ -46,7 +46,8 @@ type ChangeRegisterFormPayload  = { name: string, value: string };
 type AutoCompleteFormPayload = { email: string,  name: string };
 type CodePayload = { email: string, registerToken: string };
 type LocalRegisterRequestPayload = { registerToken?: string, username?: string, displayName?: string  };
-type LocalRegisterSuccessPayload = { user: UserSubState, token: string }
+type LocalRegisterSuccessPayload = { user: UserSubState, token: string };
+type LocalLoginRequestPayload = { code: string, history: History };
 type LocalLoginSuccessPayload = { user: UserSubState, token: string };
 type SocialRegisterRequestPayload = { provider?: string, accessToken?: string, displayName?: string, username?: string, socialEmail?: string };
 type SocialRegisterSuccessPayload = { user: UserSubState, token: string };
@@ -77,7 +78,7 @@ export const actionCreators = {
     localRegisterSuccess: createAction(AuthActionType.LOCAL_REGISTER_SUCCESS, (payload: LocalRegisterSuccessPayload) => payload),
     localRegisterFailing: createAction(AuthActionType.LOCAL_REGISTER_FAILING),
 
-    localLoginRequest: createAction(AuthActionType.LOCAL_LOGIN_REQUEST, (code: string) => code),
+    localLoginRequest: createAction(AuthActionType.LOCAL_LOGIN_REQUEST, (payload: LocalLoginRequestPayload) => payload),
     localLoginSuccess: createAction(AuthActionType.LOCAL_LOGIN_SUCCESS, (payload: LocalLoginSuccessPayload) => payload),
     localLoginFailing: createAction(AuthActionType.LOCAL_LOGIN_FAILING),
 

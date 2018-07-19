@@ -20,10 +20,9 @@ class EmailLoginContainer extends React.Component<EmailLoginContainerProps> {
     public initialize = (): void => {
         const { search } = this.props.location;
         const { code } = queryString.parse(search);
-        const { AuthActions } = this.props;
+        const { AuthActions, history } = this.props;
         try {
-            AuthActions.localLoginRequest(code);
-            this.props.history.push('/');
+            AuthActions.localLoginRequest({ code, history });
         } catch (e) {
             console.log(e);
         }

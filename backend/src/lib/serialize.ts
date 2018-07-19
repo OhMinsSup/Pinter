@@ -64,8 +64,75 @@ const serializeComment = (data: any) => {
     }
 }
 
+const serializeTag = (data: any) => {
+    const {
+        _id: tagId,
+        name,
+        pin
+    } = data;
+    return {
+        tagId,
+        name,
+        count: pin.length
+    };
+}
+
+const serializeTagPin = (data: any) => {
+    const pinData = data.map(pin => {
+        return {
+            pinId: pin._id,
+            relation_url: pin.relation_url,
+            description: pin.description,
+            url: pin.url,
+            createdAt: pin.createdAt,
+            likes: pin.likes,
+            comments: pin.comments,
+            user: {
+                ...pick(pin.user, ['_id','username']),
+                ...pick(pin.user.profile, ['displayName', 'thumbnail'])
+            },
+        }
+    });
+    return pinData;
+}
+
+const serializeBoard = (data: any) => {
+    const {
+        _id: boardId,
+        user,
+    } = data;
+
+    const pin = data.pin.map(pin => {
+        return {
+            pinId: pin._id,
+            relation_url: pin.relation_url,
+            description: pin.description,
+            url: pin.url,
+            createdAt: pin.createdAt,
+            likes: pin.likes,
+            comments: pin.comments,
+            user: {
+                ...pick(pin.user, ['_id','username']),
+                ...pick(pin.user.profile, ['displayName', 'thumbnail'])
+            },
+        }
+    });
+    
+    return {
+        boardId,
+        user: {
+            ...pick(user, ['_id','username']),
+            ...pick(user.profile, ['displayName', 'thumbnail'])
+        },
+        pin
+    }
+}
+
 export {
     serializeLike,
     serializePin,
-    serializeComment
+    serializeComment,
+    serializeTag,
+    serializeTagPin,
+    serializeBoard
 }

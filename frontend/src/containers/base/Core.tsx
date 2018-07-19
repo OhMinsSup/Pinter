@@ -41,7 +41,7 @@ class Core extends React.Component<CoreProps>{
     const { visible } = this.props;
     return (
       <React.Fragment>
-            <FullscreenLoader visible={visible}/>
+        <FullscreenLoader visible={visible}/>
       </React.Fragment>
     );
   }

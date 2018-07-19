@@ -25,7 +25,7 @@ export interface IUser extends Document {
 export interface IUserModel extends Model<IUser> {
     findByEmailOrUsername(type: 'email' | 'username', value: string): Promise<any>;
     findBySocial(provider: string, socialId: string | number): Promise<any>;
-    findByDisplayName(value: string): Promise<any>;
+    findByDisplayName(value?: string): Promise<any>;
 }
 
 const User = new Schema({
@@ -56,7 +56,7 @@ User.statics.findByEmailOrUsername = function(type: 'email' | 'username', value:
     });
 };
 
-User.statics.findByDisplayName = function(value: string): Promise<any> {
+User.statics.findByDisplayName = function(value?: string): Promise<any> {  
     return this.findOne({
         'profile.displayName': value
     });

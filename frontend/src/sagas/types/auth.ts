@@ -46,7 +46,10 @@ export type SocialRegisterRequestPayload = {
 }
 
 export type LocalLoginPayload = {
-    payload: string,
+    payload: {
+        code: string,
+        history: any
+    },
     data: {
         user: UserSubState,
         token: string

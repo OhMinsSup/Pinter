@@ -68,7 +68,7 @@ function* localRegisterFlow () {
 }
 
 function* localLoginFlow () {
-    const { payload: code }: AuthPayload.LocalLoginPayload = yield take(AuthActionType.LOCAL_LOGIN_REQUEST);
+    const { payload: { code, history } }: AuthPayload.LocalLoginPayload = yield take(AuthActionType.LOCAL_LOGIN_REQUEST);
     const { data: { user, token }, error }: AuthPayload.LocalLoginPayload = yield call(AuthAPI.localLoginAPI, code);
 
     if (!user || !token && error) {
@@ -77,6 +77,13 @@ function* localLoginFlow () {
     }
 
     yield put(authActions.localLoginSuccess({ user, token }));
+
+    const userData: UserSubState = yield select((state: StoreState) => state.auth.authResult.user);
+    if (!userData) return;
+
+    yield put(userActions.setUser(userData));
+    storage.set('__pinter_user__', userData);
+    history.push('/');
 }
 
 function* socialRegisterFlow () {

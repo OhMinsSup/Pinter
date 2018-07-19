@@ -14,6 +14,7 @@ export interface ITagModel extends Model<ITag> {
     addTagsToPin(pinId: string, tags: Array<string>): Promise<any>;
     bulkGetNewId(names: Array<string>, pinId: string): Promise<any>;
     bulkGetMissingId(names: Array<string>, pinId: string): Promise<any>;
+    findByTagName(name: string): Promise<any>;
 }
 
 const Tag = new Schema({
@@ -26,6 +27,25 @@ const Tag = new Schema({
         lowercase: true
     }
 });
+
+Tag.statics.findByTagName = async function(name: string): Promise<any> {
+    return this.findOne({
+        $and: [
+            {   
+                $or: [ 
+                    { name: name.toLowerCase() },
+                    { name: name }
+                ]
+            },
+            { 
+                $or: [
+                    { name:  (name.replace('/s$', null) || name.replace('/-/', null)) && name.toLowerCase() },
+                    { name:  (name.replace('/s$', null) || name.replace('/-/', null)) && name },
+                ]
+            }  
+        ]
+    });
+}
 
 Tag.statics.getTagId = async function(name: string, pinId: string): Promise<any> {
     try {
@@ -153,3 +173,14 @@ Tag.statics.removeTagsFromPin = async function(pinId: string, tags: Array<string
 const TagModel = model<ITag>('Tag', Tag) as ITagModel;
 
 export default TagModel;
+
+/*
+    .populate({
+        path: 'pin',
+        populate: [{
+            path: 'user',
+            model: 'User'
+        }]
+    })
+    .sort({ _id: -1 })
+*/

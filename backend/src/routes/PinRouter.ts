@@ -219,12 +219,17 @@ class PinRouter {
     private async listPin(req: Request, res: Response): Promise<any> {
         const { username } = req.params;
         const { cursor } = req.params;
-
+        let userId: string = null;
         try {
-            const { _id : userId }: IUser = await User.findByDisplayName(username);
+            if (username) {
+                let { _id }: IUser = await User.findByDisplayName(username);                        
+                userId = _id;
+            }
+
             const pin: Array<IPin> = await Pin.readPinList(userId, cursor);
             const next = pin.length === 25 ? `/pin/${username ? `${username}`: '' }?cusor=${pin[24]._id}` : null;
             const pinWithData = pin.map(serializePin);
+    
             res.json({
                 next,
                 pinWithData
@@ -241,8 +246,8 @@ class PinRouter {
         router.post('/', needAuth, this.writePin);
 
         router.get('/:id', needAuth, checkPinExistancy, this.readPin);
-        router.get('/', needAuth, this.listPin);
-        router.get('/:username', needAuth, this.listPin);
+        router.get('/all/list', needAuth, this.listPin);
+        router.get('/:username/list', needAuth, this.listPin);
 
         router.delete('/:id', needAuth, checkPinExistancy, this.deletePin);
         router.patch('/:id', needAuth, checkPinExistancy, this.updatePin);
