@@ -8,28 +8,12 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type HeaderContainerProps = StateProps & DispatchProps;
 
 class HeaderContainer extends React.Component<HeaderContainerProps> {
-    public renderRight() {
-        const { user } = this.props;
-        
-        if (!user) {
-            return (
-                <div>
-                    로그인해주세여
-                </div>
-            );
-        }
-
-        return (
-            <div>{this.props.username}</div>
-        )
-    }
-
     public render() {
-        console.log(this.props.username);
-        
+        const { thumbnail, username } = this.props;
         return (
             <Header 
-                right={this.renderRight()}
+                thumbnail={thumbnail}
+                username={username}
             />
         )
     }
@@ -37,7 +21,8 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
 
 const mapStateToProps = ({ user }: StoreState) => ({
     user: user.user && user.user,
-    username: user.user && user.user.username
+    username: user.user && user.user.username,
+    thumbnail: user.user && user.user.thumbnail
 });
 
 const mapDispatchToProps = () => ({

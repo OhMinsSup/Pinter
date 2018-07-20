@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { Switch, Route } from 'react-router-dom';
 import MainTemplate from '../../components/main/MainTemplate';
 import HeaderContainer from '../../containers/base/HeaderContainer';
+import { Recent } from '../../page';
 
 class Main extends React.Component {
     public render() {
@@ -8,7 +10,9 @@ class Main extends React.Component {
             <MainTemplate
                 header={<HeaderContainer />}
             >
-                내용
+                <Switch>
+                    <Route exact path='/' component={Recent}/>
+                </Switch>
             </MainTemplate>
         )
     }
