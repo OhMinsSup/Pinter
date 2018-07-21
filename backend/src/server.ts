@@ -11,6 +11,7 @@ import Like from './routes/LikeRouter';
 import Comment from './routes/CommentRouter';
 import Common from './routes/CommonRouter';
 import Board from './routes/BoardRouter';
+import Follow from './routes/FollowRouter';
 
 class Server {
     public app: express.Application;
@@ -61,6 +62,7 @@ class Server {
         app.use('/pin/likes', Like);
         app.use('/pin/comments', Comment);
         app.use('/board', Board);
+        app.use('/follow', Follow);
     }   
 }
 

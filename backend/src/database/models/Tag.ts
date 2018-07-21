@@ -137,6 +137,8 @@ Tag.statics.bulkGetMissingId = async function(names: Array<string>, pinId: strin
 }
 
 Tag.statics.addTagsToPin = async function(pinId: string, tags: Array<string>): Promise<any> {
+    if (tags.length === 0) return;
+    
     try {
         const tagIds: Array<string> = await this.bulkGetNewId(tags, pinId);        
         await Promise.all(tagIds.map(tagId => this.findByIdAndUpdate(tagId, {
@@ -153,7 +155,7 @@ Tag.statics.addTagsToPin = async function(pinId: string, tags: Array<string>): P
 
 Tag.statics.removeTagsFromPin = async function(pinId: string, tags: Array<string>): Promise<any> {
     if (tags.length === 0) return;
-
+    
     try {
         const tagIds: Array<string> = await this.bulkGetMissingId(tags, pinId);
         

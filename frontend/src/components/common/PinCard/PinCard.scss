@@ -2,26 +2,9 @@
 
 .common-card {
   margin: 0.875rem;
-  width: calc((100% - 8.75rem) / 5);
+  width: 100%;
   position: relative;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.05);
-  margin-top: auto;
-  @include media("<=x-huge") {
-    // 1920px
-    width: calc(25% - 1.75rem);
-  }
-  @include media("<=huge") {
-    width: calc(33.333% - 1.75rem);
-    // 1600px;
-  }
-  @include media("<=wide") {
-    // 1200px;
-    width: calc(50% - 1.75rem);
-  }
-  @include media("<=large") {
-    // 1024px
-    width: calc(100% - 1.75rem);
-  }
 
   &>.thumbnail-wrapper {
     width: 100%;
@@ -29,7 +12,6 @@
     padding-top: 100%;
     position: relative;
     display: block;
-    cursor: zoom-in;
     img,
     .image-placeholder {
       object-fit: cover;
@@ -49,6 +31,28 @@
       align-items: center;
       justify-content: center;
       color: #98a8b9;
+    }
+    .next {
+      cursor: pointer;
+      display: block;
+      margin-left: 12px;
+      margin-right: 12px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      pointer-events: auto;
+      text-indent: -9999em;
+      top: 50%;
+      right: 0;
+      background-position: -458px -96px;
+      height: 30px;
+      width: 30px;
+      background-repeat: no-repeat;
+      color: #003569;
+      text-decoration: none;
+      svg {
+        font-size: 1rem;
+      }
     }
     .white-mask {
       position: absolute;
@@ -121,6 +125,31 @@
         max-height: 4rem;
         font-weight: 600;
         overflow: hidden;
+      }
+      .subinfo {
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        color: #8aa6c1;
+        .info {
+            font-size: 0.875rem;
+            color: #8aa6c1;
+            span+span::before {
+              color: $oc-gray-5;
+              padding-left: 0.25rem;
+              padding-right: 0.25rem;
+              content: "\00B7";
+            }
+        }
+        .subinfo-wrapper {
+            margin-top: 1rem;
+            flex-direction: row;
+            float: right;
+            .date {
+                color: $oc-gray-5;
+                font-weight: 500;
+                font-family: Georgia,sans-serif;
+            }
+        }
       }
     }
     .tags {

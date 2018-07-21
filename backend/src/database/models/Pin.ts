@@ -8,7 +8,7 @@ export interface IPin extends Document {
     title?: string;
     description?: string;
     relation_url?: string;
-    url?: string;
+    urls?: Array<string>;
     tags?: Array<ITag>;
     likes?: number;
     comments?: number;
@@ -36,7 +36,7 @@ const Pin = new Schema({
     }],
     description: String,
     relation_url: String,
-    url: String,
+    urls: [String],
     likes: {
         type: Number,
         default: 0

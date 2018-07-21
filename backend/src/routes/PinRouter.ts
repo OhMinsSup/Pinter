@@ -9,13 +9,14 @@ import needAuth from '../lib/middleware/needAuth';
 import User, { IUser } from '../database/models/User';
 import Pin, { IPin } from '../database/models/Pin';
 import Tag, { ITag } from '../database/models/Tag';
+import PinLocker, { IPinLocker } from '../database/models/PinLocker';
 import Count from '../database/models/Count';
 import {
     filterUnique,
     checkPinExistancy
 } from '../lib/common';
 import {
-    serializePin,
+    serializePin, serializeLocker,
 } from '../lib/serialize';
 
 const s3 = new AWS.S3({
@@ -85,14 +86,14 @@ class PinRouter {
         type BodySchema = {
             relationUrl: string,
             description: string,
-            url: string,
+            urls: Array<string>,
             tags: Array<string>
         }
 
         const schema = joi.object().keys({
             relationUrl: joi.string(),
             description: joi.string().max(200),
-            url: joi.string().required(),
+            urls:  joi.array().items(joi.string()).required(),
             tags: joi.array().items(joi.string()).required(),
         });
 
@@ -105,7 +106,7 @@ class PinRouter {
             });
         }
 
-        const { relationUrl, description, url, tags }: BodySchema = req.body;
+        const { relationUrl, description, urls, tags }: BodySchema = req.body;
         const userId: string = req['user']._id;
         const uniqueTags: Array<string> = filterUnique(tags);
 
@@ -113,7 +114,7 @@ class PinRouter {
             const pin = await new Pin({
                 relation_url: relationUrl,
                 description: description,
-                url: url,
+                urls: urls,
                 user: userId
             })
 
@@ -122,8 +123,8 @@ class PinRouter {
             pin.tags = tagIds;
             pin.save();
             
-            const pinData = await Pin.readPinById(pinId);            
-            const serialized = serializePin(pinData);  
+            const pinData = await Pin.readPinById(pinId);  
+            const serialized = serializePin(pinData);
             await Count.pinCount(userId);          
             res.json(serialized);
         } catch (e) {
@@ -135,7 +136,7 @@ class PinRouter {
         type BodySchema = {
             relationUrl: string,
             description: string,
-            url: string,
+            urls: string,
             tags: Array<string>
         }
 
@@ -143,7 +144,7 @@ class PinRouter {
         const schema = joi.object().keys({
             relationUrl: joi.string(),
             description: joi.string().max(200),
-            url: joi.string().required(),
+            urls: joi.array().items(joi.string()).required(),
             tags: joi.array().items(joi.string()).required(),
         });
 
@@ -156,16 +157,14 @@ class PinRouter {
             });
         }
 
-        const { relationUrl, description, url, tags }: BodySchema = req.body;
+        const { relationUrl, description, urls, tags }: BodySchema = req.body;
         const pinId: string = req['pin']._id;
-        
         if (tags) {
             const currentTags = await Tag.getTagNames(pinId);
             const tagNames: Array<string> = currentTags.map(tag => tag.name);
             const tagDiff: Array<string> = diff(tagNames.sort(), tags.sort()) || [];
             const tagsToRemove: Array<string> = tagDiff.filter(info => info[0] === '-').map(info => info[1]);
             const tagsToAdd: Array<string> = tagDiff.filter(info => info[0] === '+').map(info => info[1]);
-
             try {
                 await Tag.removeTagsFromPin(pinId, tagsToRemove);
                 await Tag.addTagsToPin(pinId, tagsToAdd);
@@ -173,7 +172,7 @@ class PinRouter {
                 await Pin.findByIdAndUpdate(pinId, {
                     relation_url: relationUrl,
                     description: description,
-                    url: url,
+                    urls: urls,
                 }, { new: true });
 
                 const pinData = await Pin.readPinById(pinId);
@@ -199,7 +198,9 @@ class PinRouter {
                 _id: pinId
             });
             await Count.unpinCount(userId)
-            res.status(204);
+            res.status(204).json({
+                pin: true
+            });
         } catch (e) {
             res.status(500).json(e);
         }
@@ -238,6 +239,71 @@ class PinRouter {
             res.status(500).json(e);
         }
     }
+
+    private async createLockerPin(req: Request, res: Response): Promise<any> {
+        const userId: string = req['user']._id;
+        const pinId: string = req['pin']._id;
+
+        try {
+            const exists: IPinLocker = await PinLocker.checkExists(userId, pinId);
+
+            if (exists) {
+                return res.status(409).json({
+                    name: '이미 보관중입니다'
+                });
+            }
+
+            const locker = await PinLocker.create({ user: userId, pin: pinId });
+            await PinLocker.lockerCount(locker._id);
+            res.json({
+                locker: !!locker
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async deleteLockerPin(req: Request, res: Response): Promise<any> {
+        const userId: string = req['user']._id;
+        const pinId: string = req['pin']._id;
+
+        try {
+            const exists: IPinLocker = await PinLocker.checkExists(userId, pinId);
+            
+            if (!exists) {
+                return res.status(409).json({
+                    name: '보관하지 않은 핀입니다.'
+                });
+            }
+
+            await PinLocker.lockerUnCount(exists._id);
+            await exists.remove();
+            res.status(204).json({
+                locker: true
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async lockerList(req: Request, res: Response): Promise<any> {
+        const userId: string = req['user']._id;
+        const { cursor } = req.query;
+        
+        try {
+            const locker: Array<IPinLocker> = await PinLocker.lockerList(userId, cursor);
+            const next = locker.length === 25 ? `/pin/locker/list?cusor=${locker[24]._id}` : null;
+            const lockersWithData = locker.map(serializeLocker);
+            const count: Array<IPinLocker> = await PinLocker.countLocker();
+            res.json({
+                next,
+                count: count.map(count => count.count).toString(),
+                lockersWithData,
+            })
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
     
     public routes(): void {
         const { router } = this;
@@ -248,8 +314,11 @@ class PinRouter {
         router.get('/:id', needAuth, checkPinExistancy, this.readPin);
         router.get('/all/list', needAuth, this.listPin);
         router.get('/:username/list', needAuth, this.listPin);
+        router.get('/locker/private/list', needAuth, this.lockerList);
+        router.get('/:id/locker',needAuth, checkPinExistancy, this.createLockerPin);
 
         router.delete('/:id', needAuth, checkPinExistancy, this.deletePin);
+        router.delete('/:id/locker', needAuth, checkPinExistancy, this.deleteLockerPin);
         router.patch('/:id', needAuth, checkPinExistancy, this.updatePin);
     }
 }

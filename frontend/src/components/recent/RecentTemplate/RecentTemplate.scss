@@ -1,7 +1,11 @@
 @import 'utils';
 
 .recent-template {
-    box-sizing: border-box;
-    padding-left: 1.75rem;
-    padding-right: 1.75rem;
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 768px;
+    min-height: 3rem;
+    margin: 0 auto;
+    padding: 0;
 }

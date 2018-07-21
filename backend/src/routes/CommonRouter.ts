@@ -39,8 +39,7 @@ class CommonRouter {
 
         try {
             const { pin }: ITag = await Tag.findByTagName(tag);
-            const pinData = await Promise.all(pin.map(pinId => Pin.find(pinId).populate('user')));
-
+            const pinData = await Promise.all(pin.map(pinId => Pin.readPinById(pinId._id)));
             res.json(pinData.map(serializeTagPin));
         } catch (e) {
             res.status(500).json(e);

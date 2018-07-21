@@ -1,23 +1,23 @@
 import { pick }  from 'lodash';
+import Tag from '../database/models/Tag';
 
 const serializePin = (data: any) => {
     const {
         _id: pinId,
         relation_url,
         description,
-        url,
         createdAt,
-        updatedAt,
+        urls,
         user,
     } = data;    
     const tags = data.tags.map(tag => tag.name);
+    const url = urls.map(url => url);
     return {
         pinId,
         relation_url,
         description,
-        url,
+        urls: url,
         createdAt,
-        updatedAt,
         tags,
         user: {
             ...pick(user, ['_id', 'username']),
@@ -78,53 +78,62 @@ const serializeTag = (data: any) => {
 }
 
 const serializeTagPin = (data: any) => {
-    const pinData = data.map(pin => {
-        return {
-            pinId: pin._id,
-            relation_url: pin.relation_url,
-            description: pin.description,
-            url: pin.url,
-            createdAt: pin.createdAt,
-            likes: pin.likes,
-            comments: pin.comments,
-            user: {
-                ...pick(pin.user, ['_id','username']),
-                ...pick(pin.user.profile, ['displayName', 'thumbnail'])
-            },
-        }
-    });
-    return pinData;
-}
-
-const serializeBoard = (data: any) => {
     const {
-        _id: boardId,
+        _id: pinId,
+        likes,
+        comments,
+        relation_url,
+        description,
         user,
+        createdAt,
     } = data;
-
-    const pin = data.pin.map(pin => {
-        return {
-            pinId: pin._id,
-            relation_url: pin.relation_url,
-            description: pin.description,
-            url: pin.url,
-            createdAt: pin.createdAt,
-            likes: pin.likes,
-            comments: pin.comments,
-            user: {
-                ...pick(pin.user, ['_id','username']),
-                ...pick(pin.user.profile, ['displayName', 'thumbnail'])
-            },
-        }
-    });
-    
+    const tags = data.tags.map(tag => tag.name);
+    const urls = data.urls.map(url => url);
     return {
-        boardId,
+        pinId,
+        description,
+        relation_url,
+        createdAt,
+        tags,
+        urls,
+        likes,
+        comments,
         user: {
             ...pick(user, ['_id','username']),
             ...pick(user.profile, ['displayName', 'thumbnail'])
-        },
-        pin
+        }
+    }
+}
+
+const serializeLocker = (data: any) => {
+    const {
+        _id: lockerId,
+        pin: {
+            tags,
+            urls,
+            likes,
+            comments,
+            _id: pinId,
+            relation_url,
+            description,
+            createdAt,
+            user
+        }
+    } = data;
+    return {
+        lockerId,
+        likes,
+        tags: tags.map(tag => tag.name),
+        urls: urls.map(url => url),
+        comments,
+        pinId,
+        relation_url,
+        description,
+        createdAt,
+        user: {
+            ...pick(user, ['_id','username']),
+            ...pick(user.profile, ['displayName', 'thumbnail'])
+        }
     }
 }
 
@@ -134,5 +143,5 @@ export {
     serializeComment,
     serializeTag,
     serializeTagPin,
-    serializeBoard
+    serializeLocker
 }
