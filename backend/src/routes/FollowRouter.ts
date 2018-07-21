@@ -1,4 +1,7 @@
 import { Request, Response, Router } from 'express';
+import User, { IUser } from '../database/models/User';
+import Follow, { IFollow } from '../database/models/Follow';
+import Count from '../database/models/Count';
 
 class FollowRouter {
     public router: Router;
@@ -8,16 +11,173 @@ class FollowRouter {
         this.routes();
     }
 
+    private async follow(req: Request, res: Response) {
+        const username: string = req['user'].username;
+        const userId: string = req['user']._id;
+        const { followName } = req.params;
+
+        if (followName === username) {
+            return res.status(400).json({
+                name: '자기 자신을 팔로우 할 수 없습니다.'
+            });
+        }
+
+        try {
+            const user: IUser = await User.findByEmailOrUsername('username', followName);    
+
+            if (!user) {
+                return res.status(404).json({
+                    name: '존재하지 않는 유저입니다'
+                });
+            }
+
+            const followId = user._id;
+            const exists: IFollow = await Follow.checkExists(userId, followId);
+
+            if (exists) {
+                return res.status(409).json({
+                    name: '이미 팔로우 중입니다..'
+                });
+            }
+
+            await Follow.create({ following: followId, follower: userId });
+            await Count.followerCount(userId);
+            await Count.followingCount(followId);
+            res.json({
+                follow: true
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async unfollow(req: Request, res: Response): Promise<any> {
+        const username: string = req['user'].username;
+        const userId: string = req['user']._id;
+        const { followName } = req.params;
+
+        if (followName === username) {
+            return res.status(400).json({
+                name: '자기 자신을 언팔로우 할 수 없습니다.'
+            });
+        }
+
+        try {
+            const user: IUser = await User.findByEmailOrUsername('username', followName);    
+            
+            if (!user) {
+                return res.status(404).json({
+                    name: '존재하지 않는 유저입니다'
+                });
+            }
+
+            const followId = user._id;
+            const exists: IFollow = await Follow.checkExists(userId, followId);
+            
+            if (!exists) {
+                return res.status(409).json({
+                    name: '팔로우 상태가 아닙니다.'
+                });
+            }
+
+            await Count.unfollowerCount(userId);
+            await Count.unfollowingCount(followId);
+            await exists.remove();
+            res.json({
+                follow: false
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async getFollow(req: Request, res: Response): Promise<any> {
+        const userId: string = req['user']._id;
+        const { username } = req.params;
+
+        let follow = false;
+        try {
+            const following: IUser = await User.findByEmailOrUsername('username', username);
+            
+            if (!following) {
+                return res.status(404).json({
+                    name: '존재하지 않는 유저입니다'
+                });
+            }
+
+            if (userId) {
+                const exists = await Follow.checkExists(userId, following._id);
+                follow = !!exists;
+            }
+
+            res.json({
+                follow
+            });
+        } catch (error) {
+            
+        }
+    }
+
+    private async getFollowing(req: Request, res: Response): Promise<any> {
+        const { username } = req.params;
+        const { cursor } = req.query;
+
+        try {
+            const user: IUser = await User.findByEmailOrUsername('username', username);
+            
+            if (!user) {
+                return res.status(404).json({
+                    name: '존재하지 않는 유저입니다'
+                });
+            }
+
+            const following: Array<IFollow> = await Follow.followingList(user._id, cursor);
+            const next = following.length === 10 ? `/follow/${username}/following/?cursor=${following[9]._id}` : null; 
+            const followingsWithData = following;
+            res.json({
+                next,
+                followingsWithData,
+            });
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async getFollower(req: Request, res: Response): Promise<any> {
+        const { username } = req.params;
+        const { cursor } = req.query;
+
+        try {
+            const user: IUser = await User.findByEmailOrUsername('username', username);
+            
+            if (!user) {
+                return res.status(404).json({
+                    name: '존재하지 않는 유저입니다'
+                });
+            }
+
+            const follwer: Array<IFollow> = await Follow.followerList(user._id, cursor);
+            const next = follwer.length === 10 ? `/follow/${username}/following/?cursor=${follwer[9]._id}` : null; 
+            const follwersWithData = follwer;
+            res.json({
+                next,
+                follwersWithData,
+            });
+        } catch (error) {
+            
+        }
+    }
+
     public routes(): void {
         const { router } = this;
 
-        router.get('/exists/:username')
+        router.get('/exists/:username', this.getFollow);
 
-        router.post('/:followId');
-        router.delete('/:followId');
+        router.post('/:followName', this.follow);
+        router.delete('/:followName', this.unfollow);
 
-        router.get('/:username/following');
-        router.get('/:username/follower');
+        router.get('/:username/following', this.getFollowing);
+        router.get('/:username/follower', this.getFollower);
     }
 }
 

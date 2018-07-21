@@ -125,7 +125,7 @@ class AuthRouter {
             });
 
             const token: string = await auth.generate(auth);
-            await Count.create();
+            await Count.create({ user: auth._id });
 
             res.cookie('access_token', token, {
                 httpOnly: true,
@@ -307,7 +307,7 @@ class AuthRouter {
             });
 
             const token: string = await auth.generate(auth);
-            await Count.create();
+            await Count.create({ user: auth._id });
 
             res.cookie('access_token', token, {
                 httpOnly: true,

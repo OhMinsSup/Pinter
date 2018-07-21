@@ -58,11 +58,11 @@ class Server {
 
         app.use('/auth', Auth);
         app.use('/common', Common);
+        app.use('/follow', Follow);
         app.use('/pin', Pin);
         app.use('/pin/likes', Like);
         app.use('/pin/comments', Comment);
         app.use('/board', Board);
-        app.use('/follow', Follow);
     }   
 }
 
