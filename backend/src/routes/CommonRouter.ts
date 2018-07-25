@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import Tag, { ITag } from '../database/models/Tag';
 import Pin, { IPin } from '../database/models/Pin';
+import User, { IUser } from '../database/models/User';
 import { serializeTag, serializeTagPin } from '../lib/serialize';
 
 class CommonRouter {
@@ -41,6 +42,19 @@ class CommonRouter {
             const { pin }: ITag = await Tag.findByTagName(tag);
             const pinData = await Promise.all(pin.map(pinId => Pin.readPinById(pinId._id)));
             res.json(pinData.map(serializeTagPin));
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
+    private async recommendFollow(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await User.aggregate([
+
+            ])
+            res.json({
+                user
+            });
         } catch (e) {
             res.status(500).json(e);
         }

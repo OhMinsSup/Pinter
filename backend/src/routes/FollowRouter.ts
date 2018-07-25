@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import User, { IUser } from '../database/models/User';
 import Follow, { IFollow } from '../database/models/Follow';
 import Count from '../database/models/Count';
+import { serializeFollower, serializeFollowing } from '../lib/serialize';
 
 class FollowRouter {
     public router: Router;
@@ -133,7 +134,7 @@ class FollowRouter {
 
             const following: Array<IFollow> = await Follow.followingList(user._id, cursor);
             const next = following.length === 10 ? `/follow/${username}/following/?cursor=${following[9]._id}` : null; 
-            const followingsWithData = following;
+            const followingsWithData = following.map(serializeFollowing);
             res.json({
                 next,
                 followingsWithData,
@@ -158,15 +159,16 @@ class FollowRouter {
 
             const follwer: Array<IFollow> = await Follow.followerList(user._id, cursor);
             const next = follwer.length === 10 ? `/follow/${username}/following/?cursor=${follwer[9]._id}` : null; 
-            const follwersWithData = follwer;
+            const follwersWithData = follwer.map(serializeFollower);
             res.json({
                 next,
                 follwersWithData,
             });
-        } catch (error) {
-            
+        } catch (e) {
+            res.status(500).json(e);
         }
     }
+
 
     public routes(): void {
         const { router } = this;

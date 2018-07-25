@@ -29,7 +29,7 @@ const Header: React.SFC<Props> = ({ username, thumbnail }) => {
                         <Button theme='noline'>
                             <TagIcon className={cx('tag')}/>
                         </Button>
-                        <Button theme='noline'>
+                        <Button theme='noline' to={`/@${username}`}>
                             <img className={cx('thumbnail')} src={thumbnail} alt={username}/>
                             <span className={cx('username')}>{username}</span>
                         </Button>

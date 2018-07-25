@@ -1,0 +1,25 @@
+@import 'utils';
+
+.sprite-chevron {
+    display: flex;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    padding: 0;
+    position: relative;
+    border: 0 solid black;
+    .next {
+        background: $oc-gray-3;
+        margin-right: 4px;
+        border-radius: 50%;
+        height: 6px;
+        transition: all .2s ease-in-out;
+        width: 6px;
+        &.test {
+            background: $oc-blue-5;
+        }
+    }
+}

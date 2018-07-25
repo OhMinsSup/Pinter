@@ -137,11 +137,41 @@ const serializeLocker = (data: any) => {
     }
 }
 
+const serializeFollower = (data: any) => {
+    const {
+        _id: followId,
+        follower
+    } = data;
+    return {
+        followId,
+        follower: {
+            ...pick(follower, ['_id','username']),
+            ...pick(follower.profile, ['displayName', 'thumbnail'])
+        }
+    }
+}
+
+const serializeFollowing = (data: any) => {
+    const {
+        _id: followId,
+        following
+    } = data;
+    return {
+        followId,
+        following: {
+            ...pick(following, ['_id','username']),
+            ...pick(following.profile, ['displayName', 'thumbnail'])
+        }
+    }
+}
+
 export {
     serializeLike,
     serializePin,
     serializeComment,
     serializeTag,
     serializeTagPin,
-    serializeLocker
+    serializeLocker,
+    serializeFollower,
+    serializeFollowing
 }
