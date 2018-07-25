@@ -10,6 +10,7 @@ type Props = {
     to?: string | null,
     children: React.ReactNode,
     className?: string,
+    onClick?(): any 
 }
 
 const Button: React.SFC<Props> = ({
@@ -17,17 +18,18 @@ const Button: React.SFC<Props> = ({
     theme,
     children,
     className,
+    ...rest
 }) => {
     const publicClassName = cx('Button', theme, className);
     if (to) {
         return (
-            <Link to={to} className={publicClassName}>
+            <Link to={to} className={publicClassName} {...rest}>
                 {children}
             </Link>
         );
     }
     return (
-        <button className={publicClassName}>
+        <button className={publicClassName} {...rest}>
             {children}
         </button>
     )
