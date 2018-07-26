@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as queryString from 'query-string';
 import { match } from 'react-router-dom';
 import TagsTab from '../components/tags/TagsTab';
-import TagCurrent from '../components/tags/TagCurrent';
+import TagCurrentContainer from '../containers/tags/TagCurrentContainer';
+import TagItemListContainer from '../containers/tags/TagItemListContainer';
 import TagsTemplate from '../components/tags/TagTemplate/TagTemplate';
 
 type Props = {
@@ -17,13 +18,13 @@ const Tags: React.SFC<Props> = ({ location, match }) => {
         <TagsTemplate>
             {tag ? (
                 <React.Fragment>
-                    <TagCurrent />
-                    sdsdsd
+                    <TagCurrentContainer />
+                    태그 포스트
                 </React.Fragment>
             ) : (
                 <React.Fragment>
                     <TagsTab sort={sort} />
-                    dsdsdss
+                    <TagItemListContainer/>
                 </React.Fragment>
             )}
         </TagsTemplate>
