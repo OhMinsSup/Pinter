@@ -26,7 +26,7 @@ const Header: React.SFC<Props> = ({ username, thumbnail }) => {
                         <Button theme='noline' to='/'>
                             <HomeIcon className={cx('home')}/>
                         </Button>
-                        <Button theme='noline'>
+                        <Button theme='noline' to='/tags'>
                             <TagIcon className={cx('tag')}/>
                         </Button>
                         <Button theme='noline' to={`/@${username}`}>

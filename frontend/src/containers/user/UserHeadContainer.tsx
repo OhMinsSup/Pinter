@@ -4,6 +4,7 @@ import { Dispatch, compose, bindActionCreators } from 'redux';
 import { withRouter, match } from 'react-router-dom';
 import { StoreState } from '../../store/modules';
 import { actionCreators as pinActions } from '../../store/modules/pin';
+import { actionCreators as settingActions } from '../../store/modules/setting';
 import UserHead from '../../components/user/UserHead';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -14,14 +15,18 @@ type UserHeadContainerProps = StateProps & DispatchProps & OwnProps;
 
 class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     public onPinScreen = () => {
-        const { PinActions, visible } = this.props;
-        if (!visible) return PinActions.setMakePinFullscreenLoader(true);
-        return PinActions.setMakePinFullscreenLoader(false);
+        const { PinActions } = this.props;
+        PinActions.setMakePinFullscreenLoader(true)
+    }
+
+    public onSettingScreen = () => {
+        const { SettingActions } = this.props;
+        SettingActions.setProfileFullscreenLoader(true);
     }
 
     public render() {
         const { username, displayName, thumbnail, match } = this.props;
-        const { onPinScreen } = this;
+        const { onPinScreen, onSettingScreen } = this;
         const { url } = match;        
         return (
             <UserHead 
@@ -30,20 +35,23 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
                 thumbnail={thumbnail}
                 url={url}
                 onPinScreen={onPinScreen}
+                onSettingScreen={onSettingScreen}
             />
         )
     }
 }
 
-const mapStateToProps = ({ user, pin }: StoreState) => ({
+const mapStateToProps = ({ user, pin, setting }: StoreState) => ({
     username: user.user && user.user.username,
     thumbnail: user.user && user.user.thumbnail,
     displayName: user.user && user.user.displayName,
-    visible: pin.visible
+    pin_visible: pin.visible,
+    setting_visible: setting.visible
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    PinActions: bindActionCreators(pinActions, dispatch)
+    PinActions: bindActionCreators(pinActions, dispatch),
+    SettingActions: bindActionCreators(settingActions, dispatch)
 })
 
 export default compose(

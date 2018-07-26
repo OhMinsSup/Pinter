@@ -4,6 +4,7 @@ import UserTemplate from '../components/user/UserTemplate';
 import UserHeadContainer from '../containers/user/UserHeadContainer';
 import UserContentContainer from '../containers/user/UserContentContainer';
 import MakePin from '../containers/pin/MakePin';
+import SettingProfileContainer from '../containers/setting/SettingProfileContainer';
 
 const User = () => {
     return (
@@ -11,6 +12,7 @@ const User = () => {
             <UserHeadContainer />
             <UserContentContainer />
             <MakePin />
+            <SettingProfileContainer />
         </UserTemplate>
     );
 }
