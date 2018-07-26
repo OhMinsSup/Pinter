@@ -8,9 +8,7 @@ import UserHead from '../../components/user/UserHead';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = {
-    match: match<string>
-}
+type OwnProps = { match: match<string> }
 
 type UserHeadContainerProps = StateProps & DispatchProps & OwnProps;
 

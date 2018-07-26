@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
+import { Link } from 'react-router-dom';
 import Button from '../../common/Button';
 import UserMenuItem from '../UserMenuItem';
 
@@ -27,9 +28,11 @@ const UserHead: React.SFC<Props> = ({ username, displayName, thumbnail, url, onP
                         <Button className={cx('profile-setting')} theme="outline" onClick={onPinScreen}>
                             작성하기
                         </Button>
-                        <Button className={cx('profile-setting')} theme="outline">
-                            프로필 편집
-                        </Button>
+                        <Link to={`/@${displayName}/setting`}>
+                            <Button className={cx('profile-setting')} theme="outline">
+                                프로필 편집
+                            </Button>
+                        </Link>
                         <Button className={cx("subscribe")} theme="outline">
                             구독하기
                         </Button>

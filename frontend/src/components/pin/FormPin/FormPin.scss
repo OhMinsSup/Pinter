@@ -239,6 +239,62 @@
                         }
                     }
                 }
+
+                .content-tags-wrapper {
+                    box-sizing: border-box;
+                    margin-top: 30px;
+                    .content-tags-title {
+                        cursor: pointer;
+                        display: block;
+                        .title {
+                            text-align: left;
+                            font-size: 16px;
+                            color: $oc-gray-9;
+                            word-wrap: break-word;
+                            font-weight: 400;
+                            line-height: 1.2;
+                            letter-spacing: -.4px;
+                        }
+                    }
+                }
+
+                .content-image-wrapper {
+                    box-sizing: border-box;
+                    margin-top: 30px;
+                    .content-image-title {
+                        cursor: pointer;
+                        display: block;
+                        .title {
+                            text-align: left;
+                            font-size: 16px;
+                            color: $oc-gray-9;
+                            word-wrap: break-word;
+                            font-weight: 400;
+                            line-height: 1.2;
+                            letter-spacing: -.4px;
+                        }
+                    }
+                    .next-image {
+                        display: flex;
+                        flex-direction: row;
+                        position: relative;
+                        top: 8rem;
+                        svg {
+                            font-size: 1.5rem;
+                            color: $oc-red-5;
+                        }
+                        .previous {
+                            border: none;
+                            background-color: white;
+                        }
+                        .next {
+                            position: relative;
+                            left: 19.5rem;
+                            border: none;
+                            background-color: white;
+                        }
+                    }
+                }
             }
         }
 
