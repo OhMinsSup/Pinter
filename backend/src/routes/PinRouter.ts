@@ -122,8 +122,8 @@ class PinRouter {
             const tagIds: Array<ITag> = await Promise.all(uniqueTags.map(tag => Tag.getTagId(tag, pinId)));
             pin.tags = tagIds;
             pin.save();
-            
-            const pinData = await Pin.readPinById(pinId);  
+
+            const pinData: IPin = await Pin.readPinById(pinId);  
             const serialized = serializePin(pinData);
             await Count.pinCount(userId);          
             res.json(serialized);

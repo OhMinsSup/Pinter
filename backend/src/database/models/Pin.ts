@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model } from 'mongoose';
+import { Schema, model, Document, Model, Types } from 'mongoose';
 import { IUser } from './User';
 import { ITag } from './Tag';
 
@@ -55,7 +55,7 @@ Pin.statics.readPinById = function(pinId: string): Promise<any> {
     .populate({
         path: 'tags',
         populate: [{
-            path: 'tags'
+            path: 'tags',
         }]
     })
 }

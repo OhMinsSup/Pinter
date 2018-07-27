@@ -28,7 +28,7 @@ const Tag = new Schema({
     }
 });
 
-Tag.statics.findByTagName = async function(name: string): Promise<any> {
+Tag.statics.findByTagName = function(name: string): Promise<any> {
     return this.findOne({
         $and: [
             {   
@@ -65,22 +65,22 @@ Tag.statics.getTagId = async function(name: string, pinId: string): Promise<any>
                 }  
             ]
         });
-
+        
         if (!tag) {
             tag = await this.create({
                 name: name,
                 pin: pinId
             });
-
+                        
             return tag._id;
         }
-
+        
         tag = await this.findByIdAndUpdate(tag._id, {
             $push: { 
                 pin: pinId
             }
         }, { new: true });
-
+        
         return tag._id;
     } catch (e) {
         throw e;

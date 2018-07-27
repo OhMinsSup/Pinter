@@ -14,37 +14,44 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type MakePinProps = StateProps & DispatchProps;
 
 class MakePin extends React.Component<MakePinProps> {
-    public onDragEnter = (e: any) => {
-        e.preventDefault();
-        setImmediate(() => {
-          console.log(e);
-        });
-    };
+    public uploadUrl = async (file: any) => {
+        const { PinActions } = this.props;
+        
+        PinActions.setUploadStatus(true);
+        try {
+            console.log(file);
+            
+            await PinActions.createUploadUrlRequest({ file });
+        } catch (e) {
+            PinActions.setUploadStatus(false);
+            console.log(e);
+        }
+    }
 
-    public onDragLeave = (e: any) => {
-        e.preventDefault();
-        if (!e.relatedTarget) return;
-    };
+    public uploadRemove = () => {
+        const { PinActions } = this.props;
+        PinActions.removeUploadUrl();
+    }
 
     public onDrop = (e: any) => {
         e.preventDefault();
         const { files } = e.dataTransfer;
         if (!files) return;
-        console.log(files);
+        this.uploadUrl(files[0]);
     }
 
     public onPasteImage = (file: any) => {
         if (!file) return;
-        console.log(file);
+        this.uploadUrl(file);
     };
 
     public onUploadClick = () => {
         const upload = document.createElement('input');
         upload.type = 'file';
-        upload.onchange = (e) => {
+        upload.onchange = (e) => {                        
             if (!upload.files) return;
             const file = upload.files[0];
-            console.log(file);
+            this.uploadUrl(file);
         }
         upload.click();
     }
@@ -74,8 +81,8 @@ class MakePin extends React.Component<MakePinProps> {
     }   
 
     public render() {
-        const { visible, description, relation_url, tags } = this.props;
-        const { onDragEnter, onDragLeave, onDrop, onPasteImage, onUploadClick, onChangeInput, onInsertTag, onRemoveTag, onClose } = this;
+        const { visible, description, relation_url, tags, thumbnails } = this.props;
+        const { onDrop, onPasteImage, onUploadClick, onChangeInput, onInsertTag, onRemoveTag, onClose, uploadRemove } = this;
         if (!visible) return null;
         return (
             <PinTemplate>
@@ -86,8 +93,6 @@ class MakePin extends React.Component<MakePinProps> {
                         onRemove={onRemoveTag}
                     />}
                     dropImage={<DropImage 
-                        onDragEnter={onDragEnter}
-                        onDragLeave={onDragLeave}
                         onDrop={onDrop}
                         onPaste={onPasteImage}
                         onUploadClick={onUploadClick}
@@ -96,6 +101,8 @@ class MakePin extends React.Component<MakePinProps> {
                         relation_url={relation_url}
                         onChangInput={onChangeInput}
                         onClose={onClose}
+                        uploadRemove={uploadRemove}
+                        thumbnails={thumbnails}
                 />
             </PinTemplate>
         )
@@ -104,6 +111,7 @@ class MakePin extends React.Component<MakePinProps> {
 
 const mapStateToProps = ({ pin }: StoreState) => ({
     description: pin.description,
+    thumbnails: pin.upload.url,
     relation_url: pin.relation_url,
     visible: pin.visible,
     tags: pin.tags

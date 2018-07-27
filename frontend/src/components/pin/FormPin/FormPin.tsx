@@ -2,8 +2,6 @@ import * as React from 'react';
 import * as classNames from 'classnames/bind';
 import Button from '../../common/Button';
 
-const RightIcon = require('react-icons/lib/fa/arrow-circle-right');
-const LeftIcon = require('react-icons/lib/fa/arrow-circle-left');
 const CancelIcon = require('react-icons/lib/md/close');
 const styles = require('./FormPin.scss');
 const cx = classNames.bind(styles);
@@ -11,14 +9,15 @@ const cx = classNames.bind(styles);
 type Props = { 
     description: string,
     relation_url: string,
-    thumbnail?: string,
+    thumbnails: string,
     inputTags: React.ReactNode,
     dropImage: React.ReactNode
     onChangInput(e: any): void,
-    onClose(): void
+    onClose(): void,                        
+    uploadRemove(): void
 }
 
-const FormPin: React.SFC<Props> = ({ inputTags, dropImage, onChangInput, description, relation_url, thumbnail, onClose }) => {
+const FormPin: React.SFC<Props> = ({ inputTags, dropImage, onChangInput, description, relation_url, thumbnails, onClose, uploadRemove }) => {
     const defaultThumbnail = 'https://benefitlombard.eu/images/no-image.jpg';
     return (
         <div className={cx('form-pin')}>
@@ -41,8 +40,13 @@ const FormPin: React.SFC<Props> = ({ inputTags, dropImage, onChangInput, descrip
                                 <div className={cx('image')}>
                                     <div className={cx('wrapper')}>
                                         <div className={cx('wrapper1')}>
-                                            <img className={cx('img')} src={thumbnail ? thumbnail : defaultThumbnail}/>
+                                            <img className={cx('img')} src={thumbnails ? thumbnails : defaultThumbnail}/>
                                         </div>
+                                    </div>
+                                    <div className={cx('cancel-wrapper')}>
+                                        <button className={cx('cancel-btn')} type="button" onClick={uploadRemove}>
+                                            <CancelIcon />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -80,14 +84,6 @@ const FormPin: React.SFC<Props> = ({ inputTags, dropImage, onChangInput, descrip
                                 <div className={cx('title')}>이미지 업로드</div>
                             </label>
                             {dropImage}
-                            <div className={cx('next-image')}>
-                                <button className={cx('previous')}>
-                                    <LeftIcon />
-                                 </button>
-                                <button className={cx('next')}>
-                                    <RightIcon/>
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
