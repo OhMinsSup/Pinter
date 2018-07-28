@@ -27,7 +27,7 @@ const SettingProfile: React.SFC<Props> = ({ onCancel, thumbnail, displayName }) 
                     </div>
                 </div>
                 <section className={cx('card-primary')}>
-                    <SettingInput label="이름" value={displayName} name="displayName"/>
+                    <SettingInput label="이름" value={displayName} name="displayName" onChange={() => console.log()}/>
                 </section>
                 <div className={cx('card-action')}>
                     <div className={cx('separator')} />

@@ -23,7 +23,8 @@ class Core extends React.Component<CoreProps>{
     UserActions.setUser(storageUser);
 
     try {
-      UserActions.checkUserRequest();
+      UserActions.checkUser();
+      // UserActions.checkUserRequest();
     } catch (e) {
       Storage.remove('__pinter_user__');
     }

@@ -11,8 +11,8 @@ const App = () => {
       <Route exact path='/(tags)' component={Home} />
       <Route exact path='/email-register' component={Register} />
       <Route exact path='/email-login' component={EmailLogin} />
-      <Route exact path='/@:username/' component={User} />
-      <Route exact path='/@:username/(pin|following|follower|board|saves)' component={User} />
+      <Route exact path='/@:displayName/' component={User} />
+      <Route exact path='/@:displayName/(pin|following|follower|board|saves)' component={User} />
       <Core />
     </React.Fragment>
   );

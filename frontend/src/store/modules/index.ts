@@ -4,12 +4,16 @@ import auth, { AuthState} from './auth';
 import user, { UserState } from './user';
 import pin, { PinState } from './pin';
 import setting, { SettingState } from './setting';
+import list, { ListState } from './list';
+import follow, { FollowState } from './follow';
 
 export default combineReducers({ 
     base: base,
     auth: auth,
     user: user,
     pin: pin,
+    list: list,
+    follow: follow,
     setting: setting
  });
 
@@ -19,5 +23,7 @@ export interface StoreState {
     auth: AuthState;
     user: UserState;
     pin: PinState;
+    list: ListState;
+    follow: FollowState;
     setting: SettingState;
 }

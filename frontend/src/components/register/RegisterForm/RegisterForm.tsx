@@ -25,9 +25,9 @@ const RegisterForm: React.SFC<Props> = ({
         <h2>기본 회원정보 등록</h2>
       </div>
       <div className={cx('FormContents')}>
-        <LabelInput value={displayName} name="displayName" required label="이름" placeholder="이름을 입력하세요" onChange={onChange} />
+        <LabelInput value={displayName} name="displayName" required label="아이디" placeholder="아이디를 입력하세요" onChange={onChange} />
         <LabelInput value={email} type="email" name="email" required label="이메일" placeholder="이메일을 입력하세요" onChange={onChange} disabled={!emailEditable} />
-        <LabelInput value={username} name="username" required label="아이디" placeholder="아이디를 입력하세요" onChange={onChange} />
+        <LabelInput value={username} name="username" required label="이름" placeholder="이름을 입력하세요" onChange={onChange} />
         <div className={cx('agreement')}>
           다음 버튼을 누르면 <span>서비스 이용약관</span>과 <span>개인정보취급방침</span>에 동의하는 것을 인정합니다.
         </div>

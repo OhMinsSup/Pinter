@@ -63,8 +63,7 @@ Pin.statics.readPinById = function(pinId: string): Promise<any> {
 Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<any> {
     const query = Object.assign(
         {},
-        cursor ? { _id: { $lt: cursor } } : { },
-        userId ? { user: userId } : { },
+        cursor && !userId ? { _id: { $lt: cursor } } : { },
         userId && cursor ? { _id: { $lt: cursor }, user: userId } : { } 
     );
 
@@ -77,7 +76,7 @@ Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<an
         }]
     })
     .sort({ _id: -1 })
-    .limit(25);
+    .limit(5);
 }
 
 Pin.statics.like = function(pinId: string): Promise<any> {

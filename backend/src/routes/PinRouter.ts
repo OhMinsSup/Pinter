@@ -84,14 +84,14 @@ class PinRouter {
 
     private async writePin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            relationUrl: string,
+            relation_url: string,
             description: string,
             urls: Array<string>,
             tags: Array<string>
         }
 
         const schema = joi.object().keys({
-            relationUrl: joi.string(),
+            relation_url: joi.string(),
             description: joi.string().max(200),
             urls:  joi.array().items(joi.string()).required(),
             tags: joi.array().items(joi.string()).required(),
@@ -106,13 +106,13 @@ class PinRouter {
             });
         }
 
-        const { relationUrl, description, urls, tags }: BodySchema = req.body;
+        const { relation_url, description, urls, tags }: BodySchema = req.body;
         const userId: string = req['user']._id;
         const uniqueTags: Array<string> = filterUnique(tags);
 
         try {            
             const pin = await new Pin({
-                relation_url: relationUrl,
+                relation_url: relation_url,
                 description: description,
                 urls: urls,
                 user: userId
@@ -123,10 +123,9 @@ class PinRouter {
             pin.tags = tagIds;
             pin.save();
 
-            const pinData: IPin = await Pin.readPinById(pinId);  
-            const serialized = serializePin(pinData);
-            await Count.pinCount(userId);          
-            res.json(serialized);
+            res.json({
+                pinId: pinId
+            });
         } catch (e) {
             res.status(500).json(e)
         }
@@ -218,17 +217,18 @@ class PinRouter {
     }
 
     private async listPin(req: Request, res: Response): Promise<any> {
-        const { username } = req.params;
-        const { cursor } = req.params;
+        const { displayName } = req.params;
+        const { cursor } = req.query;
+        
         let userId: string = null;
         try {
-            if (username) {
-                let { _id }: IUser = await User.findByDisplayName(username);                        
+            if (displayName) {
+                let { _id }: IUser = await User.findByDisplayName(displayName);                        
                 userId = _id;
             }
 
             const pin: Array<IPin> = await Pin.readPinList(userId, cursor);
-            const next = pin.length === 25 ? `/pin/${username ? `${username}`: '' }?cusor=${pin[24]._id}` : null;
+            const next = pin.length === 5 ? `/pin/${displayName ? `${displayName}/list`: 'all/list' }?cursor=${pin[4]._id}` : null;
             const pinWithData = pin.map(serializePin);
     
             res.json({
@@ -292,7 +292,7 @@ class PinRouter {
         
         try {
             const locker: Array<IPinLocker> = await PinLocker.lockerList(userId, cursor);
-            const next = locker.length === 25 ? `/pin/locker/list?cusor=${locker[24]._id}` : null;
+            const next = locker.length === 5 ? `/pin/locker/list?cusor=${locker[4]._id}` : null;
             const lockersWithData = locker.map(serializeLocker);
             const count: Array<IPinLocker> = await PinLocker.countLocker();
             res.json({
@@ -313,7 +313,7 @@ class PinRouter {
 
         router.get('/:id', needAuth, checkPinExistancy, this.readPin);
         router.get('/all/list', needAuth, this.listPin);
-        router.get('/:username/list', needAuth, this.listPin);
+        router.get('/:displayName/list', needAuth, this.listPin);
         router.get('/locker/private/list', needAuth, this.lockerList);
         router.get('/:id/locker',needAuth, checkPinExistancy, this.createLockerPin);
 

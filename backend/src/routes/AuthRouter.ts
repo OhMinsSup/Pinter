@@ -136,7 +136,8 @@ class AuthRouter {
                 user: {
                     id: auth._id,
                     username: auth.username,
-                    displayName: auth.profile.displayName
+                    displayName: auth.profile.displayName,
+                    thumbnail: auth.profile.thumbnail
                 },
                 token
             });

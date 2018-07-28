@@ -6,16 +6,18 @@ import Button from '../../common/Button';
 
 const styles = require('./Header.scss');
 const ChatIcon = require('react-icons/lib/fa/commenting-o');
+const LogoutIcon = require('react-icons/lib/fa/sign-out');
 const TagIcon = require('react-icons/lib/fa/tags');
 const HomeIcon = require('react-icons/lib/fa/home');
 const cx = classNames.bind(styles);
 
 type Props = { 
-    username: string | any,
-    thumbnail: string | any
+    displayName: string | any,
+    thumbnail: string | any,
+    onLogout(): void
 }
 
-const Header: React.SFC<Props> = ({ username, thumbnail }) => {
+const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout }) => {
   return (
         <div className={cx('header')}>
             <div className={cx('header-wrapper')}>
@@ -29,12 +31,15 @@ const Header: React.SFC<Props> = ({ username, thumbnail }) => {
                         <Button theme='noline' to='/tags'>
                             <TagIcon className={cx('tag')}/>
                         </Button>
-                        <Button theme='noline' to={`/@${username}`}>
-                            <img className={cx('thumbnail')} src={thumbnail} alt={username}/>
-                            <span className={cx('username')}>{username}</span>
+                        <Button theme='noline' to={`/@${displayName}`}>
+                            <img className={cx('thumbnail')} src={thumbnail} alt={displayName}/>
+                            <span className={cx('username')}>{displayName}</span>
                         </Button>
                         <Button theme='noline'>
                             <ChatIcon className={cx('chat')}/>
+                        </Button>
+                        <Button theme='noline' onClick={onLogout}>
+                            <LogoutIcon />
                         </Button>
                     </div>
                 </div>

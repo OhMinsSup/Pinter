@@ -14,10 +14,11 @@ type Props = {
     dropImage: React.ReactNode
     onChangInput(e: any): void,
     onClose(): void,                        
-    uploadRemove(): void
+    uploadRemove(): void,
+    onSubmit(): void
 }
 
-const FormPin: React.SFC<Props> = ({ inputTags, dropImage, onChangInput, description, relation_url, thumbnails, onClose, uploadRemove }) => {
+const FormPin: React.SFC<Props> = ({ inputTags, dropImage, onChangInput, description, relation_url, thumbnails, onClose, uploadRemove, onSubmit }) => {
     const defaultThumbnail = 'https://benefitlombard.eu/images/no-image.jpg';
     return (
         <div className={cx('form-pin')}>
@@ -90,7 +91,7 @@ const FormPin: React.SFC<Props> = ({ inputTags, dropImage, onChangInput, descrip
                 <div className={cx('form-footer')}>
                     <hr />
                     <div className={cx('footer-wrapper')}>
-                        <Button className={cx('submit-btn')} theme="default">
+                        <Button className={cx('submit-btn')} theme="default" onClick={onSubmit}>
                             완료
                         </Button>
                     </div>

@@ -1,27 +1,21 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, compose, bindActionCreators } from 'redux';
-import { withRouter, match } from 'react-router-dom';
+import { Dispatch, bindActionCreators } from 'redux';
 import { throttle } from 'lodash';
 import { StoreState } from '../../store/modules';
 import { getScrollBottom } from '../../lib/common';
 import { actionCreators as listActions } from '../../store/modules/list';
 import PinCardList from '../../components/common/PinCardList';
 
-type MatchType = {
-    displayName?: string
-}
-
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = {
-    location: Location,
-    match: match<MatchType>,
+    displayName: string,
 }
 
-type RecentPinsCardProps = StateProps & DispatchProps & OwnProps;
+type UserPinsCardProps = StateProps & DispatchProps & OwnProps;
 
-class RecentPinsCard extends React.Component<RecentPinsCardProps> {
+class UserPinsCard extends React.Component<UserPinsCardProps> {
     public prev: string | null = null;
 
     public onScroll = throttle(() => {
@@ -35,7 +29,7 @@ class RecentPinsCard extends React.Component<RecentPinsCardProps> {
         if (!pins || pins.length === 0) return;
 
         if (this.props.prefetched) {
-           ListActions.revealPrefetched('list');
+           ListActions.revealPrefetched('user');
            await Promise.resolve();
         }
 
@@ -43,16 +37,16 @@ class RecentPinsCard extends React.Component<RecentPinsCardProps> {
         this.prev = next;
 
         try {
-            await ListActions.prefetchPinList(next);
+            await ListActions.prefetchUserPinList(next);
         } catch (e) {
             console.log(e);
         }
     }
 
     public initialize = async () => {
-        const { ListActions } = this.props;
+        const { ListActions, displayName } = this.props;
         try {
-            await ListActions.getPinList();
+            await ListActions.getUserPinList(displayName);
         } catch (e) {
             console.log(e);
         }
@@ -85,19 +79,16 @@ class RecentPinsCard extends React.Component<RecentPinsCardProps> {
 }
 
 const mapStateToProps = ({ list }: StoreState) => ({
-    pins: list.list.pins,
-    prefetched: list.list.prefetched,
-    next: list.list.next
+    pins: list.user.pins,
+    prefetched: list.user.prefetched,
+    next: list.user.next
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     ListActions: bindActionCreators(listActions, dispatch)
 });
 
-export default compose( 
-    withRouter,
-    connect<StateProps, DispatchProps, OwnProps>(
-      mapStateToProps,
-      mapDispatchToProps
-    )
-  )(RecentPinsCard);
+export default connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
+)(UserPinsCard);

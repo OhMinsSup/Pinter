@@ -24,7 +24,7 @@ class FollowRouter {
         }
 
         try {
-            const user: IUser = await User.findByEmailOrUsername('username', followName);    
+            const user: IUser = await User.findByDisplayName(followName);    
 
             if (!user) {
                 return res.status(404).json({
@@ -64,7 +64,7 @@ class FollowRouter {
         }
 
         try {
-            const user: IUser = await User.findByEmailOrUsername('username', followName);    
+            const user: IUser = await User.findByDisplayName(followName);    
             
             if (!user) {
                 return res.status(404).json({
@@ -94,11 +94,11 @@ class FollowRouter {
 
     private async getFollow(req: Request, res: Response): Promise<any> {
         const userId: string = req['user']._id;
-        const { username } = req.params;
+        const { displayName } = req.params;
 
         let follow = false;
         try {
-            const following: IUser = await User.findByEmailOrUsername('username', username);
+            const following: IUser = await User.findByDisplayName(displayName);
             
             if (!following) {
                 return res.status(404).json({
@@ -120,11 +120,11 @@ class FollowRouter {
     }
 
     private async getFollowing(req: Request, res: Response): Promise<any> {
-        const { username } = req.params;
+        const { displayName } = req.params;
         const { cursor } = req.query;
 
         try {
-            const user: IUser = await User.findByEmailOrUsername('username', username);
+            const user: IUser = await User.findByDisplayName(displayName);
             
             if (!user) {
                 return res.status(404).json({
@@ -133,7 +133,7 @@ class FollowRouter {
             }
 
             const following: Array<IFollow> = await Follow.followingList(user._id, cursor);
-            const next = following.length === 10 ? `/follow/${username}/following/?cursor=${following[9]._id}` : null; 
+            const next = following.length === 10 ? `/follow/${displayName}/following/?cursor=${following[9]._id}` : null; 
             const followingsWithData = following.map(serializeFollowing);
             res.json({
                 next,
@@ -145,11 +145,11 @@ class FollowRouter {
     }
 
     private async getFollower(req: Request, res: Response): Promise<any> {
-        const { username } = req.params;
+        const { displayName } = req.params;
         const { cursor } = req.query;
 
         try {
-            const user: IUser = await User.findByEmailOrUsername('username', username);
+            const user: IUser = await User.findByDisplayName(displayName);
             
             if (!user) {
                 return res.status(404).json({
@@ -158,7 +158,7 @@ class FollowRouter {
             }
 
             const follwer: Array<IFollow> = await Follow.followerList(user._id, cursor);
-            const next = follwer.length === 10 ? `/follow/${username}/following/?cursor=${follwer[9]._id}` : null; 
+            const next = follwer.length === 10 ? `/follow/${displayName}/following/?cursor=${follwer[9]._id}` : null; 
             const follwersWithData = follwer.map(serializeFollower);
             res.json({
                 next,
@@ -173,13 +173,13 @@ class FollowRouter {
     public routes(): void {
         const { router } = this;
 
-        router.get('/exists/:username', this.getFollow);
+        router.get('/exists/:displayName', this.getFollow);
 
         router.post('/:followName', this.follow);
         router.delete('/:followName', this.unfollow);
 
-        router.get('/:username/following', this.getFollowing);
-        router.get('/:username/follower', this.getFollower);
+        router.get('/:displayName/following', this.getFollowing);
+        router.get('/:displayName/follower', this.getFollower);
     }
 }
 

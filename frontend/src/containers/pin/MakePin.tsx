@@ -14,14 +14,31 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type MakePinProps = StateProps & DispatchProps;
 
 class MakePin extends React.Component<MakePinProps> {
+    public onSubmit = async () => {
+        const { description, relation_url, tags, urls, PinActions } = this.props;
+        const pin = {
+            description,
+            relation_url,
+            tags,
+            urls
+        };
+        try {
+            await PinActions.writePin(pin);
+            PinActions.initialPin();
+            // TODO 보드 설정으로 이동
+        } catch (e) {
+            PinActions.initialPin();
+            console.log(e);
+        }
+    }
+
     public uploadUrl = async (file: any) => {
         const { PinActions } = this.props;
         
         PinActions.setUploadStatus(true);
-        try {
-            console.log(file);
-            
-            await PinActions.createUploadUrlRequest({ file });
+        try {            
+            await PinActions.createUploadUrl(file);
+            PinActions.setUploadStatus(false);
         } catch (e) {
             PinActions.setUploadStatus(false);
             console.log(e);
@@ -78,11 +95,12 @@ class MakePin extends React.Component<MakePinProps> {
     public onClose = () => {
         const { PinActions } = this.props;
         PinActions.setMakePinFullscreenLoader(false);
+        PinActions.initialPin();
     }   
 
     public render() {
         const { visible, description, relation_url, tags, thumbnails } = this.props;
-        const { onDrop, onPasteImage, onUploadClick, onChangeInput, onInsertTag, onRemoveTag, onClose, uploadRemove } = this;
+        const { onDrop, onPasteImage, onUploadClick, onChangeInput, onInsertTag, onRemoveTag, onClose, uploadRemove, onSubmit } = this;
         if (!visible) return null;
         return (
             <PinTemplate>
@@ -103,6 +121,7 @@ class MakePin extends React.Component<MakePinProps> {
                         onClose={onClose}
                         uploadRemove={uploadRemove}
                         thumbnails={thumbnails}
+                        onSubmit={onSubmit}
                 />
             </PinTemplate>
         )
@@ -113,6 +132,7 @@ const mapStateToProps = ({ pin }: StoreState) => ({
     description: pin.description,
     thumbnails: pin.upload.url,
     relation_url: pin.relation_url,
+    urls: pin.urls,
     visible: pin.visible,
     tags: pin.tags
 });

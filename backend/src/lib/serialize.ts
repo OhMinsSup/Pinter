@@ -8,6 +8,8 @@ const serializePin = (data: any) => {
         description,
         createdAt,
         urls,
+        comments,
+        likes,
         user,
     } = data;    
     const tags = data.tags.map(tag => tag.name);
@@ -18,6 +20,8 @@ const serializePin = (data: any) => {
         description,
         urls: url,
         createdAt,
+        likes,
+        comments,
         tags,
         user: {
             ...pick(user, ['_id', 'username']),
