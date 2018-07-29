@@ -3,6 +3,7 @@ import * as classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import Button from '../../common/Button';
 
+const DownArrowIcon = require('react-icons/lib/fa/angle-down');
 const styles = require('./PinHeader.scss');
 const cx = classNames.bind(styles);
 
@@ -20,11 +21,17 @@ const PinHeader = () => {
                 <span className={cx('username')}>
                     @<b>veloss</b>
                 </span>
-                <Button className={cx('profile-button')} to="/" theme="default">
-                    프로필
-                </Button>
-                
             </Link>
+            <Button className={cx('profile-button')} to="/" theme="default">
+                    프로필
+            </Button>
+            <div className={cx('action-button')} style={{ marginLeft: '1rem' }}>
+                <div className={cx('dropdown')}>
+                    <button className={cx('dropdown-button')} style={{ border: 0, background: 'white' }}>
+                        <DownArrowIcon className={cx('icons')} />
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }

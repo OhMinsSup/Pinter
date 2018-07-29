@@ -5,8 +5,8 @@ const styles = require('./PinWrapper.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    header?: React.ReactNode,
-    content?: React.ReactNode
+    header: React.ReactNode,
+    content: React.ReactNode
 }
 const PinWrapper: React.SFC<Props> = ({ header, content }) => {
     return (

@@ -60,7 +60,23 @@
 
         .profile-button {
             float: right;
-            margin-bottom: 1rem;
+        }
+
+        .action-button {
+            margin: -2px -9px 0 auto;
+            min-width: inherit;
+            display: inline-block;
+            .dropdown {
+                position: relative;
+                .dropdown-button {
+                    margin-left: 9px;
+                    padding: 2px 9px;
+                    display: inline-block;
+                    line-height: 1;
+                    position: relative;
+                    cursor: pointer;
+                }
+            }
         }
     }
 }
