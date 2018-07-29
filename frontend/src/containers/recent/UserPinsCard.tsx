@@ -6,6 +6,7 @@ import { StoreState } from '../../store/modules';
 import { getScrollBottom } from '../../lib/common';
 import { actionCreators as listActions } from '../../store/modules/list';
 import PinCardList from '../../components/common/PinCardList';
+import Loading from '../../components/common/Loading';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -70,8 +71,9 @@ class UserPinsCard extends React.Component<UserPinsCardProps> {
     }
 
     public render() {
-        const { pins } = this.props;
-        
+        const { pins, loading } = this.props;
+        if (loading) return <Loading />
+
         return (
             <PinCardList pins={pins}/>
         );
@@ -81,7 +83,8 @@ class UserPinsCard extends React.Component<UserPinsCardProps> {
 const mapStateToProps = ({ list }: StoreState) => ({
     pins: list.user.pins,
     prefetched: list.user.prefetched,
-    next: list.user.next
+    next: list.user.next,
+    loading: list.user.loading
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

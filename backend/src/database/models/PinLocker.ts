@@ -50,7 +50,7 @@ PinLocker.statics.lockerList = function(userId: string, cursor?: string): Promis
         }],
     })
     .sort({ _id: -1 })
-    .limit(5);
+    .limit(15);
 }
 
 PinLocker.statics.checkExists = function(userId: string, pinId: string): Promise<any> {

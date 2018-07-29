@@ -1,0 +1,66 @@
+@import 'utils';
+
+.pin-header {
+    display: flex;
+    height: 48px;
+    align-items: center;
+    .user-group-profile {
+        flex: 1;
+        img {
+            margin-top: 0;
+            float: left;
+            margin-left: -58px;
+            position: absolute;
+            height: 48px;
+            width: 48px;
+            border-radius: 50%;
+            border: 0;
+        }
+        .full-name-group {
+            display: flex;
+            color: black;
+            font-size: 18px;
+            line-height: 24px;
+            font-weight: bold;
+            max-width: 32ch;
+            .displayName {
+                font-size: 18px;
+                font-weight: bold;
+                word-break: break-all;
+                color: black;
+                max-width: 100%;
+                overflow: hidden!important;
+                text-overflow: ellipsis!important;
+                white-space: nowrap!important;
+                word-wrap: normal!important;
+            }
+            .username-bades {
+                font-size: 0.9em;
+            }
+            .username-break {
+                color: #14171a;
+                font-size: 18px;
+                line-height: 24px;
+                font-weight: bold;
+            }
+        }
+
+        .username {
+            font-size: 14px;
+            color: #657786;
+            direction: ltr!important;
+            text-align: left!important;
+            unicode-bidi: embed;
+            max-width: 100%;
+            overflow: hidden!important;
+            text-overflow: ellipsis!important;
+            white-space: nowrap!important;
+            word-wrap: normal!important;
+        }
+
+        .profile-button {
+            float: right;
+            margin-bottom: 1rem;
+        }
+    }
+}

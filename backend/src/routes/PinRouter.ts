@@ -228,7 +228,7 @@ class PinRouter {
             }
 
             const pin: Array<IPin> = await Pin.readPinList(userId, cursor);
-            const next = pin.length === 5 ? `/pin/${displayName ? `${displayName}/list`: 'all/list' }?cursor=${pin[4]._id}` : null;
+            const next = pin.length === 15 ? `/pin/${displayName ? `${displayName}/list`: 'all/list' }?cursor=${pin[14]._id}` : null;
             const pinWithData = pin.map(serializePin);
     
             res.json({
@@ -292,7 +292,7 @@ class PinRouter {
         
         try {
             const locker: Array<IPinLocker> = await PinLocker.lockerList(userId, cursor);
-            const next = locker.length === 5 ? `/pin/locker/list?cusor=${locker[4]._id}` : null;
+            const next = locker.length === 15 ? `/pin/locker/list?cusor=${locker[14]._id}` : null;
             const lockersWithData = locker.map(serializeLocker);
             const count: Array<IPinLocker> = await PinLocker.countLocker();
             res.json({

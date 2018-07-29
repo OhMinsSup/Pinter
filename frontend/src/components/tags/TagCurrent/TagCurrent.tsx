@@ -13,9 +13,11 @@ type Props = {
 };
 
 const TagCurrent: React.SFC<Props> = ({ name, count, lastSort }) => {
+  console.log(name, count, lastSort);
+  
   return (
     <div className={cx('tag-current')}>
-      <Link className={cx('backwards-btn')} to={`/tags${lastSort === 'popular' ? '' : '?sort=name'}`}>
+      <Link className={cx('backwards-btn')} to={`/tags${lastSort === 'latest' ? '' : '?sort=name'}`}>
         <BackIcon />
         전체태그 보기
       </Link>
@@ -29,11 +31,5 @@ const TagCurrent: React.SFC<Props> = ({ name, count, lastSort }) => {
     </div>
   );
 };
-
-TagCurrent.defaultProps = {
-    count: 8,
-    name: 'lakers',
-    lastSort: 'popular'
-}
 
 export default TagCurrent;

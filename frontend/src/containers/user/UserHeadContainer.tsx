@@ -49,9 +49,10 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 
     public initialize = async () => {
-        const { match: { params: { displayName } }, FollowActions } = this.props;
+        const { match: { params: { displayName } }, FollowActions, SettingActions } = this.props;
 
         try {
+            await SettingActions.getUserInfo(displayName);
             await FollowActions.checkExistsUserFollow(displayName);
         } catch (e) {
             console.log(e);
@@ -63,8 +64,8 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 
     public render() {
-        const { username, displayName, thumbnail, match } = this.props;
-        const { onPinScreen, onSettingScreen } = this;
+        const { username, displayName, thumbnail, match, follower, following, pin, follow } = this.props;
+        const { onPinScreen, onSettingScreen, onFollow, onUnFollow } = this;
         const { url } = match;        
         return (
             <UserHead 
@@ -72,17 +73,26 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
                 displayName={displayName}
                 thumbnail={thumbnail}
                 url={url}
+                follower={follower}
+                following={following}
+                pin={pin}
+                follow={follow}
                 onPinScreen={onPinScreen}
                 onSettingScreen={onSettingScreen}
+                onFollow={onFollow}
+                onUnFollow={onUnFollow}
             />
         )
     }
 }
 
-const mapStateToProps = ({ user, pin, setting, follow }: StoreState) => ({
-    username: user.user && user.user.username,
-    thumbnail: user.user && user.user.thumbnail,
-    displayName: user.user && user.user.displayName,
+const mapStateToProps = ({ pin, setting, follow }: StoreState) => ({
+    username: setting.user.username,
+    thumbnail: setting.user.thumbnail,
+    displayName: setting.user.displayName,
+    following: setting.user.following,
+    follower: setting.user.follower,
+    pin: setting.user.pin,
     pin_visible: pin.visible,
     setting_visible: setting.visible,
     follow: follow.user.follow

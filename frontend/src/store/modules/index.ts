@@ -6,6 +6,7 @@ import pin, { PinState } from './pin';
 import setting, { SettingState } from './setting';
 import list, { ListState } from './list';
 import follow, { FollowState } from './follow';
+import tag, { TagState } from './tag';
 
 export default combineReducers({ 
     base: base,
@@ -14,6 +15,7 @@ export default combineReducers({
     pin: pin,
     list: list,
     follow: follow,
+    tag: tag,
     setting: setting
  });
 
@@ -24,6 +26,7 @@ export interface StoreState {
     user: UserState;
     pin: PinState;
     list: ListState;
+    tag: TagState;
     follow: FollowState;
     setting: SettingState;
 }

@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import Tag, { ITag } from '../database/models/Tag';
 import Pin, { IPin } from '../database/models/Pin';
 import User, { IUser } from '../database/models/User';
+import Count, { ICount } from '../database/models/Count';
 import { serializeTag, serializeTagPin } from '../lib/serialize';
 
 class CommonRouter {
@@ -41,19 +42,27 @@ class CommonRouter {
         try {
             const { pin }: ITag = await Tag.findByTagName(tag);
             const pinData = await Promise.all(pin.map(pinId => Pin.readPinById(pinId._id)));
-            res.json(pinData.map(serializeTagPin));
+            res.json({
+                pinWithData: pinData.map(serializeTagPin)
+            });
         } catch (e) {
             res.status(500).json(e);
         }
     }
 
-    private async recommendFollow(req: Request, res: Response): Promise<any> {
+    private async getUserInfo(req: Request, res: Response): Promise<any> {
+        const { displayName } = req.params;
         try {
-            const user = await User.aggregate([
-
-            ])
+            const user: IUser = await User.findByDisplayName(displayName);
+            const count: ICount = await Count.findOne({ user: user._id });
             res.json({
-                user
+                username: user.username,
+                displayName: user.profile.displayName,
+                thumbnail: user.profile.thumbnail,
+                userId: user._id,
+                follower: count.follower,
+                following: count.following,
+                pin: count.pin
             });
         } catch (e) {
             res.status(500).json(e);
@@ -65,6 +74,7 @@ class CommonRouter {
 
         router.get('/tags', this.getTags);
         router.get('/tags/:tag', this.getTagInfo);
+        router.get('/info/:displayName', this.getUserInfo);
     }
 }
 

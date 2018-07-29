@@ -76,7 +76,7 @@ Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<an
         }]
     })
     .sort({ _id: -1 })
-    .limit(5);
+    .limit(15);
 }
 
 Pin.statics.like = function(pinId: string): Promise<any> {

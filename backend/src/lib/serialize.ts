@@ -1,5 +1,4 @@
 import { pick }  from 'lodash';
-import Tag from '../database/models/Tag';
 
 const serializePin = (data: any) => {
     const {

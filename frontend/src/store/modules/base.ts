@@ -6,6 +6,7 @@ export enum BaseActionType {
     SHOW_USER_MENU = 'base/SHOW_USER_MENU',
     HIDE_USER_MENU = 'base/HIDE_USER_MENU',
     SET_FULLSCREEN_LOADER = 'base/SET_FULLSCREEN_LOADER',
+    SEARCH_FULLSCREEN_LOADER = 'base/SEARCH_FULLSCREEN_LOADER'
 }
 
 export const actionCreators = {
@@ -13,8 +14,10 @@ export const actionCreators = {
     showUserMenu: createAction(BaseActionType.SHOW_USER_MENU),
     hideUserMenu: createAction(BaseActionType.HIDE_USER_MENU),
     setFullscreenLoader: createAction(BaseActionType.SET_FULLSCREEN_LOADER, (visible: boolean) => visible),
+    searchFullscreenLoader: createAction(BaseActionType.SEARCH_FULLSCREEN_LOADER, (visible: boolean) => visible)
 };
 
+type SearchFullscreenLoaderAction = ReturnType<typeof actionCreators.searchFullscreenLoader>;
 type SetHeaderVisibilityAction = ReturnType<typeof actionCreators.setHeaderVisibility>;
 type SetFullscreenLoaderAction = ReturnType<typeof actionCreators.setFullscreenLoader>;
 
@@ -22,12 +25,14 @@ export interface BaseState {
     userMenu?: boolean;
     header?: boolean;
     fullscreenLoader?: boolean;
+    search?: boolean;
 }
 
 const initialState: BaseState = {
     userMenu: false,
     header: true,
     fullscreenLoader: false,
+    search: false
 };
 
 export default handleActions<BaseState, any>({
@@ -51,6 +56,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.fullscreenLoader = action.payload;
+        })
+    },
+    [BaseActionType.SEARCH_FULLSCREEN_LOADER]: (state, action: SearchFullscreenLoaderAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.search = action.payload;
         })
     }
 }, initialState);

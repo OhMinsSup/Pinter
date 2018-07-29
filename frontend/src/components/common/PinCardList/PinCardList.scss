@@ -2,8 +2,11 @@
 
 .pin-card-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     position: relative;
-    margin-top: 2rem;
-    margin-right: 1.5rem;
+    top: 5rem;
+    margin-left: -1.575rem;
+    margin-right: -1.575rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
 }

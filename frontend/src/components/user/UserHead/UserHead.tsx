@@ -7,15 +7,21 @@ const styles = require('./UserHead.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    username: string | any,
-    displayName: string | any,
-    thumbnail: string | any,
+    username: string,
+    displayName: string,
+    thumbnail: string,
+    follower: number,
+    following: number,
+    pin: number,
     url: string,
+    follow: boolean,
     onPinScreen(): any,
     onSettingScreen(): any
+    onFollow(displayName: string): Promise<void>,
+    onUnFollow(displayName: string): Promise<void>
  }
 
-const UserHead: React.SFC<Props> = ({ username, displayName, thumbnail, url, onPinScreen, onSettingScreen }) => {    
+const UserHead: React.SFC<Props> = ({ username, displayName, thumbnail, url, onFollow, onUnFollow, onPinScreen, onSettingScreen, follower, following, pin, follow }) => {    
     return (
         <div className={cx('user-head')}>
             <img src={thumbnail} alt={username}/>
@@ -31,18 +37,28 @@ const UserHead: React.SFC<Props> = ({ username, displayName, thumbnail, url, onP
                         <Button className={cx('profile-setting')} theme="outline" onClick={onSettingScreen}>
                                 프로필 편집
                         </Button>
-                        <Button className={cx("subscribe")} theme="outline">
-                            구독하기
-                        </Button>
+                        <React.Fragment>
+                            {
+                                follow ? (
+                                    <Button className={cx("subscribe")} theme="default" onClick={() => onUnFollow(displayName)}>
+                                        구독중
+                                    </Button>
+                                ) : (
+                                    <Button className={cx("subscribe")} theme="outline" onClick={() => onFollow(displayName)}>
+                                        구독하기
+                                    </Button>
+                                )
+                            }
+                        </React.Fragment>
                     </div>
                     <div className={cx('username')}>{username}</div>
                 </section>
                 <section className={cx('mini-profile')}>
                     <h2>@{displayName}</h2>
                     <div className={cx('content-wrapper')}>
-                        <p className={cx('count')}>팔로잉&nbsp;5&nbsp;</p>
-                        <p className={cx('count')}>팔로우&nbsp;5&nbsp;</p>
-                        <p className={cx('count')}>게시글&nbsp;5&nbsp;</p>
+                        <p className={cx('count')}>팔로잉&nbsp;{following}&nbsp;</p>
+                        <p className={cx('count')}>팔로우&nbsp;{follower}&nbsp;</p>
+                        <p className={cx('count')}>핀&nbsp;{pin}&nbsp;</p>
                     </div>
                 </section>
                 <section className={cx('nav-menu-itmes')}>

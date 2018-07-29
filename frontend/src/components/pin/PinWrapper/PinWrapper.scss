@@ -1,0 +1,41 @@
+@import 'utils';
+
+.pin-wrapper {
+    background-color: transparent;
+    border-radius: 6px;
+    min-height: 250px;
+    margin-bottom: 20px;
+    position: absolute;
+    top: 60px!important;
+    left: 50%;
+    width: 640px;
+    margin-left: -320px;
+    transform: translate3d(0,0,0);
+    .wrapper {
+        z-index: 1002;
+        float: left;
+        width: 642px;
+        position: relative;
+        margin-bottom: 0;
+        border-radius: 8px;
+        padding: 0;
+        background-color: #f5f8fa;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background-clip: padding-box;
+        .wrapper1 {
+            outline: 0;
+            background-color: white;
+            cursor: default;
+            padding: 30px 40px;
+            border-bottom: 0;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            position: relative;
+            min-height: 51px;
+            header {
+                margin-bottom: 15px;
+                margin-left: 58px;
+            }
+        }
+    }
+}

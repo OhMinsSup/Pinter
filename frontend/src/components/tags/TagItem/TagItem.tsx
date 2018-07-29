@@ -10,12 +10,16 @@ const cx = classNames.bind(styles);
 type Props = {
   name: string,
   count: number,
+  onClick: (info: any) => void
 };
 
-const TagItem: React.SFC<Props> = ({ name, count }) => (
+const TagItem: React.SFC<Props> = ({ name, count, onClick }) => (
   <Link
     className={cx('tag-item')}
     to={`/tags/${escapeForUrl(name)}`}
+    onClick={() => {
+      onClick({ name, count });
+    }}
   >
     <div className={cx('name')}>{name}</div>
     <div className={cx('counts')}>{count}</div>

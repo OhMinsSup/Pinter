@@ -7,6 +7,7 @@ import { StoreState } from '../../store/modules';
 import { getScrollBottom } from '../../lib/common';
 import { actionCreators as listActions } from '../../store/modules/list';
 import PinCardList from '../../components/common/PinCardList';
+import Loading from '../../components/common/Loading';
 
 type MatchType = {
     displayName?: string
@@ -76,7 +77,8 @@ class RecentPinsCard extends React.Component<RecentPinsCardProps> {
     }
 
     public render() {
-        const { pins } = this.props;
+        const { pins, loading } = this.props;
+        if (loading) return <Loading />;
         
         return (
             <PinCardList pins={pins}/>
@@ -87,7 +89,8 @@ class RecentPinsCard extends React.Component<RecentPinsCardProps> {
 const mapStateToProps = ({ list }: StoreState) => ({
     pins: list.list.pins,
     prefetched: list.list.prefetched,
-    next: list.list.next
+    next: list.list.next,
+    loading: list.list.loading
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

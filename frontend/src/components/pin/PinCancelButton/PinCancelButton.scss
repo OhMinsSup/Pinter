@@ -1,0 +1,10 @@
+@import 'utils';
+.cancel-wrapper {
+    cursor: pointer;
+    position: fixed;
+    right: 20px;
+    top: 8px;
+    svg {
+        font-size: 2.5rem;
+    }
+}
