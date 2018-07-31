@@ -1,0 +1,67 @@
+@import 'utils';
+
+.pin-action {
+    margin-bottom: 10px;
+    .icons {
+        margin-bottom: 5px;
+        .icon {
+            cursor: pointer;
+            margin-right: 10px;
+            .like {
+                font-size: 28px;
+                color: black;
+                &:hover {
+                    color: $oc-pink-4;
+                }
+                &:active {
+                    color: $oc-pink-5;
+                }
+            }
+
+            .comment {
+                font-size: 29px;
+                color: black;
+                &:hover {
+                    color: $oc-red-6;
+                }
+                &:active {
+                    color: $oc-red-7;
+                }
+            }
+
+            .save {
+                font-size: 28px;
+                color: black;
+                &:hover {
+                    color: $oc-blue-4;
+                }
+                &:active {
+                    color: $oc-blue-5;
+                }
+            }
+
+            &.right {
+                margin-left: auto;
+                margin-right: -10px;
+                display: inline-block;
+                float: right;
+            }
+        }
+    }
+    .like-count {
+        font-weight: 600;
+        cursor: pointer;
+    }
+    
+    .comment-count {
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .like-count+.comment-count::before {
+        color: $oc-gray-5;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        content: "\00B7";
+    }
+}

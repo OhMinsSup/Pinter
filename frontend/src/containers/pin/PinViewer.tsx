@@ -1,20 +1,14 @@
 import * as React from 'react';
-import PinViewerTemplate from '../../components/pin/PinViewerTemplate';
-import PinCancelButton from '../../components/pin/PinCancelButton';
-import PinWrapper from '../../components/pin/PinWrapper';
-import PinHeader from '../../components/pin/PinHeader';
-import PinContent from '../../components/pin/PinContent';
+import PinFeed from '../../components/pin/PinFeed';
+import PinSide from '../../components/pin/PinSide';
 
 class PinViewer extends React.Component {
     public render() {
         return (
-            <PinViewerTemplate>
-                <PinCancelButton />
-                <PinWrapper
-                    header={<PinHeader />}
-                    content={<PinContent />}
-                />
-            </PinViewerTemplate>
+            <React.Fragment>
+                <PinFeed />
+                <PinSide />
+            </React.Fragment>
         )
     }
 }

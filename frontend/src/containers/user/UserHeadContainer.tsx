@@ -59,6 +59,12 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
         }
     }
 
+    public componentDidUpdate(preProps: UserHeadContainerProps) {
+        if ((preProps.follower !== this.props.follower) || (preProps.following !== this.props.following) || (preProps.pin !== this.props.pin)) {
+            this.initialize();
+        }
+    }
+
     public componentDidMount() {
         this.initialize();
     }

@@ -29,7 +29,7 @@ type Props = {
 const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, description, urls, createdAt, likes, comments, tags }) => {
     return (
     <div className={cx('common-card')}>
-      <Link to="/" className={cx('thumbnail-wrapper')}>
+      <Link to={`/pin/${id}`} className={cx('thumbnail-wrapper')}>
         <img src={urls} />
         <div className={cx('white-mask')}>
           <div className={cx('next-right')}>
@@ -49,7 +49,7 @@ const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, de
             @{displayName} <SpriteChevron />
           </div>
           <h3>
-            <Link to="/">{description}</Link>
+            <Link to={`/pin/${id}`}>{description}</Link>
           </h3>
           <div className={cx('subinfo')}>
             <section className={cx('info')}>
@@ -61,23 +61,20 @@ const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, de
                 <SubInfoButton 
                     icon={<HeartIcon/>}
                     theme="like"
-                    to="/"
                 />
                 <SubInfoButton 
                     icon={<CommentIcon/>}
                     theme="comment"
-                    to="/"                
                 />
                 <SubInfoButton 
                     icon={<SaveIcon/>}
                     theme="save"
-                    to="/"                
                 />
                 <span className={cx('date')}>{moment(createdAt).format('ll')}</span>       
             </section>
           </div>
         </div>
-        <div className={cx('content')}>
+        <div className={cx('tag-wrapper')}>
           <div className={cx('tags')}>{tags.map(t => <a key={t}>{t}</a>)}</div>
         </div>
       </div>

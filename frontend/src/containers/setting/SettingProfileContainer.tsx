@@ -34,9 +34,9 @@ class SettingProfileContainer extends React.Component<SettingProfileContainerPro
     }
 }
 
-const mapStateToProps = ({ setting, user }: StoreState) => ({
-    thumbnail: user.user && user.user.thumbnail,
-    displayName: user.user && user.user.displayName,
+const mapStateToProps = ({ setting }: StoreState) => ({
+    thumbnail: setting.user.thumbnail,
+    displayName: setting.user.displayName,
     visible: setting.visible
 })
 

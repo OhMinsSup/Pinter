@@ -1,0 +1,19 @@
+@import 'utils';
+
+.pin-comment {
+    border-top: 1px solid $oc-gray-2;
+    padding: 15px 0;
+    .comment-box {
+        border: 0;
+        height: 20px;
+        resize: none;
+        width: 100%;
+        font-size: 14px;
+        &:focus {
+          outline: none;
+        }
+        &::placeholder {
+          color: #999;
+        }
+    }
+}

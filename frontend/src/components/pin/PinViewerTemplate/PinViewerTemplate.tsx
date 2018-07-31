@@ -5,12 +5,15 @@ const styles = require('./PinViewerTemplate.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    children: React.ReactNode
+    children: React.ReactNode,
+    side?: React.ReactNode
 }
 
 const PinViewerTemplate: React.SFC<Props> = ({ children }) => {
     return (
-        <div className={cx('pin-viewer-template')}>{children}</div>
+        <div className={cx('pin-viewer-template')}>
+            {children}
+        </div>
     )
 }
 

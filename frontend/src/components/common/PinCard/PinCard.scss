@@ -170,18 +170,18 @@
             }
         }
         .subinfo-wrapper {
-            margin-top: 1rem;
-            flex-direction: row;
-            float: right;
-            .date {
-                color: $oc-gray-5;
-                font-weight: 500;
-                font-family: Georgia,sans-serif;
-            }
+          margin-top: 1rem;
+          flex-direction: row;
+          float: right;
+          .date {
+            color: $oc-gray-5;
+            font-weight: 500;
+            font-family: Georgia,sans-serif;
+          }
         }
       }
     }
-    .content {
+    .tag-wrapper {
       margin-top: 1.5rem;
       line-height: 1.5rem;
       overflow-y: hidden;

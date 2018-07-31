@@ -1,15 +1,8 @@
 @import 'utils';
 
 .pin-viewer-template {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(50, 50, 50, 0.6);
-    z-index: 1010;
     display: flex;
-    align-items: center;
+    flex-direction: row;
     justify-content: center;
-    color: white;
+    margin-top: 4rem;
 }
