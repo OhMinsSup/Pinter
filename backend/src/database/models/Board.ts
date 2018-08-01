@@ -4,8 +4,8 @@ import { IPin } from './Pin';
 
 export interface IBoard extends Document {
     _id: string;
-    user?: IUser;
-    pin?: IPin;
+    user?: Array<IUser>;
+    pin?: Array<IPin>;
     theme?: string;
 }
 
@@ -26,7 +26,19 @@ const Board = new Schema({
 });
 
 Board.statics.readBoardById = function(boardId: string): Promise<any> {
-    return this.findById(boardId).populate('user');
+    return this.findById(boardId).
+    populate({
+        path: 'user',
+        populate: [{
+            path: 'user'
+        }]
+    })
+    .populate({
+        path: 'pin',
+        populate: [{
+            path: 'pin'
+        }]
+    });
 }
 
 const BoardModel = model<IBoard>('Board', Board) as IBoardModel;

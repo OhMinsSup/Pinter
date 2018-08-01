@@ -1,0 +1,20 @@
+@import 'utils';
+
+.pin-menu-wrapper {
+  position: relative;
+  .pin-menu-positioner {
+    position: absolute;
+    right: -3rem;
+    top: 4rem;
+    .pin-menu {
+        min-width: 10rem;
+        border: 1px solid $oc-gray-1;
+        @include material-shadow(3, 0.5);
+        .menu-items {
+            background: white;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+    }
+  }
+}

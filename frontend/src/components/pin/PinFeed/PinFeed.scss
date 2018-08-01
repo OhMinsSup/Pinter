@@ -28,6 +28,17 @@
                 font-size: 12px; 
             }
         }
+
+        .sub {
+            margin: 0 0 0 auto;
+            cursor: pointer;
+            svg {
+                color: black;
+                &:hover {
+                    color: $oc-blue-5;
+                }
+            }
+        }
     }
 
     .pin-image {

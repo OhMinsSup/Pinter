@@ -12,10 +12,7 @@
     "semicolon": false,
     "variable-name": false,
     "object-literal-sort-keys": false,
-    "ordered-imports": [false, {
-      "import-sources-order": "any",
-      "named-imports-order": "case-insensitive"
-    }],
+    "ordered-imports": false,
     "interface-over-type-literal": false,
     "no-unused-variable": false,
     "no-var-requires": false,

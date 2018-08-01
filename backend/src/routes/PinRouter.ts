@@ -122,7 +122,7 @@ class PinRouter {
             const tagIds: Array<ITag> = await Promise.all(uniqueTags.map(tag => Tag.getTagId(tag, pinId)));
             pin.tags = tagIds;
             pin.save();
-
+            await Count.pinCount(userId);
             res.json({
                 pinId: pinId
             });

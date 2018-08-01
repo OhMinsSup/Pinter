@@ -175,14 +175,3 @@ Tag.statics.removeTagsFromPin = async function(pinId: string, tags: Array<string
 const TagModel = model<ITag>('Tag', Tag) as ITagModel;
 
 export default TagModel;
-
-/*
-    .populate({
-        path: 'pin',
-        populate: [{
-            path: 'user',
-            model: 'User'
-        }]
-    })
-    .sort({ _id: -1 })
-*/

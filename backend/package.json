@@ -6,6 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "nodemon -exec",
+    "restart": "tsc-watch --onSuccess \" node dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -46,6 +47,7 @@
     "@types/shortid": "0.0.29",
     "nodemon": "^1.17.4",
     "ts-node": "^6.0.3",
+    "tsc-watch": "^1.0.26",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
   }

@@ -1,0 +1,31 @@
+@import 'utils';
+
+.comment-template {
+    position: relative;
+    margin-left: 2rem;
+    color: $oc-gray-8;
+    font-size: 0.875rem;
+    section {
+        .title {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            font-weight: 500;
+            border-bottom: 1px solid $oc-gray-2;
+        }
+        .list {
+            list-style: none;
+            padding-left: 0;
+            padding-top: 0rem;
+            padding-bottom: 0.375rem;
+            .comments {
+                margin-bottom: 7px;
+                .username {
+                    font-weight: 600;
+                }
+                .comment {
+                    letter-spacing: .01em;
+                }
+            }
+        }
+    }
+}

@@ -3,6 +3,7 @@ import * as classNames from 'classnames/bind';
 import PinAction from '../PinAction';
 import PinInfo from '../PinInfo';
 import PinComment from '../PinComment';
+import { FaChevronDown } from 'react-icons/lib/fa';
 
 const styles = require('./PinFeed.scss');
 const cx = classNames.bind(styles);
@@ -15,6 +16,9 @@ const PinFeed = () => {
                 <div className={cx('info')}>
                     <span className={cx('displayName')}>veloss</span>
                     <span className={cx('username')}>오민섭</span>
+                </div>
+                <div className={cx('sub')}>
+                    <FaChevronDown />
                 </div>
             </header>
             <div className={cx('pin-image')}>

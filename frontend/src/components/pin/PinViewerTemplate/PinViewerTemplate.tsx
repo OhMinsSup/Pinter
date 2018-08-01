@@ -6,7 +6,6 @@ const cx = classNames.bind(styles);
 
 type Props = {
     children: React.ReactNode,
-    side?: React.ReactNode
 }
 
 const PinViewerTemplate: React.SFC<Props> = ({ children }) => {

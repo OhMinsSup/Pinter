@@ -168,6 +168,29 @@ const serializeFollowing = (data: any) => {
     }
 }
 
+const serializeBoard = (data: any) => {
+    const {
+        _id: boardId,
+        theme
+    } = data;
+    const user = data.user.map(user => {
+        const { profile: { displayName, thumbnail }, id: userId, username } = user;
+        return {
+            displayName,
+            thumbnail,
+            userId,
+            username
+        }
+    });
+    const pin = data.pin.map(pin => pin);
+    return {
+        boardId,
+        theme,
+        pin,
+        user
+    }
+}
+
 export {
     serializeLike,
     serializePin,
@@ -176,5 +199,6 @@ export {
     serializeTagPin,
     serializeLocker,
     serializeFollower,
-    serializeFollowing
+    serializeFollowing,
+    serializeBoard
 }
