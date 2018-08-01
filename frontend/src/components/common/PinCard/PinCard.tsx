@@ -2,14 +2,11 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as classNames from 'classnames/bind';
 import SubInfoButton from '../SubInfoButton';
-import SpriteChevron from '../SpriteChevron';
 import * as moment from 'moment';
 
 const HeartIcon = require('react-icons/lib/fa/heart-o');
 const CommentIcon = require('react-icons/lib/fa/comment-o');
 const SaveIcon = require('react-icons/lib/fa/bookmark-o');
-const RightIcon = require('react-icons/lib/fa/arrow-circle-right');
-const LeftIcon = require('react-icons/lib/fa/arrow-circle-left');
 const styles = require('./PinCard.scss');
 const cx = classNames.bind(styles);
 
@@ -31,14 +28,7 @@ const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, de
     <div className={cx('common-card')}>
       <Link to={`/pin/${id}`} className={cx('thumbnail-wrapper')}>
         <img src={urls} />
-        <div className={cx('white-mask')}>
-          <div className={cx('next-right')}>
-            <RightIcon />
-          </div>
-          <div className={cx('next-left')}>
-            <LeftIcon />
-          </div>
-        </div>
+        <div className={cx('white-mask')} />
       </Link>
       <div className={cx('card-content')}>
         <div className={cx('user-thumbnail-wrapper')}>
@@ -46,7 +36,7 @@ const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, de
         </div>
         <div className={cx('content-head')}>
           <div className={cx('username')}>
-            @{displayName} <SpriteChevron />
+            @{displayName}
           </div>
           <h3>
             <Link to={`/pin/${id}`}>{description}</Link>

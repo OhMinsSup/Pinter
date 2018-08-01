@@ -1,0 +1,44 @@
+@import 'utils';
+
+.list-box {
+    background-color: white;
+    max-width: 600px;
+    flex: 0 1 600px;
+    min-height: 200px;
+    align-items: center;
+    margin: auto;
+    pointer-events: auto;
+    width: 100%;
+    .title {
+        margin: 0 auto;
+        width: 600px;
+        background-color: white;
+        border-bottom: 1px solid $oc-gray-4;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 16px;
+    }
+    .box {
+        margin: 0 auto;
+        width: 600px;
+        display: block;
+        overflow-y: scroll;
+        background-color: white;
+        flex: 0 1 600px;
+        min-height: 200px;
+        .list-wrapper {
+            display: flex;
+            background-color: white;
+            flex-direction: column;
+            flex-grow: 1;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            .list-itme-wrapper {
+                border-radius: 3px;
+                border: 1px solid$oc-gray-4;
+            }
+        }
+    }
+}

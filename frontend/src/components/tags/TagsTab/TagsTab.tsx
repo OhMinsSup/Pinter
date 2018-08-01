@@ -15,7 +15,7 @@ type Props = {
 const TagsTab: React.SFC<Props> = ({ sort }) => (
   <div className={cx('tags-tab')}>
     <Link className={cx({ active: sort === 'latest' })} to="/tags?sort=latest">
-      <HotIcon />인기순
+      <HotIcon />최신순
     </Link>
     <Link className={cx({ active: sort === 'name' })} to="/tags?sort=name">
       <AlphabeticalIcon />이름순
