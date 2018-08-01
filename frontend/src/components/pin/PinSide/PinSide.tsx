@@ -5,18 +5,24 @@ import { NavLink } from 'react-router-dom';
 const styles = require('./PinSide.scss');
 const cx = classNames.bind(styles);
 
-const PinSide = () => {
+type Props = {
+    tags: string[]
+}
+
+const PinSide: React.SFC<Props> = ({ tags }) => {
     return (
         <div className={cx('pin-side')}>
         <section>
           <div className={cx('section-title')}>#태그</div>
-          <ul>
-                <li>
-                    <NavLink to="/">
-                    태그
-                    <span className={cx('count')}>5</span>
-                  </NavLink>
-                </li>
+            <ul>
+                {
+                    tags.map(t => 
+                    <li key={t}>
+                        <NavLink to="/">
+                            {t}
+                        </NavLink>
+                    </li>)
+                }
             </ul>
         </section>
       </div>

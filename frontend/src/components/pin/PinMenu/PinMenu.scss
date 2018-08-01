@@ -14,6 +14,13 @@
             background: white;
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
+            .separator {
+              width: 100%;
+              height: 1px;
+              background: $oc-gray-1;
+              margin-top: 0.5rem;
+              margin-bottom: 0.5rem;
+            }
         }
     }
   }

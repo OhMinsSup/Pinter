@@ -8,19 +8,20 @@ const cx = classNames.bind(styles);
 type Props = {
     to?: string,
     children: React.ReactNode
+    onClick?(): void
 }
 
-const PinMenuItem: React.SFC<Props> = ({ to, children }) => {
+const PinMenuItem: React.SFC<Props> = ({ to, children, onClick }) => {
     if (!to) {
         return (
-          <div className={cx("user-menu-item")}>
+          <div className={cx("user-menu-item")} onClick={onClick}>
             {children}
           </div>
         );
       }
     
       return (
-        <Link className={cx("user-menu-item")} to={to}>
+        <Link className={cx("user-menu-item")} to={to} onClick={onClick}>
           {children}
         </Link>
       );

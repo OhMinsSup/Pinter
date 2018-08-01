@@ -7,12 +7,17 @@ const HeartIcon = require('react-icons/lib/fa/heart-o');
 const CommentIcon = require('react-icons/lib/fa/comment-o');
 const SaveIcon = require('react-icons/lib/fa/bookmark-o');
 
+type Props = {
+    likes: number,
+    comments: number,
+    onClick(): void
+}
 
-const PinAction = () => {
+const PinAction: React.SFC<Props> = ({ likes, comments, onClick }) => {
     return (
         <div className={cx('pin-action')}>
             <div className={cx('icons')}>
-                <span className={cx('icon')}>
+                <span className={cx('icon')} onClick={onClick}>
                     <HeartIcon className={cx('like')}/>
                 </span>
                 <span className={cx('icon')}>
@@ -23,10 +28,10 @@ const PinAction = () => {
                 </span>
             </div>
             <span className={cx('like-count')}>
-                좋아요 8개
+                좋아요 {likes}개
             </span>
             <span className={cx('comment-count')}>
-                댓글 8개
+                댓글 {comments}개
             </span>
         </div>
     );

@@ -12,17 +12,37 @@ export enum PinActionType {
     SET_MAKE_PIN_FULLSCREEN_LOADER = 'pin/SET_MAKE_PIN_FULLSCREEN_LOADER',
     SET_UPLOAD_STATUS = 'pin/SET_UPLOAD_STATUS',
     REMOVE_UPLOAD_URL = 'pin/REMOVE_UPLOAD_URL',
+
+    SHOW_PIN_MENU = 'pin/SHOW_PIN_MENU',
+    HIDE_PIN_MENU = 'pin/HIDE_PIN_MENU',
     
     CREATE_UPLOAD_URL_SUCCESS = 'pin/CREATE_UPLOAD_URL_SUCCESS',
     CREATE_UPLOAD_URL_FAILING = 'pin/CREATE_UPLOAD_URL_FAILING',
 
     WRITE_PIN_SUCCESS = 'pin/WRITE_PIN_SUCCESS',
-    WRITE_PIN_FAILING = 'pin/WRITE_PIN_FAILING'
+    WRITE_PIN_FAILING = 'pin/WRITE_PIN_FAILING',
+
+    GET_PIN_PENDING = 'pin/GET_PIN_PENDING',
+    GET_PIN_SUCESS = 'pin/GET_PIN_SUCESS',
+    GET_PIN_FAILING = 'pin/GET_PIN_FAILING',
+
+    LIKE_PENDING = 'pin/LIKE_PENDING',
+    LIKE_SUCCESS = 'pin/LIKE_SUCCESS',
+    LIKE_FAILING = 'pin/LIKE_FAILING',
+
+    UNLIKE_PENDING = 'pin/UNLIKE_PENDING',
+    UNLIKE_SUCCESS = 'pin/UNLIKE_SUCCESS',
+    UNLIKE_FAILING = 'pin/UNLIKE_FAILING',
+
+    GET_LIKE_SUCCESS = 'pin/GET_LIKE_SUCCESS',
+    GET_LIKE_FAILING = 'pin/GET_LIKE_FAILING'
+
 }
 
 type ChangeInputPayload = { name: string, value: string }
 type CreateUploadUrlPayload = { url: string, path: string };
 type WritePinPayload = { pinId: string }
+type LikePayload = { likes: number, liked: boolean };
 
 export const actionCreators = {
     initialPin: createAction(PinActionType.INITIAL_PIN),
@@ -32,6 +52,8 @@ export const actionCreators = {
     setMakePinFullscreenLoader: createAction(PinActionType.SET_MAKE_PIN_FULLSCREEN_LOADER, (visible: boolean) => visible),
     setUploadStatus: createAction(PinActionType.SET_UPLOAD_STATUS, (uploading: boolean) => uploading), 
     removeUploadUrl: createAction(PinActionType.REMOVE_UPLOAD_URL), 
+    showPinMenu: createAction(PinActionType.SHOW_PIN_MENU, (visible: boolean) => visible),
+    hidePinMenu: createAction(PinActionType.HIDE_PIN_MENU, (visible: boolean) => visible),
     createUploadUrl: (file: any) => (dispatch: Dispatch<Action>) => {
         return PinAPI.createSignedUrl(file)
         .then(res => dispatch({
@@ -53,6 +75,52 @@ export const actionCreators = {
             type: PinActionType.WRITE_PIN_FAILING,
             payload: e
         }))
+    },
+    getPin: (id: string) => (dispatch: Dispatch<Action>) => {
+        return PinAPI.getPinAPI(id)
+        .then(res => dispatch({
+            type: PinActionType.GET_PIN_SUCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: PinActionType.GET_PIN_FAILING,
+            payload: e
+        }))
+    },
+    LikePin: (id: string) => (dispatch: Dispatch<Action>) => {
+        dispatch({ type: PinActionType.LIKE_PENDING })
+        return PinAPI.likePinAPI(id)
+        .then(res => dispatch({
+            type: PinActionType.LIKE_SUCCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: PinActionType.LIKE_FAILING,
+            payload: e
+        }))
+    },
+    UnLikePin: (id: string) => (dispatch: Dispatch<Action>) => {
+        dispatch({ type: PinActionType.UNLIKE_PENDING })
+        return PinAPI.unlikePinAPI(id)
+        .then(res => dispatch({
+            type: PinActionType.UNLIKE_SUCCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: PinActionType.UNLIKE_FAILING,
+            payload: e
+        }))
+    },
+    getLikePin: (id: string) => (dispatch: Dispatch<Action>) => {
+        return PinAPI.getlikePinAPI(id)
+        .then(res => dispatch({
+            type: PinActionType.GET_LIKE_SUCCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: PinActionType.GET_LIKE_FAILING,
+            payload: e
+        }))
     }
 }
 
@@ -61,8 +129,14 @@ type ChangeInputAction = ReturnType<typeof actionCreators.changeInput>;
 type InsertTagAction = ReturnType<typeof actionCreators.insertTag>;
 type RemoveTagAction = ReturnType<typeof actionCreators.removeTag>;
 type SetUploadStatusAction = ReturnType<typeof actionCreators.setUploadStatus>;
+type ShowPinMenuAction = ReturnType<typeof actionCreators.showPinMenu>;
+type HidePinMenuAction = ReturnType<typeof actionCreators.hidePinMenu>;
 type CreateUploadUrlAction = GenericResponseAction<CreateUploadUrlPayload, string>;
 type WritePinAction = GenericResponseAction<WritePinPayload, string>;
+type GetPinAction = GenericResponseAction<PinSubState, string>;
+type LikePinAction = GenericResponseAction<LikePayload, string>;
+type UnLikePinAction = GenericResponseAction<LikePayload, string>;
+type GetLikePinAction = GenericResponseAction<LikePayload, string>;
 
 export interface UploadSubState {
     url: string,
@@ -82,7 +156,9 @@ export interface PinSubState {
         username: string,
         displayName: string,
         thumbnail: string
-    }
+    },
+    comments: number,
+    likes: number,
 }
 
 export interface PinState {
@@ -93,7 +169,9 @@ export interface PinState {
     urls: string[],
     upload: UploadSubState,
     pinId: string,
-    // pin: PinSubState
+    pin: PinSubState,
+    liked: boolean,
+    menu: boolean
 }
 
 const initialState: PinState = {
@@ -107,13 +185,43 @@ const initialState: PinState = {
         path: '',
         uploading: false
     },
-    pinId: ''
+    pinId: '',
+    pin: {
+        pinId: '', 
+        relation_url: '', 
+        description: '', 
+        urls: [], 
+        createdAt: '',
+        tags: [],
+        user: {
+            _id: '',
+            username: '',
+            displayName: '',
+            thumbnail: ''
+        },
+        comments: 0,
+        likes: 0,
+    },
+    liked: false,
+    menu: false
 }
 
 export default handleActions<PinState, any>({
     [PinActionType.INITIAL_PIN]: (state) => {
         return produce(state, (draft) => {
             return initialState;            
+        })
+    },
+    [PinActionType.SHOW_PIN_MENU]: (state, action: ShowPinMenuAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.menu = action.payload;
+        })
+    },
+    [PinActionType.HIDE_PIN_MENU]: (state, action: HidePinMenuAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.menu = action.payload;
         })
     },
     [PinActionType.SET_MAKE_PIN_FULLSCREEN_LOADER]: (state, action: SetMakePinFullscreenLoaderAction) => {
@@ -183,5 +291,77 @@ export default handleActions<PinState, any>({
             if (!action.payload.data) return;
             draft.pinId = action.payload.data.pinId;
         });
+    },
+    [PinActionType.GET_PIN_SUCESS]: (state, action: GetPinAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.pin = action.payload.data;
+        })
+    },
+    [PinActionType.GET_PIN_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.pin = {
+                pinId: '', 
+                relation_url: '', 
+                description: '', 
+                urls: [], 
+                createdAt: '',
+                tags: [],
+                user: {
+                    _id: '',
+                    username: '',
+                    displayName: '',
+                    thumbnail: ''
+                },
+                comments: 0,
+                likes: 0,
+            };
+        })
+    },
+    [PinActionType.LIKE_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.pin.likes += 1;
+            draft.liked = true;
+        })
+    },
+    [PinActionType.LIKE_SUCCESS]: (state, action: LikePinAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.pin.likes = action.payload.data && action.payload.data.likes;
+            draft.liked = action.payload.data.liked;
+        })
+    },
+    [PinActionType.LIKE_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.pin.likes -= 1;
+            draft.liked = false;
+        })
+    },
+
+    [PinActionType.UNLIKE_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.pin.likes -= 1;
+            draft.liked = false;
+        })
+    },
+    [PinActionType.UNLIKE_SUCCESS]: (state, action: UnLikePinAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.pin.likes = action.payload.data && action.payload.data.likes;
+            draft.liked = action.payload.data.liked;
+        })
+    },
+    [PinActionType.UNLIKE_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.pin.likes += 1;
+            draft.liked = true;
+        })
+    },
+    [PinActionType.GET_LIKE_SUCCESS]: (state, action: GetLikePinAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.pin.likes = action.payload.data && action.payload.data.likes;
+            draft.liked = action.payload.data.liked;
+        })
     }
 }, initialState);
