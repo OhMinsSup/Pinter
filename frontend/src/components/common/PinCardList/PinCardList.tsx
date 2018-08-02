@@ -6,10 +6,11 @@ const styles = require('./PinCardList.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    pins: any[]
+    pins: any[],
+    onBoxClick(name: 'like' | 'comment' | 'save', id: string, theme: string): Promise<any>
 }
 
-const PinCardList: React.SFC<Props> = ({ pins }) => {
+const PinCardList: React.SFC<Props> = ({ pins, onBoxClick }) => {
     const pinsList = pins.map(
         (pin, index) => {
             const { 
@@ -40,6 +41,7 @@ const PinCardList: React.SFC<Props> = ({ pins }) => {
                     tags={tags}
                     displayName={displayName}
                     thumbnail={thumbnail}
+                    onBoxClick={onBoxClick}
                 />
             )
         }

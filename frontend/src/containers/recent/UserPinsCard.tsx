@@ -4,6 +4,7 @@ import { Dispatch, bindActionCreators } from 'redux';
 import { throttle } from 'lodash';
 import { StoreState } from '../../store/modules';
 import { getScrollBottom } from '../../lib/common';
+import { actionCreators as baseActions } from '../../store/modules/base';
 import { actionCreators as listActions } from '../../store/modules/list';
 import PinCardList from '../../components/common/PinCardList';
 import Loading from '../../components/common/Loading';
@@ -44,6 +45,22 @@ class UserPinsCard extends React.Component<UserPinsCardProps> {
         }
     }
 
+    public onBoxClick = async (name: 'like' | 'comment' | 'save', id: string, theme: string): Promise<any> => {
+        const { BaseActions, ListActions } = this.props;        
+        BaseActions.boxFullscreenLoader({
+            id: id,
+            name: name,
+            theme: theme,
+            visible: true
+        })
+
+        try {
+            await ListActions.likeUserList(id)
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     public initialize = async () => {
         const { ListActions, displayName } = this.props;
         try {
@@ -72,23 +89,28 @@ class UserPinsCard extends React.Component<UserPinsCardProps> {
 
     public render() {
         const { pins, loading } = this.props;
+        const { onBoxClick } = this;
         if (loading) return <Loading />
 
         return (
-            <PinCardList pins={pins}/>
+            <PinCardList pins={pins} onBoxClick={onBoxClick}/>
         );
     }
 }
 
-const mapStateToProps = ({ list }: StoreState) => ({
+const mapStateToProps = ({ list, base }: StoreState) => ({
     pins: list.user.pins,
     prefetched: list.user.prefetched,
     next: list.user.next,
-    loading: list.user.loading
+    loading: list.user.loading,
+    like: base.box.like,
+    comment: base.box.comment,
+    save: base.box.save,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    ListActions: bindActionCreators(listActions, dispatch)
+    ListActions: bindActionCreators(listActions, dispatch),
+    BaseActions: bindActionCreators(baseActions, dispatch)
 });
 
 export default connect<StateProps, DispatchProps, OwnProps>(

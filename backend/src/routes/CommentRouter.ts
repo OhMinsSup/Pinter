@@ -8,7 +8,7 @@ import {
     checkPinExistancy
 } from '../lib/common';
 import {
-    serializeComment
+    serializeComment, serializeUser
 } from '../lib/serialize';
 
 class CommentRouter {
@@ -106,12 +106,31 @@ class CommentRouter {
         }
     }
 
+    private async commentList(req: Request, res: Response): Promise<any> {
+        const pinId: string = req['pin']._id;
+        const userId: string = req['user']._id;
+        const { cursor } = req.query;
+        
+        try {
+            const user: Array<IComment> = await Comment.getCommentUserList(pinId, userId, cursor);
+            const next = user.length === 10 ? `/pin/comments/${pinId}/list?cursor=${user[9]._id}` : null;
+            const usersWithData = user.map(serializeUser);
+            res.json({
+                next,
+                usersWithData
+            })
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
     public routes(): void {
         const { router } = this;
 
         router.post('/:id', needAuth, checkPinExistancy, this.writeComment);
         router.delete('/:id/:commentId', needAuth, checkPinExistancy, this.deleteComment);
         router.get('/:id', needAuth, checkPinExistancy, this.getCommentList);
+        router.get('/:id/list', needAuth, checkPinExistancy, this.commentList);
     }
 }
 

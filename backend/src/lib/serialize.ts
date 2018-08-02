@@ -29,13 +29,12 @@ const serializePin = (data: any) => {
     }
 }
 
-const serializeLike = (data: any) => {
-    const { 
-        _id: likeId,
-        user,
-    } = data;
+
+const serializeUser = (data: any) => {
+    const {
+        user
+    } = data; 
     return {
-        likeId,
         user: {
             ...pick(user, ['_id','username']),
             ...pick(user.profile, ['displayName', 'thumbnail'])
@@ -192,7 +191,7 @@ const serializeBoard = (data: any) => {
 }
 
 export {
-    serializeLike,
+    serializeUser,
     serializePin,
     serializeComment,
     serializeTag,
@@ -200,5 +199,5 @@ export {
     serializeLocker,
     serializeFollower,
     serializeFollowing,
-    serializeBoard
+    serializeBoard,
 }

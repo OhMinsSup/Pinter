@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import MainTemplate from '../../components/main/MainTemplate';
 import HeaderContainer from '../base/HeaderContainer';
 import { Recent, Tags } from '../../page';
-import FullScreenListContainer from '../common/FullScreenListContainer';
+import ListBoxUsers from '../recent/ListBoxUsers';
 
 class Main extends React.Component {
     public render() {
@@ -13,7 +13,7 @@ class Main extends React.Component {
             >
                 <Route exact path='/' component={Recent}/>
                 <Route exact path='/tags/:tag?' component={Tags}/>
-                <FullScreenListContainer />
+                <ListBoxUsers />
             </MainTemplate>
         )
     }

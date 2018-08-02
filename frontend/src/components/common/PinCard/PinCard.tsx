@@ -21,9 +21,10 @@ type Props = {
   tags: string[],
   displayName: string,
   thumbnail: string,
+  onBoxClick(name: 'like' | 'comment' | 'save', id: string, theme: string): Promise<any>
 }
 
-const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, description, urls, createdAt, likes, comments, tags }) => {
+const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, description, urls, createdAt, likes, comments, tags, onBoxClick }) => {
     return (
     <div className={cx('common-card')}>
       <Link to={`/pin/${id}`} className={cx('thumbnail-wrapper')}>
@@ -50,15 +51,21 @@ const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, de
             <section className={cx('subinfo-wrapper')}>
                 <SubInfoButton 
                     icon={<HeartIcon/>}
+                    id={id}
                     theme="like"
+                    onClick={onBoxClick}
                 />
                 <SubInfoButton 
                     icon={<CommentIcon/>}
+                    id={id}
                     theme="comment"
+                    onClick={onBoxClick}
                 />
                 <SubInfoButton 
                     icon={<SaveIcon/>}
+                    id={id}
                     theme="save"
+                    onClick={onBoxClick}
                 />
                 <span className={cx('date')}>{moment(createdAt).format('ll')}</span>       
             </section>

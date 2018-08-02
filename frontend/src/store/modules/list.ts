@@ -20,9 +20,19 @@ export enum ListActionType {
     GET_TAG_PIN_LIST_PENDING = 'list/GET_TAG_PIN_LIST_PENDING',
     GET_TAG_PIN_LIST_SUCCESS = 'list/GET_TAG_PIN_LIST_SUCCESS',
     GET_TAG_PIN_LIST_FAILING = 'list/GET_TAG_PIN_LIST_FAILING',
+
+    LIKE_USER_LIST_SUCCESS = 'list/LIKE_USER_LIST_SUCCESS',
+    LIKE_USER_LIST_FALIING = 'list/LIKE_USER_LIST_FALIING',
+
+    COMMENT_USER_LIST_SUCCESS = 'list/COMMENT_USER_LIST_SUCCESS',
+    COMMENT_USER_LIST_FALIING = 'list/COMMENT_USER_LIST_FALIING',
+
+    LOCKER_USER_LIST_SUCCESS = 'list/LOCKER_USER_LIST_SUCCESS',
+    LOCKER_USER_LIST_FALIING = 'list/LOCKER_USER_LIST_FALIING'
 }
 
 export type GetPinListPayload = { pinWithData: PinSubState[], next: string };
+export type ListPayload = { usersWithData: UserSubState[], next: string };
 
 export const actionCreators = {
     revealPrefetched: createAction(ListActionType.REVEAL_PREFETCHED, (type: string) => type),
@@ -81,12 +91,48 @@ export const actionCreators = {
                 payload: e
             }))
         })
-    }
+    },
+    likeUserList: (id: string) => (dispatch: Dispatch<Action>) => {
+        return PinAPI.liksUserListAPI(id)
+        .then(res => dispatch({
+            type: ListActionType.LIKE_USER_LIST_SUCCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: ListActionType.LIKE_USER_LIST_FALIING,
+            payload: e
+        }))
+    },
+    commentUserList: (id: string) => (dispatch: Dispatch<Action>) => {
+        return PinAPI.commentUserListAPI(id)
+        .then(res => dispatch({
+            type: ListActionType.COMMENT_USER_LIST_SUCCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: ListActionType.COMMENT_USER_LIST_FALIING,
+            payload: e
+        }))
+    },
+    lockerUserList: (id: string) => (dispatch: Dispatch<Action>) => {
+        return PinAPI.lockerUserListAPI(id)
+        .then(res => dispatch({
+            type: ListActionType.LOCKER_USER_LIST_SUCCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: ListActionType.LOCKER_USER_LIST_FALIING,
+            payload: e
+        }))
+    }   
 }
 
 type RevealPrefetchedAction = ReturnType<typeof actionCreators.revealPrefetched>; 
 type GetListAction = GenericResponseAction<GetPinListPayload, string>;
 type PrefetchListAction = GenericResponseAction<GetPinListPayload, string>;
+type LikeUserListAction = GenericResponseAction<ListPayload, string>;
+type CommentUserListAction = GenericResponseAction<ListPayload, string>;
+type LockerUserListAction = GenericResponseAction<ListPayload, string>;
 
 export interface PinSubState {
     pinId: string, 
@@ -105,6 +151,15 @@ export interface PinSubState {
     },
 }
 
+export interface UserSubState {
+    user: {
+        _id: string,
+        username: string,
+        displayName: string,
+        thumbnail: string
+    }
+}
+
 export interface ListingSetState {
     pins: PinSubState[],
     prefetched: PinSubState[],
@@ -113,10 +168,19 @@ export interface ListingSetState {
     loading: boolean
 }
 
+export interface ListingUserSetState {
+    user: UserSubState[],
+    prefetched: UserSubState[],
+    next: string
+}
+
 export interface ListState {
     list: ListingSetState,
     user: ListingSetState,
     tag: ListingSetState
+    like_user: ListingUserSetState,
+    comment_user: ListingUserSetState,
+    locker_user: ListingUserSetState
 }
 
 const initialListingSet = {
@@ -127,10 +191,19 @@ const initialListingSet = {
     loading: false
 }
 
+const initialUserListingSet = {
+    user: [],
+    prefetched: [],
+    next: ''
+}
+
 const initialState: ListState = {
     list: initialListingSet,
     user: initialListingSet,
-    tag: initialListingSet
+    tag: initialListingSet,
+    like_user: initialUserListingSet,
+    comment_user: initialUserListingSet,
+    locker_user: initialUserListingSet
 }
 
 export default handleActions<ListState, any>({
@@ -248,5 +321,61 @@ export default handleActions<ListState, any>({
                 loading: false
             }
         })
-    }
+    },
+    [ListActionType.LIKE_USER_LIST_SUCCESS]: (state, action: LikeUserListAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.like_user = {
+                user: action.payload.data.usersWithData,
+                next: action.payload.data.next,
+                prefetched: [],
+            } 
+        });
+    },
+    [ListActionType.LIKE_USER_LIST_FALIING]: (state) => {
+        return produce(state, (draft) => {
+            draft.like_user = {
+                user: [],
+                next:  '',
+                prefetched: [],
+            } 
+        });
+    },
+    [ListActionType.COMMENT_USER_LIST_SUCCESS]: (state, action: CommentUserListAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.comment_user = {
+                user: action.payload.data.usersWithData,
+                next: action.payload.data.next,
+                prefetched: []
+            }
+        })
+    },
+    [ListActionType.COMMENT_USER_LIST_FALIING]: (state) => {
+        return produce(state, (draft) => {
+            draft.comment_user = {
+                user: [],
+                next:  '',
+                prefetched: [],
+            } 
+        });
+    },
+    [ListActionType.LOCKER_USER_LIST_SUCCESS]: (state, action: LockerUserListAction) => {
+        return produce(state, (draft) => {
+            draft.locker_user = {
+                user: action.payload.data.usersWithData,
+                next: action.payload.data.next,
+                prefetched: []
+            }
+        })
+    },
+    [ListActionType.LOCKER_USER_LIST_FALIING]: (state) => {
+        return produce(state, (draft) => {
+            draft.locker_user = {
+                user: [],
+                next:  '',
+                prefetched: [],
+            } 
+        });
+    },
 }, initialState);

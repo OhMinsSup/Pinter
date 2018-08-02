@@ -16,7 +16,7 @@ import {
     checkPinExistancy
 } from '../lib/common';
 import {
-    serializePin, serializeLocker,
+    serializePin, serializeLocker, serializeUser
 } from '../lib/serialize';
 
 const s3 = new AWS.S3({
@@ -240,6 +240,24 @@ class PinRouter {
         }
     }
 
+    private async getLockerList(req: Request, res: Response): Promise<any> {
+        const pinId: string = req['pin']._id;
+        const userId: string = req['user']._id;
+        const { cursor } = req.query;
+
+        try {
+            const user: Array<IPinLocker> = await PinLocker.getLockerUserList(pinId, userId, cursor);            
+            const next = user.length === 10 ? `/pin/locker/?cusor=${user[9]._id}` : null;
+            const usersWithData = user.map(serializeUser);
+            res.json({
+                next,
+                usersWithData
+            })
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
     private async createLockerPin(req: Request, res: Response): Promise<any> {
         const userId: string = req['user']._id;
         const pinId: string = req['pin']._id;
@@ -292,7 +310,7 @@ class PinRouter {
         
         try {
             const locker: Array<IPinLocker> = await PinLocker.lockerList(userId, cursor);
-            const next = locker.length === 15 ? `/pin/locker/list?cusor=${locker[14]._id}` : null;
+            const next = locker.length === 15 ? `/pin/locker/private/list?cusor=${locker[14]._id}` : null;
             const lockersWithData = locker.map(serializeLocker);
             const count: Array<IPinLocker> = await PinLocker.countLocker();
             res.json({
@@ -310,12 +328,13 @@ class PinRouter {
 
         router.post('/create-signed-url', needAuth, upload.single('file'), this.createSignedUrl);
         router.post('/', needAuth, this.writePin);
+        router.post('/:id/locker',needAuth, checkPinExistancy, this.createLockerPin);
 
         router.get('/:id', needAuth, checkPinExistancy, this.readPin);
         router.get('/all/list', needAuth, this.listPin);
         router.get('/:displayName/list', needAuth, this.listPin);
         router.get('/locker/private/list', needAuth, this.lockerList);
-        router.get('/:id/locker',needAuth, checkPinExistancy, this.createLockerPin);
+        router.get('/:id/locker',needAuth, checkPinExistancy, this.getLockerList);
 
         router.delete('/:id', needAuth, checkPinExistancy, this.deletePin);
         router.delete('/:id/locker', needAuth, checkPinExistancy, this.deleteLockerPin);

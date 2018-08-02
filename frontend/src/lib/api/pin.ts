@@ -29,3 +29,6 @@ export const getPinAPI = (id: string): Promise<any> => axios.get(`/pin/${id}`);
 export const likePinAPI = (id: string): Promise<any> => axios.post(`/pin/likes/${id}`);
 export const unlikePinAPI = (id: string): Promise<any> => axios.delete(`/pin/likes/${id}`);
 export const getlikePinAPI = (id: string): Promise<any> => axios.get(`/pin/likes/${id}`);
+export const liksUserListAPI = (id: string): Promise<any> =>  axios.get(`/pin/likes/${id}/list`);
+export const commentUserListAPI = (id: string): Promise<any> => axios.get(`/pin/comments/${id}/list`);
+export const lockerUserListAPI = (id: string): Promise<any> => axios.get(`/pin/${id}/locker`);

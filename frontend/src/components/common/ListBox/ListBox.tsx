@@ -6,17 +6,31 @@ const styles = require('./ListBox.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    title?: string
+    title: string,
+    user: any[],
 }
 
-const ListBox: React.SFC<Props> = ({ title }) => {
+const ListBox: React.SFC<Props> = ({ title, user }) => {    
     return (
         <div className={cx('list-box')}>
             <div className={cx('title')}>{title}</div>
             <div className={cx('box')}>
                 <ul className={cx('list-wrapper')}>
                     <div className={cx('list-itme-wrapper')}>
-                        <ListItem />
+                        {
+                            user.map(u => {
+                                const { user: { _id, displayName, thumbnail, username } } = u;
+                                return (
+                                    <ListItem
+                                        key={_id}
+                                        id={_id}
+                                        username={username}
+                                        displayName={displayName}
+                                        thumbnail={thumbnail}
+                                    />
+                                )
+                            })
+                        }
                     </div>
                 </ul>
             </div>

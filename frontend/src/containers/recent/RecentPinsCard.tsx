@@ -5,6 +5,7 @@ import { withRouter, match } from 'react-router-dom';
 import { throttle } from 'lodash';
 import { StoreState } from '../../store/modules';
 import { getScrollBottom } from '../../lib/common';
+import { actionCreators as baseActions } from '../../store/modules/base';
 import { actionCreators as listActions } from '../../store/modules/list';
 import PinCardList from '../../components/common/PinCardList';
 import Loading from '../../components/common/Loading';
@@ -50,6 +51,29 @@ class RecentPinsCard extends React.Component<RecentPinsCardProps> {
         }
     }
 
+    public onBoxClick = async (name: 'like' | 'comment' | 'save', id: string, theme: string): Promise<any> => {
+        const { BaseActions, ListActions } = this.props;
+
+        BaseActions.boxFullscreenLoader({
+            id: id,
+            name: name,
+            theme: theme,
+            visible: true
+        })
+
+        try {
+            if (theme === 'like') {
+                await ListActions.likeUserList(id);
+            } else if (theme === 'comment') {
+                await ListActions.commentUserList(id);
+            } else if (theme === 'save') {
+                await ListActions.lockerUserList(id);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     public initialize = async () => {
         const { ListActions } = this.props;
         try {
@@ -78,23 +102,26 @@ class RecentPinsCard extends React.Component<RecentPinsCardProps> {
 
     public render() {
         const { pins, loading } = this.props;
+        const { onBoxClick } = this;
         if (loading) return <Loading />;
         
         return (
-            <PinCardList pins={pins}/>
+            <PinCardList pins={pins} onBoxClick={onBoxClick}/>
         );
     }
 }
 
-const mapStateToProps = ({ list }: StoreState) => ({
+const mapStateToProps = ({ list, base }: StoreState) => ({
     pins: list.list.pins,
     prefetched: list.list.prefetched,
     next: list.list.next,
-    loading: list.list.loading
+    loading: list.list.loading,
+    like: base.box.like,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    ListActions: bindActionCreators(listActions, dispatch)
+    ListActions: bindActionCreators(listActions, dispatch),
+    BaseActions: bindActionCreators(baseActions, dispatch)
 });
 
 export default compose( 
@@ -103,4 +130,4 @@ export default compose(
       mapStateToProps,
       mapDispatchToProps
     )
-  )(RecentPinsCard);
+)(RecentPinsCard);

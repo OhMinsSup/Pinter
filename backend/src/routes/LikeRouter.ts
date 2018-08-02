@@ -5,7 +5,7 @@ import { IUser } from '../database/models/User';
 import needAuth from '../lib/middleware/needAuth';
 import { checkPinExistancy } from '../lib/common';
 import {
-    serializeLike
+    serializeUser
 } from '../lib/serialize';
 
 class LikeRouter {
@@ -22,9 +22,9 @@ class LikeRouter {
         const { cursor } = req.query;
 
         try {
-            const user: Array<IUser> = await Like.getLikeUserList(pinId, userId, cursor);
+            const user: Array<IUser> = await Like.getLikeUserList(pinId, userId, cursor);            
             const next = user.length === 10 ? `/pin/likes/${pinId}/?cursor=${user[9]._id}` : null;
-            const usersWithData = user.map(serializeLike);
+            const usersWithData = user.map(serializeUser);
             res.json({
                 next,
                 usersWithData
