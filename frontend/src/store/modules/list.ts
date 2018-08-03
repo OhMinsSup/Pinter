@@ -2,6 +2,7 @@ import { handleActions, createAction } from 'redux-actions';
 import { Dispatch, Action } from 'redux';
 import * as PinAPI from '../../lib/api/pin';
 import * as TagAPI from '../../lib/api/tag';
+import * as CommonAPI from '../../lib/api/common';
 import { GenericResponseAction } from '../../lib/common';
 import produce from 'immer';
 
@@ -28,11 +29,17 @@ export enum ListActionType {
     COMMENT_USER_LIST_FALIING = 'list/COMMENT_USER_LIST_FALIING',
 
     LOCKER_USER_LIST_SUCCESS = 'list/LOCKER_USER_LIST_SUCCESS',
-    LOCKER_USER_LIST_FALIING = 'list/LOCKER_USER_LIST_FALIING'
+    LOCKER_USER_LIST_FALIING = 'list/LOCKER_USER_LIST_FALIING',
+
+    GET_USER_LIST_PENDING = 'list/GET_USER_LIST_PENDING',
+    GET_USER_LIST_SUCCESS = 'list/GET_USER_LIST_SUCCESS',
+    GET_USER_LIST_FAILING = 'list/GET_USER_LIST_FAILING',
+    PREFETCH_USER_LIST_SUCCESS = 'list/PREFETCH_USER_LIST_SUCCESS',
+
 }
 
 export type GetPinListPayload = { pinWithData: PinSubState[], next: string };
-export type ListPayload = { usersWithData: UserSubState[], next: string };
+export type ListPayload = { usersWithData: UserSubState[], next?: string };
 
 export const actionCreators = {
     revealPrefetched: createAction(ListActionType.REVEAL_PREFETCHED, (type: string) => type),
@@ -124,7 +131,26 @@ export const actionCreators = {
             type: ListActionType.LOCKER_USER_LIST_FALIING,
             payload: e
         }))
-    }   
+    },
+    getUsersList: () => (dispatch: Dispatch<Action>) => {
+        dispatch({ type: ListActionType.GET_USER_LIST_PENDING })
+        return CommonAPI.usersAPI()
+        .then(res => dispatch({
+            type: ListActionType.GET_USER_LIST_SUCCESS,
+            payload: res
+        }))
+        .catch(e => dispatch({
+            type: ListActionType.GET_PIN_LIST_FAILING,
+            payload: e
+        }))
+    },
+    prefetchUserList: (next: string) => (dispatch: Dispatch<Action>) => {
+        return CommonAPI.nextAPI(next)
+        .then(res => dispatch({
+            type: ListActionType.PREFETCH_USER_LIST_SUCCESS,
+            payload: res
+        }))
+    },
 }
 
 type RevealPrefetchedAction = ReturnType<typeof actionCreators.revealPrefetched>; 
@@ -133,6 +159,8 @@ type PrefetchListAction = GenericResponseAction<GetPinListPayload, string>;
 type LikeUserListAction = GenericResponseAction<ListPayload, string>;
 type CommentUserListAction = GenericResponseAction<ListPayload, string>;
 type LockerUserListAction = GenericResponseAction<ListPayload, string>;
+type GetUsersListAction = GenericResponseAction<ListPayload, string>;
+type PrefetchUserListAction = GenericResponseAction<ListPayload, string>;
 
 export interface PinSubState {
     pinId: string, 
@@ -171,13 +199,16 @@ export interface ListingSetState {
 export interface ListingUserSetState {
     user: UserSubState[],
     prefetched: UserSubState[],
-    next: string
+    end?: boolean,
+    next?: string,
+    loading?: boolean
 }
 
 export interface ListState {
     list: ListingSetState,
     user: ListingSetState,
     tag: ListingSetState
+    users: ListingUserSetState,
     like_user: ListingUserSetState,
     comment_user: ListingUserSetState,
     locker_user: ListingUserSetState
@@ -194,13 +225,16 @@ const initialListingSet = {
 const initialUserListingSet = {
     user: [],
     prefetched: [],
-    next: ''
+    next: '',
+    end: false,
+    loading: false
 }
 
 const initialState: ListState = {
     list: initialListingSet,
     user: initialListingSet,
     tag: initialListingSet,
+    users: initialUserListingSet,
     like_user: initialUserListingSet,
     comment_user: initialUserListingSet,
     locker_user: initialUserListingSet
@@ -327,7 +361,6 @@ export default handleActions<ListState, any>({
             if (!action.payload.data) return;
             draft.like_user = {
                 user: action.payload.data.usersWithData,
-                next: action.payload.data.next,
                 prefetched: [],
             } 
         });
@@ -336,7 +369,6 @@ export default handleActions<ListState, any>({
         return produce(state, (draft) => {
             draft.like_user = {
                 user: [],
-                next:  '',
                 prefetched: [],
             } 
         });
@@ -346,7 +378,6 @@ export default handleActions<ListState, any>({
             if (!action.payload.data) return;
             draft.comment_user = {
                 user: action.payload.data.usersWithData,
-                next: action.payload.data.next,
                 prefetched: []
             }
         })
@@ -355,7 +386,6 @@ export default handleActions<ListState, any>({
         return produce(state, (draft) => {
             draft.comment_user = {
                 user: [],
-                next:  '',
                 prefetched: [],
             } 
         });
@@ -364,7 +394,6 @@ export default handleActions<ListState, any>({
         return produce(state, (draft) => {
             draft.locker_user = {
                 user: action.payload.data.usersWithData,
-                next: action.payload.data.next,
                 prefetched: []
             }
         })
@@ -373,9 +402,44 @@ export default handleActions<ListState, any>({
         return produce(state, (draft) => {
             draft.locker_user = {
                 user: [],
-                next:  '',
                 prefetched: [],
             } 
         });
+    },
+    [ListActionType.GET_USER_LIST_SUCCESS]: (state, action: GetUsersListAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.users = {
+                user: action.payload.data.usersWithData,
+                prefetched: [],
+                next: action.payload.data.next,
+                loading: false
+            }
+        });
+    },
+    [ListActionType.GET_PIN_LIST_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.users.loading = true
+        });
+    },
+    [ListActionType.GET_USER_LIST_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.users = {
+                user: [],
+                prefetched: [],
+                next: '',
+                loading: false
+            }
+        });
+    },
+    [ListActionType.PREFETCH_USER_LIST_SUCCESS]: (state, action: PrefetchUserListAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.users.prefetched = action.payload.data.usersWithData;
+            draft.users.next = action.payload.data.next;
+            if (action.payload.data.usersWithData && action.payload.data.usersWithData.length === 0) {
+                draft.list.end = true;
+            }
+        })
     },
 }, initialState);

@@ -19,6 +19,8 @@ type Props = {
 const Tags: React.SFC<Props> = ({ location, match }) => {
     const { sort } = queryString.parse(location.search);
     const { tag } = match.params;
+    console.log(tag);
+    
     return (
         <TagsTemplate>
             {tag ? (

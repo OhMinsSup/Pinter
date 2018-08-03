@@ -243,14 +243,11 @@ class PinRouter {
     private async getLockerList(req: Request, res: Response): Promise<any> {
         const pinId: string = req['pin']._id;
         const userId: string = req['user']._id;
-        const { cursor } = req.query;
 
         try {
-            const user: Array<IPinLocker> = await PinLocker.getLockerUserList(pinId, userId, cursor);            
-            const next = user.length === 10 ? `/pin/locker/?cusor=${user[9]._id}` : null;
+            const user: Array<IPinLocker> = await PinLocker.getLockerUserList(pinId, userId);            
             const usersWithData = user.map(serializeUser);
             res.json({
-                next,
                 usersWithData
             })
         } catch (e) {

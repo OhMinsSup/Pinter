@@ -1,0 +1,17 @@
+@import 'utils';
+
+.users-template {
+    background-color: white;
+    flex-grow: 1;
+    order: 4;
+    z-index: 0;
+    height: 100%;
+    .wrapper {
+        padding-top: 60px;
+        padding-bottom: 60px;
+        margin: 0 auto;
+        max-width: 600px;
+        min-height: 100%;
+        width: 100%;
+    }
+}

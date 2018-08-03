@@ -26,6 +26,7 @@ export interface IUserModel extends Model<IUser> {
     findByEmailOrUsername(type: 'email' | 'username', value: string): Promise<any>;
     findBySocial(provider: string, socialId: string | number): Promise<any>;
     findByDisplayName(value?: string): Promise<any>;
+    usersList(cursor?: string): Promise<any>
 }
 
 const User = new Schema({
@@ -69,6 +70,17 @@ User.statics.findBySocial = function(provider: string, socialId: string | number
         [key]: socialId
     });
 };
+
+User.statics.usersList = function(cursor?: string): Promise<any> {
+    const query = Object.assign(
+        {},
+        cursor ? { _id: { $lt: cursor } } : { }
+    )
+
+    return this.find(query)
+    .sort({ _id: -1 })
+    .limit(15);
+}
 
 User.methods.generate = async function(profile: IUser): Promise<any> {
     const { _id, username } = this;

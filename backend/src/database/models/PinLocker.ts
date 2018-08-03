@@ -14,7 +14,7 @@ export interface IPinLockerModel extends Model<IPinLocker> {
     lockerCount(lockerId: string): Promise<any>;
     lockerUnCount(lockerId: string): Promise<any>;
     checkExists(userId: string, pinId: string): Promise<any>;
-    getLockerUserList(pinId: string, userId: string, cursor?: string): Promise<any>;
+    getLockerUserList(pinId: string, userId: string): Promise<any>;
     countLocker(): Promise<any>
 }
 
@@ -54,18 +54,10 @@ PinLocker.statics.lockerList = function(userId: string, cursor?: string): Promis
     .limit(15);
 }
 
-PinLocker.statics.getLockerUserList = function(pinId: string, userId: string, cursor?: string): Promise<any> {
+PinLocker.statics.getLockerUserList = function(pinId: string, userId: string): Promise<any> {
     const query = Object.assign(
         {},
-        cursor ? { 
-            _id: { 
-                $lt: cursor 
-            }, 
-            pin: pinId, 
-            user: { 
-                $ne: userId 
-            } 
-        } : { 
+        { 
             pin: pinId, 
             user: { $ne: userId } 
         }
@@ -73,8 +65,7 @@ PinLocker.statics.getLockerUserList = function(pinId: string, userId: string, cu
 
     return this.find(query)
     .populate('user')
-    .sort({_id: -1}) 
-    .limit(10);    
+    .sort({_id: -1}) ;
 }
 
 PinLocker.statics.checkExists = function(userId: string, pinId: string): Promise<any> {

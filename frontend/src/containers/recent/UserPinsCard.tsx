@@ -55,7 +55,13 @@ class UserPinsCard extends React.Component<UserPinsCardProps> {
         })
 
         try {
-            await ListActions.likeUserList(id)
+            if (theme === 'like') {
+                await ListActions.likeUserList(id);
+            } else if (theme === 'comment') {
+                await ListActions.commentUserList(id);
+            } else if (theme === 'save') {
+                await ListActions.lockerUserList(id);
+            }
         } catch (e) {
             console.log(e);
         }

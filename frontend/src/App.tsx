@@ -8,7 +8,7 @@ const App = () => {
   return (
     <React.Fragment>
       <Route exact path='/' component={Home}/>
-      <Route exact path='/tags/:tag?' component={Home} />
+      <Route path='/(tags|users)' component={Home} />
       <Route exact path='/email-register' component={Register} />
       <Route exact path='/email-login' component={EmailLogin} />
       <Route exact path='/@:displayName/' component={User} />

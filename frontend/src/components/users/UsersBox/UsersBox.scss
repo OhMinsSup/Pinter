@@ -1,0 +1,29 @@
+@import 'utils';
+
+.users-box {
+    margin-left: -1px;
+    margin-right: -1px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    list-style: 1;
+    .title-wrapper {
+        border-bottom: 0;
+        background-color: white;
+        padding: 20px 16px 8px;
+        display: flex;
+        flex-direction: column;
+        .title {
+            color: #999;
+            font-size: 14px;
+            font-weight: 600;
+        }
+    }
+
+    .user-wrapper {
+        border-radius: 3px;
+        border: 1px solid #e6e6e6;
+        list-style: none;
+  
+    }
+}

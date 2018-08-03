@@ -3,7 +3,7 @@ import Tag, { ITag } from '../database/models/Tag';
 import Pin, { IPin } from '../database/models/Pin';
 import User, { IUser } from '../database/models/User';
 import Count, { ICount } from '../database/models/Count';
-import { serializeTag, serializeTagPin } from '../lib/serialize';
+import { serializeTag, serializeTagPin, serializeUsers } from '../lib/serialize';
 
 class CommonRouter {
     public router: Router;
@@ -50,6 +50,20 @@ class CommonRouter {
         }
     }
 
+    private async getUsers (req: Request, res: Response): Promise<any> {
+        const { cursor } = req.query;
+        try {
+            const user: Array<IUser> = await User.usersList(cursor);
+            const next  = user.length === 15 ? `/common/users?cursor=${user[14]._id}` : null;
+            res.json({
+                next,
+                usersWithData: user.map(serializeUsers)
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     private async getUserInfo(req: Request, res: Response): Promise<any> {
         const { displayName } = req.params;
         try {
@@ -74,6 +88,7 @@ class CommonRouter {
 
         router.get('/tags', this.getTags);
         router.get('/tags/:tag', this.getTagInfo);
+        router.get('/users', this.getUsers)
         router.get('/info/:displayName', this.getUserInfo);
     }
 }

@@ -5,3 +5,4 @@ export { default as User } from './User';
 export { default as Tags } from './Tags';
 export { default as UserPin } from './user/UserPin'; 
 export { default as Pin } from './Pin';
+export { default as Users } from './Users';

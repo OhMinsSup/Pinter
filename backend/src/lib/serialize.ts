@@ -190,6 +190,16 @@ const serializeBoard = (data: any) => {
     }
 }
 
+const serializeUsers = (data: any) => {
+    const user = data;
+    return {
+        user: {
+            ...pick(user, ['_id','username']),
+            ...pick(user.profile, ['displayName', 'thumbnail'])
+        }
+    }
+}
+
 export {
     serializeUser,
     serializePin,
@@ -200,4 +210,5 @@ export {
     serializeFollower,
     serializeFollowing,
     serializeBoard,
+    serializeUsers
 }
