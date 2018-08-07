@@ -19,7 +19,7 @@ class FollowRouter {
 
         if (followName === username) {
             return res.status(400).json({
-                name: '자기 자신을 팔로우 할 수 없습니다.'
+                name: '자기 자신을 팔로우 할 수 없습니다.',
             });
         }
 
@@ -28,7 +28,7 @@ class FollowRouter {
 
             if (!user) {
                 return res.status(404).json({
-                    name: '존재하지 않는 유저입니다'
+                    name: '존재하지 않는 유저입니다',
                 });
             }
 
@@ -37,7 +37,7 @@ class FollowRouter {
 
             if (exists) {
                 return res.status(409).json({
-                    name: '이미 팔로우 중입니다..'
+                    name: '이미 팔로우 중입니다..',
                 });
             }
 
@@ -45,7 +45,7 @@ class FollowRouter {
             await Count.followerCount(userId);
             await Count.followingCount(followId);
             res.json({
-                follow: true
+                follow: true,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -59,7 +59,7 @@ class FollowRouter {
 
         if (followName === username) {
             return res.status(400).json({
-                name: '자기 자신을 언팔로우 할 수 없습니다.'
+                name: '자기 자신을 언팔로우 할 수 없습니다.',
             });
         }
 
@@ -68,7 +68,7 @@ class FollowRouter {
             
             if (!user) {
                 return res.status(404).json({
-                    name: '존재하지 않는 유저입니다'
+                    name: '존재하지 않는 유저입니다',
                 });
             }
 
@@ -77,7 +77,7 @@ class FollowRouter {
             
             if (!exists) {
                 return res.status(409).json({
-                    name: '팔로우 상태가 아닙니다.'
+                    name: '팔로우 상태가 아닙니다.',
                 });
             }
 
@@ -85,7 +85,7 @@ class FollowRouter {
             await Count.unfollowingCount(followId);
             await exists.remove();
             res.json({
-                follow: false
+                follow: false,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -102,7 +102,7 @@ class FollowRouter {
             
             if (!following) {
                 return res.status(404).json({
-                    name: '존재하지 않는 유저입니다'
+                    name: '존재하지 않는 유저입니다',
                 });
             }
 
@@ -112,10 +112,10 @@ class FollowRouter {
             }
 
             res.json({
-                follow
+                follow,
             });
-        } catch (error) {
-            
+        } catch (e) {
+            res.status(500).json(e);
         }
     }
 
@@ -128,11 +128,11 @@ class FollowRouter {
             
             if (!user) {
                 return res.status(404).json({
-                    name: '존재하지 않는 유저입니다'
+                    name: '존재하지 않는 유저입니다',
                 });
             }
 
-            const following: Array<IFollow> = await Follow.followingList(user._id, cursor);
+            const following: IFollow[] = await Follow.followingList(user._id, cursor);
             const next = following.length === 10 ? `/follow/${displayName}/following/?cursor=${following[9]._id}` : null; 
             const followingsWithData = following.map(serializeFollowing);
             res.json({
@@ -153,11 +153,11 @@ class FollowRouter {
             
             if (!user) {
                 return res.status(404).json({
-                    name: '존재하지 않는 유저입니다'
+                    name: '존재하지 않는 유저입니다',
                 });
             }
 
-            const follwer: Array<IFollow> = await Follow.followerList(user._id, cursor);
+            const follwer: IFollow[] = await Follow.followerList(user._id, cursor);
             const next = follwer.length === 10 ? `/follow/${displayName}/following/?cursor=${follwer[9]._id}` : null; 
             const follwersWithData = follwer.map(serializeFollower);
             res.json({
@@ -169,15 +169,12 @@ class FollowRouter {
         }
     }
 
-
     public routes(): void {
         const { router } = this;
 
         router.get('/exists/:displayName', this.getFollow);
-
         router.post('/:followName', this.follow);
         router.delete('/:followName', this.unfollow);
-
         router.get('/:displayName/following', this.getFollowing);
         router.get('/:displayName/follower', this.getFollower);
     }

@@ -1,12 +1,17 @@
-import { Schema, model, Document, Model } from 'mongoose';
-import { IUser } from './User';
-import { IPin } from './Pin';
+import { Schema, model, Document, Model } from "mongoose";
+import { IUser } from "./User";
+import { IPin } from "./Pin";
+
+export const defaultThumbnail: string = 'https://cascade-herb.com/wp-content/uploads/2018/06/default-thumbnail.png';
 
 export interface IBoard extends Document {
     _id: string;
-    user?: Array<IUser>;
-    pin?: Array<IPin>;
+    creator?: IUser;
+    user?: IUser[];
+    pin?: IPin[];
     theme?: string;
+    description?: string;
+    cover?: string;
 }
 
 export interface IBoardModel extends Model<IBoard> {
@@ -14,33 +19,43 @@ export interface IBoardModel extends Model<IBoard> {
 }
 
 const Board = new Schema({
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
     user: [{
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     }],
     pin: [{
         type: Schema.Types.ObjectId,
-        ref: 'Pin'
+        ref: "Pin",
     }],
-    theme: String
+    theme: String,
+    description: String,
+    cover: {
+        type: String,
+        default: defaultThumbnail,
+    },
 });
 
 Board.statics.readBoardById = function(boardId: string): Promise<any> {
-    return this.findById(boardId).
-    populate({
-        path: 'user',
+    return this.findById(boardId)
+    .populate("creator")
+    .populate({
+        path: "user",
         populate: [{
-            path: 'user'
-        }]
+            path: "user",
+        }],
     })
     .populate({
-        path: 'pin',
+        path: "pin",
         populate: [{
-            path: 'pin'
-        }]
+            path: "pin",
+        }],
     });
-}
+};
 
-const BoardModel = model<IBoard>('Board', Board) as IBoardModel;
+const BoardModel = model<IBoard>("Board", Board) as IBoardModel;
 
 export default BoardModel;

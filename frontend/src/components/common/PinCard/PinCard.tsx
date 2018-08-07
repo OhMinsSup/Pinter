@@ -33,11 +33,11 @@ const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, de
       </Link>
       <div className={cx('card-content')}>
         <div className={cx('user-thumbnail-wrapper')}>
-          <img src={thumbnail} />
+          <Link to={`/@${displayName}`}><img src={thumbnail} /></Link>
         </div>
         <div className={cx('content-head')}>
           <div className={cx('username')}>
-            @{displayName}
+            <Link to={`/@${displayName}`}>@{displayName}</Link>
           </div>
           <h3>
             <Link to={`/pin/${id}`}>{description}</Link>
@@ -72,7 +72,7 @@ const PinCard: React.SFC<Props> = ({ id, displayName, thumbnail, relationUrl, de
           </div>
         </div>
         <div className={cx('tag-wrapper')}>
-          <div className={cx('tags')}>{tags.map(t => <a key={t}>{t}</a>)}</div>
+          <div className={cx('tags')}>{tags.map(t => <Link key={t} to={`/tags/${t}`}>{t}</Link>)}</div>
         </div>
       </div>
     </div>

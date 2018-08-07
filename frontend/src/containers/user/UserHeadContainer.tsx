@@ -70,11 +70,13 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 
     public render() {
-        const { username, displayName, thumbnail, match, follower, following, pin, follow } = this.props;
+        const { username, displayName, thumbnail, match, id, follower, following, pin, follow, userId } = this.props;
         const { onPinScreen, onSettingScreen, onFollow, onUnFollow } = this;
         const { url } = match;        
         return (
             <UserHead 
+                id={id}
+                userId={userId}
                 username={username}
                 displayName={displayName}
                 thumbnail={thumbnail}
@@ -92,16 +94,18 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 }
 
-const mapStateToProps = ({ pin, setting, follow }: StoreState) => ({
+const mapStateToProps = ({ pin, setting, follow, user }: StoreState) => ({
     username: setting.user.username,
     thumbnail: setting.user.thumbnail,
     displayName: setting.user.displayName,
     following: setting.user.following,
     follower: setting.user.follower,
+    id: setting.user.userId,
     pin: setting.user.pin,
     pin_visible: pin.visible,
     setting_visible: setting.visible,
-    follow: follow.user.follow
+    follow: follow.user.follow,
+    userId: user.user && user.user._id
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

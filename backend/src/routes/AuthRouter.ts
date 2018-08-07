@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import * as joi from 'joi';
 import { sendMail } from '../lib/sendMail';
 import { generateToken, decodeToken } from '../lib/token';
-import getSocialProfile, { Profile } from '../lib/social';
+import getSocialProfile, { IProfile } from '../lib/social';
 import User, { IUser } from '../database/models/User';
 import EmailAuth, { IEmailAuth } from '../database/models/EmailAuth';
 import Count from '../database/models/Count';
@@ -17,11 +17,11 @@ class AuthRouter {
 
     private async sendAuthEmail(req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            email: string
-        }
+            email: string,
+        };
 
         const schema = joi.object().keys({
-            email: joi.string().email().required()
+            email: joi.string().email().required(),
         });
         
         const result: any = joi.validate(req.body, schema);
@@ -38,14 +38,14 @@ class AuthRouter {
             const auth: IUser = await User.findByEmailOrUsername('email', email);
             const emailKeywords = auth ? {
                 type: 'email-login',
-                text: '로그인'
+                text: '로그인',
             } : {
                 type: 'email-register',
-                text: '회원가입'
+                text: '회원가입',
             };
 
             const verification = await EmailAuth.create({
-                email
+                email,
             });
 
             await sendMail({
@@ -57,11 +57,11 @@ class AuthRouter {
                     <b style="black">안녕하세요! </b> ${emailKeywords.text}을 계속하시려면 하단의 링크를 클릭하세요. 만약에 실수로 요청하셨거나, 본인이 요청하지 않았다면, 이 메일을 무시하세요.
                 </div>
                 <a href="http://localhost:3000/${emailKeywords.type}?code=${verification.code}" style="text-decoration: none; width: 400px; text-align:center; display:block; margin: 0 auto; margin-top: 1rem; background: #845ef7; padding-top: 1rem; color: white; font-size: 1.25rem; padding-bottom: 1rem; font-weight: 600; border-radius: 4px;">계속하기</a>
-                <div style="text-align: center; margin-top: 1rem; color: #868e96; font-size: 0.85rem;"><div>위 버튼을 클릭하시거나, 다음 링크를 열으세요: <br/> <a style="color: #b197fc;" href="http://localhost:3000/${emailKeywords.type}?code=${verification.code}">http://localhost:3000/${emailKeywords.type}?code=${verification.code}</a></div><br/><div>이 링크는 24시간동안 유효합니다. </div></div>`
+                <div style="text-align: center; margin-top: 1rem; color: #868e96; font-size: 0.85rem;"><div>위 버튼을 클릭하시거나, 다음 링크를 열으세요: <br/> <a style="color: #b197fc;" href="http://localhost:3000/${emailKeywords.type}?code=${verification.code}">http://localhost:3000/${emailKeywords.type}?code=${verification.code}</a></div><br/><div>이 링크는 24시간동안 유효합니다. </div></div>`,
             });
             res.json({
-                isUser: !!auth
-            })
+                isUser: !!auth,
+            });
         } catch (e) {
             res.status(500).json(e);
         }
@@ -72,7 +72,7 @@ class AuthRouter {
             registerToken: string,
             displayName: string,
             username: string,
-        }
+        };
 
         const schema = joi.object().keys({
             registerToken: joi.string().required(),
@@ -96,22 +96,21 @@ class AuthRouter {
 
             if (!decoded) {
                 return res.status(400).json({
-                    name: '토큰 발급 안됨'
+                    name: '토큰 발급 안됨',
                 });
             }
 
             const { email } = decoded;
 
-            const [emailExists, usernameExists]: Array<IUser> = await Promise.all([
+            const [emailExists, usernameExists]: IUser[] = await Promise.all([
                 User.findByEmailOrUsername('email', email),
-                User.findByEmailOrUsername('username', username)
+                User.findByEmailOrUsername('username', username),
             ]);
-
 
             if (emailExists || usernameExists) {
                 res.status(409).json({
                     name: '중복된 계정',
-                    payload: emailExists ? 'email' : 'username'
+                    payload: emailExists ? 'email' : 'username',
                 });
                 return;
             }
@@ -120,8 +119,8 @@ class AuthRouter {
                 username,
                 email,
                 profile: {
-                    displayName: displayName
-                }
+                    displayName,
+                },
             });
 
             const token: string = await auth.generate(auth);
@@ -129,7 +128,7 @@ class AuthRouter {
 
             res.cookie('access_token', token, {
                 httpOnly: true,
-                maxAge: 1000 * 60 * 60 * 24 * 7
+                maxAge: 1000 * 60 * 60 * 24 * 7,
             });
 
             res.json({
@@ -137,9 +136,9 @@ class AuthRouter {
                     id: auth._id,
                     username: auth.username,
                     displayName: auth.profile.displayName,
-                    thumbnail: auth.profile.thumbnail
+                    thumbnail: auth.profile.thumbnail,
                 },
-                token
+                token,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -148,8 +147,8 @@ class AuthRouter {
 
     private async localLogin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            code: string
-        }
+            code: string,
+        };
 
         const { code }: BodySchema = req.body;
 
@@ -160,7 +159,7 @@ class AuthRouter {
         try {
             const auth: IEmailAuth = await EmailAuth.findCode(code);
             
-            if(!auth) {
+            if (!auth) {
                 return res.status(404);
             }
 
@@ -175,7 +174,7 @@ class AuthRouter {
 
             res.cookie('access_token', token, {
                 httpOnly: true,
-                maxAge: 1000 * 60 * 60 * 24 * 7
+                maxAge: 1000 * 60 * 60 * 24 * 7,
             });
 
             res.json({
@@ -183,9 +182,9 @@ class AuthRouter {
                     id: user.id,
                     username: user.username,
                     displayName: user.profile.displayName,
-                    thumbnail: user.profile.thumbnail
+                    thumbnail: user.profile.thumbnail,
                 },
-                token
+                token,
             });
 
         } catch (e) {
@@ -202,12 +201,12 @@ class AuthRouter {
             if (!auth) return res.status(404);
 
             const { email, code: emailCode } = auth;            
-            const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' })
+            const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' });
             await EmailAuth.use(emailCode);
 
             res.json({
                 email,
-                registerToken
+                registerToken,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -221,25 +220,25 @@ class AuthRouter {
         }
 
         res.json({
-            user
+            user,
         });
     }
 
     private async logout(res: Response): Promise<any> {
         res.cookie('access_token', null, {
             httpOnly: true,
-            maxAge: 0
+            maxAge: 0,
         });
         return res.status(204);
     }
 
-    private async socialRegister (req: Request, res: Response): Promise<any> {
+    private async socialRegister(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             socialEmail: string,
             accessToken: string,
             displayName: string,
             username: string,
-        }
+        };
 
         const schema = joi.object().keys({
             socialEmail: joi.string().email(),
@@ -260,7 +259,7 @@ class AuthRouter {
         const { provider } = req.params;
         const { socialEmail, displayName, username, accessToken }: BodySchema = req.body;
 
-        let profile: Profile = null;
+        let profile: IProfile = null;
 
         try {
             profile = await getSocialProfile(provider, accessToken);
@@ -271,15 +270,15 @@ class AuthRouter {
         const { id: socialId, thumbnail, email } = profile;
 
         try {
-            const [emailExists, usernameExists]: Array<IUser> = await Promise.all([
+            const [emailExists, usernameExists]: IUser[] = await Promise.all([
                 User.findByEmailOrUsername('email', email),
-                User.findByEmailOrUsername('username', username)
+                User.findByEmailOrUsername('username', username),
             ]);
 
             if (emailExists || usernameExists) {
                 res.status(409).json({
                     name: '중복된 계정',
-                    payload: emailExists ? 'email' : 'username'
+                    payload: emailExists ? 'email' : 'username',
                 });
                 return;
             }
@@ -288,21 +287,21 @@ class AuthRouter {
 
             if (socialExists) {
                 return res.status(409).json({
-                    name: '이미 가입한 소셜 계정'
+                    name: '이미 가입한 소셜 계정',
                 });
             }
 
             const auth: IUser = await User.create({
-                username: username,
-                email: email,
+                username,
+                email,
                 profile: {
-                    displayName: displayName,
-                    thumbnail: thumbnail
+                    displayName,
+                    thumbnail,
                 },
                 social: {
                     [provider]: {
                         id: socialId,
-                        accessToken: accessToken
+                        accessToken,
                     },
                 },
             });
@@ -312,7 +311,7 @@ class AuthRouter {
 
             res.cookie('access_token', token, {
                 httpOnly: true,
-                maxAge: 1000 * 60 * 60 * 24 * 7
+                maxAge: 1000 * 60 * 60 * 24 * 7,
             });
 
             res.json({
@@ -320,9 +319,9 @@ class AuthRouter {
                     id: auth._id,
                     username: auth.username,
                     displayName: auth.profile.displayName,
-                    thumbnail: auth.profile.thumbnail
+                    thumbnail: auth.profile.thumbnail,
                 },
-                token
+                token,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -331,13 +330,13 @@ class AuthRouter {
 
     private async socialLogin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            accessToken: string
-        }
+            accessToken: string,
+        };
 
         const { accessToken }: BodySchema = req.body;
         const { provider } = req.params;
 
-        let profile: Profile = null;
+        let profile: IProfile = null;
 
         try {
             profile = await getSocialProfile(provider, accessToken);
@@ -347,7 +346,7 @@ class AuthRouter {
 
         if (!profile) {
             return res.status(401).json({
-                name: '프로필이 존재하지 않습니다.'
+                name: '프로필이 존재하지 않습니다.',
             });
         }
 
@@ -360,14 +359,14 @@ class AuthRouter {
                 user = await User.findByEmailOrUsername('email', profile.email);
                 if (!user) {
                     return res.status(401).json({
-                        name: '등록되어 있지 않습니다.'
+                        name: '등록되어 있지 않습니다.',
                     });
                 }
                 await User.create({
                     social: {
                         [provider]: {
                             id: socialId,
-                            accessToken: accessToken
+                            accessToken,
                         },
                     },
                 });
@@ -377,7 +376,7 @@ class AuthRouter {
 
             res.cookie('access_token', token, {
                 httpOnly: true,
-                maxAge: 1000 * 60 * 60 * 24 * 7
+                maxAge: 1000 * 60 * 60 * 24 * 7,
             });
 
             res.json({
@@ -385,10 +384,10 @@ class AuthRouter {
                     id: user._id,
                     username: user.username,
                     displayName: user.profile.displayName,
-                    thumbnail: user.profile.thumbnail
+                    thumbnail: user.profile.thumbnail,
                 },
-                token
-            })
+                token,
+            });
         } catch (e) {
             res.status(500).json(e);
         }
@@ -396,15 +395,14 @@ class AuthRouter {
 
     private async verifySocial(req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            accessToken: string
-        }
+            accessToken: string,
+        };
 
         const { accessToken }: BodySchema = req.body;
         const { provider } = req.params;
 
-        let profile: Profile = null;
+        let profile: IProfile = null;
          
-
         try {
             profile = await getSocialProfile(provider, accessToken);
         } catch (e) {
@@ -413,19 +411,19 @@ class AuthRouter {
 
         if (!profile) {
             return res.status(401).json({
-                name: '프로필이 존재하지 않습니다.'
+                name: '프로필이 존재하지 않습니다.',
             });
         }
 
         try {
-            const [socialAuth, user]: Array<IUser> = await Promise.all([
+            const [socialAuth, user]: IUser[] = await Promise.all([
                 User.findBySocial(provider, profile.id),
                 User.findByEmailOrUsername('email', profile.email),
             ]);
 
             res.json({
                 profile,
-                exists: !!(socialAuth || user)
+                exists: !!(socialAuth || user),
             });
         } catch (e) {
             res.status(500).json(e);

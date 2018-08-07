@@ -1,5 +1,5 @@
-import { Schema, model, Model, Document } from 'mongoose';
-import { IUser } from './User';
+import { Schema, model, Model, Document } from "mongoose";
+import { IUser } from "./User";
 
 export interface IFollow extends Document {
     _id: string;
@@ -16,45 +16,45 @@ export interface IFollowModel extends Model<IFollow> {
 const Follow = new Schema({
     following: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     follower: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
-    }
-})
+        ref: "User",
+    },
+});
 
 Follow.statics.checkExists = function(userId: string, followId: string): Promise<any> {
     return this.findOne({
         $and: [
-            { 'following': followId },
-            { 'follower': userId }
-        ]
+            { following : followId },
+            { follower : userId },
+        ],
     });
-}
+};
 
 Follow.statics.followingList = function(followerId: string, cursor?: string): Promise<any> {
     const query = Object.assign(
         {},
-        cursor ? { _id: { $lt: cursor}, follower: followerId} : { follower: followerId } 
+        cursor ? { _id: { $lt: cursor}, follower: followerId} : { follower: followerId }, 
     );
     return this.find(query)
-    .populate('following')
+    .populate("following")
     .sort({ _id: -1 })
-    .limit(10)
-}
+    .limit(10);
+};
 
 Follow.statics.followerList = function(followingId: string, cursor?: string): Promise<any> {
     const query = Object.assign(
         {},
-        cursor ? { _id: { $lt: cursor}, following: followingId } : { following: followingId } 
+        cursor ? { _id: { $lt: cursor}, following: followingId } : { following: followingId }, 
     );
     return this.find(query)
-    .populate('follower')
+    .populate("follower")
     .sort({ _id: -1 })
-    .limit(10)
-}
+    .limit(10);
+};
 
-const FollowModel = model<IFollow>('Follow', Follow) as IFollowModel;
+const FollowModel = model<IFollow>("Follow", Follow) as IFollowModel;
 
 export default FollowModel;

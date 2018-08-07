@@ -13,6 +13,8 @@ type Props = {
     follower: number,
     following: number,
     pin: number,
+    id: string,
+    userId: string | null,
     url: string,
     follow: boolean,
     onPinScreen(): any,
@@ -21,7 +23,7 @@ type Props = {
     onUnFollow(displayName: string): Promise<void>
  }
 
-const UserHead: React.SFC<Props> = ({ username, displayName, thumbnail, url, onFollow, onUnFollow, onPinScreen, onSettingScreen, follower, following, pin, follow }) => {    
+const UserHead: React.SFC<Props> = ({ userId, username, displayName, thumbnail,id, url, onFollow, onUnFollow, onPinScreen, onSettingScreen, follower, following, pin, follow }) => {    
     return (
         <div className={cx('user-head')}>
             <img src={thumbnail} alt={username}/>
@@ -38,15 +40,17 @@ const UserHead: React.SFC<Props> = ({ username, displayName, thumbnail, url, onF
                                 프로필 편집
                         </Button>
                         <React.Fragment>
-                            {
-                                follow ? (
-                                    <Button className={cx("subscribe")} theme="default" onClick={() => onUnFollow(displayName)}>
-                                        구독중
-                                    </Button>
-                                ) : (
-                                    <Button className={cx("subscribe")} theme="outline" onClick={() => onFollow(displayName)}>
-                                        구독하기
-                                    </Button>
+                            {   
+                                userId === id ? null : (
+                                    follow ? (
+                                        <Button className={cx("subscribe")} theme="default" onClick={() => onUnFollow(displayName)}>
+                                            구독중
+                                        </Button>
+                                    ) : (
+                                        <Button className={cx("subscribe")} theme="outline" onClick={() => onFollow(displayName)}>
+                                            구독하기
+                                        </Button>
+                                    )
                                 )
                             }
                         </React.Fragment>

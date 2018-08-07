@@ -18,7 +18,7 @@ const PinSide: React.SFC<Props> = ({ tags }) => {
                 {
                     tags.map(t => 
                     <li key={t}>
-                        <NavLink to="/">
+                        <NavLink to={`/tags/${t}`}>
                             {t}
                         </NavLink>
                     </li>)

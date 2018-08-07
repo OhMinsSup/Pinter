@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "nodemon -exec",
-    "restart": "tsc-watch --onSuccess \" node dist/index.js\"",
+    "dev:server": "tsc-watch --onSuccess \" node dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

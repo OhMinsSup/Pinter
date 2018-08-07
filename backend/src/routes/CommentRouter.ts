@@ -5,10 +5,10 @@ import User from '../database/models/User';
 import Pin from '../database/models/Pin';
 import needAuth from '../lib/middleware/needAuth';
 import {
-    checkPinExistancy
+    checkPinExistancy,
 } from '../lib/common';
 import {
-    serializeComment, serializeUser
+    serializeComment, serializeUser,
 } from '../lib/serialize';
 
 class CommentRouter {
@@ -22,8 +22,8 @@ class CommentRouter {
     private async writeComment(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             text: string;
-            tags: Array<string>;
-        }
+            tags: string[];
+        };
 
         const schema = joi.object().keys({
             text: joi.string(),
@@ -50,8 +50,8 @@ class CommentRouter {
             const comment = await Comment.create({ 
                 pin: pinId, 
                 user: userId, 
-                text: text,
-                has_tags: tagIds 
+                text,
+                has_tags: tagIds,
             });
             
             if (!comment) {
@@ -76,7 +76,7 @@ class CommentRouter {
 
             if (!comment) {
                 return res.status(404).json({
-                    name: '존재하지않는 댓글은 삭제할 수 없습니다.'
+                    name: '존재하지않는 댓글은 삭제할 수 없습니다.',
                 });
             }
 
@@ -94,12 +94,12 @@ class CommentRouter {
         const { cursor } = req.query;
 
         try {
-            const comment: Array<IComment> = await Comment.getCommentList(pinId, cursor);
+            const comment: IComment[] = await Comment.getCommentList(pinId, cursor);
             const next = comment.length === 10 ? `/pin/comments/${pinId}/?cursor=${comment[9]._id}` : null;
             const commentWithData = comment.map(serializeComment);
             res.json({
                 next,
-                commentWithData
+                commentWithData,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -111,11 +111,11 @@ class CommentRouter {
         const userId: string = req['user']._id;
         
         try {
-            const user: Array<IComment> = await Comment.getCommentUserList(pinId, userId);
+            const user: IComment[] = await Comment.getCommentUserList(pinId, userId);
             const usersWithData = user.map(serializeUser);
             res.json({
-                usersWithData
-            })
+                usersWithData,
+            });
         } catch (e) {
             res.status(500).json(e);
         }

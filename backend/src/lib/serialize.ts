@@ -1,4 +1,4 @@
-import { pick }  from 'lodash';
+import { pick } from "lodash";
 
 const serializePin = (data: any) => {
     const {
@@ -23,31 +23,30 @@ const serializePin = (data: any) => {
         comments,
         tags,
         user: {
-            ...pick(user, ['_id', 'username']),
-            ...pick(user.profile, ['displayName', 'thumbnail']),
+            ...pick(user, ["_id", "username"]),
+            ...pick(user.profile, ["displayName", "thumbnail"]),
         },
-    }
-}
-
+    };
+};
 
 const serializeUser = (data: any) => {
     const {
-        user
+        user,
     } = data; 
     return {
         user: {
-            ...pick(user, ['_id','username']),
-            ...pick(user.profile, ['displayName', 'thumbnail'])
-        }
-    }
-}
+            ...pick(user, ['_id', 'username']),
+            ...pick(user.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
 
 const serializeComment = (data: any) => {
     const {
         _id: commentId,
         user,
         text,
-        createdAt
+        createdAt,
     } = data;
 
     const tagId = data.has_tags.map(tag => tag._id);
@@ -60,24 +59,24 @@ const serializeComment = (data: any) => {
         tagId,
         tagName,
         user: {
-            ...pick(user, ['_id','username']),
-            ...pick(user.profile, ['displayName', 'thumbnail'])
-        }
-    }
-}
+            ...pick(user, ['_id', 'username']),
+            ...pick(user.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
 
 const serializeTag = (data: any) => {
     const {
         _id: tagId,
         name,
-        pin
+        pin,
     } = data;
     return {
         tagId,
         name,
-        count: pin.length
+        count: pin.length,
     };
-}
+};
 
 const serializeTagPin = (data: any) => {
     const {
@@ -101,11 +100,11 @@ const serializeTagPin = (data: any) => {
         likes,
         comments,
         user: {
-            ...pick(user, ['_id','username']),
-            ...pick(user.profile, ['displayName', 'thumbnail'])
-        }
-    }
-}
+            ...pick(user, ['_id', 'username']),
+            ...pick(user.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
 
 const serializeLocker = (data: any) => {
     const {
@@ -119,8 +118,8 @@ const serializeLocker = (data: any) => {
             relation_url,
             description,
             createdAt,
-            user
-        }
+            user,
+        },
     } = data;
     return {
         lockerId,
@@ -133,44 +132,44 @@ const serializeLocker = (data: any) => {
         description,
         createdAt,
         user: {
-            ...pick(user, ['_id','username']),
-            ...pick(user.profile, ['displayName', 'thumbnail'])
-        }
-    }
-}
+            ...pick(user, ['_id', 'username']),
+            ...pick(user.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
 
 const serializeFollower = (data: any) => {
     const {
         _id: followId,
-        follower
+        follower,
     } = data;
     return {
         followId,
         follower: {
-            ...pick(follower, ['_id','username']),
-            ...pick(follower.profile, ['displayName', 'thumbnail'])
-        }
-    }
-}
+            ...pick(follower, ['_id', 'username']),
+            ...pick(follower.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
 
 const serializeFollowing = (data: any) => {
     const {
         _id: followId,
-        following
+        following,
     } = data;
     return {
         followId,
         following: {
-            ...pick(following, ['_id','username']),
-            ...pick(following.profile, ['displayName', 'thumbnail'])
-        }
-    }
-}
+            ...pick(following, ['_id', 'username']),
+            ...pick(following.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
 
 const serializeBoard = (data: any) => {
     const {
         _id: boardId,
-        theme
+        theme,
     } = data;
     const user = data.user.map(user => {
         const { profile: { displayName, thumbnail }, id: userId, username } = user;
@@ -178,27 +177,27 @@ const serializeBoard = (data: any) => {
             displayName,
             thumbnail,
             userId,
-            username
-        }
+            username,
+        };
     });
     const pin = data.pin.map(pin => pin);
     return {
         boardId,
         theme,
         pin,
-        user
-    }
-}
+        user,
+    };
+};
 
 const serializeUsers = (data: any) => {
     const user = data;
     return {
         user: {
-            ...pick(user, ['_id','username']),
-            ...pick(user.profile, ['displayName', 'thumbnail'])
-        }
-    }
-}
+            ...pick(user, ['_id', 'username']),
+            ...pick(user.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
 
 export {
     serializeUser,
@@ -210,5 +209,5 @@ export {
     serializeFollower,
     serializeFollowing,
     serializeBoard,
-    serializeUsers
-}
+    serializeUsers,
+};

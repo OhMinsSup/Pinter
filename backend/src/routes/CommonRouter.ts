@@ -19,13 +19,13 @@ class CommonRouter {
 
         if (availableSort.indexOf(sort) === -1) {
             return res.status(400).json({
-                name: '존재하지 않는 정렬입니다'
+                name: '존재하지 않는 정렬입니다',
             });
         }
 
         const sortBy = Object.assign(
             {},
-            sort === 'latest' ? { _id: -1 } : { name: 'asc' } 
+            sort === 'latest' ? { _id: -1 } : { name: 'asc' }, 
         );
 
         try {
@@ -43,21 +43,21 @@ class CommonRouter {
             const { pin }: ITag = await Tag.findByTagName(tag);
             const pinData = await Promise.all(pin.map(pinId => Pin.readPinById(pinId._id)));
             res.json({
-                pinWithData: pinData.map(serializeTagPin)
+                pinWithData: pinData.map(serializeTagPin),
             });
         } catch (e) {
             res.status(500).json(e);
         }
     }
 
-    private async getUsers (req: Request, res: Response): Promise<any> {
+    private async getUsers(req: Request, res: Response): Promise<any> {
         const { cursor } = req.query;
         try {
-            const user: Array<IUser> = await User.usersList(cursor);
+            const user: IUser[] = await User.usersList(cursor);
             const next  = user.length === 15 ? `/common/users?cursor=${user[14]._id}` : null;
             res.json({
                 next,
-                usersWithData: user.map(serializeUsers)
+                usersWithData: user.map(serializeUsers),
             });
         } catch (e) {
             console.log(e);
@@ -76,7 +76,7 @@ class CommonRouter {
                 userId: user._id,
                 follower: count.follower,
                 following: count.following,
-                pin: count.pin
+                pin: count.pin,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -88,7 +88,7 @@ class CommonRouter {
 
         router.get('/tags', this.getTags);
         router.get('/tags/:tag', this.getTagInfo);
-        router.get('/users', this.getUsers)
+        router.get('/users', this.getUsers);
         router.get('/info/:displayName', this.getUserInfo);
     }
 }

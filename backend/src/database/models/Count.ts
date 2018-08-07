@@ -1,5 +1,5 @@
-import { Schema, model, Document, Model } from 'mongoose';
-import { IUser } from './User';
+import { Schema, model, Document, Model } from "mongoose";
+import { IUser } from "./User";
 
 export interface ICount extends Document {
     _id: string;
@@ -21,91 +21,88 @@ export interface ICountModel extends Model<ICount> {
 const Count = new Schema({
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     follower: {
         type: Number,
-        default: 0
+        default: 0,
     },
     following: {
         type: Number,
-        default: 0
+        default: 0,
     },
     pin: {
         type: Number,
-        default: 0
-    }
+        default: 0,
+    },
 });
-
 
 Count.statics.followerCount = function(userId: string): Promise<any> {
     return this.findOneAndUpdate({
-        user: userId
+        user: userId,
     }, {
-        $inc: { follower: 1 }
+        $inc: { follower: 1 },
     }, {
         new: true,
-        select: 'follower'
+        select: "follower",
     });
-}
+};
 
 Count.statics.unfollowerCount = function(userId: string): Promise<any> {
     return this.findOneAndUpdate({
-        user: userId
+        user: userId,
     }, {
-        $inc: { follower: -1 }
+        $inc: { follower: -1 },
     }, {
         new: true,
-        select: 'follower'
+        select: "follower",
     });
-}
+};
 
 Count.statics.followingCount = function(userId: string): Promise<any> {
     return this.findOneAndUpdate({
-        user: userId
+        user: userId,
     }, {
-        $inc: { following: 1 }
+        $inc: { following: 1 },
     }, {
         new: true,
-        select: 'following'
+        select: "following",
     });
-}
+};
 
 Count.statics.unfollowingCount = function(userId: string): Promise<any> {
     return this.findOneAndUpdate({
-        user: userId
+        user: userId,
     }, {
-        $inc: { following: -1 }
+        $inc: { following: -1 },
     }, {
         new: true,
-        select: 'following'
+        select: "following",
     });
-}
+};
 
 Count.statics.pinCount = function(userId: string): Promise<any> {
     return this.findOneAndUpdate({
-        user: userId
+        user: userId,
     }, {
-        $inc: { pin: 1 }
+        $inc: { pin: 1 },
     }, {
         new: true,
-        select: 'pin'
+        select: "pin",
     });
-}
+},
 
 Count.statics.unpinCount = function(userId: string): Promise<any> {
     return this.findOneAndUpdate({
-        user: userId
+        user: userId,
     }, {
-        $inc: { pin: -1 }
+        $inc: { pin: -1 },
     }, {
         new: true,
-        select: 'pin'
+        select: "pin",
     });
-}
+};
 
-
-
-const CountModel = model<ICount>('Count', Count) as ICountModel;
+const CountModel = model<ICount>("Count", Count) as ICountModel;
 
 export default CountModel;

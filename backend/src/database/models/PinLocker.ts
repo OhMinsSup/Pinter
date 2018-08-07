@@ -1,6 +1,6 @@
-import { Schema, model, Model, Document } from 'mongoose';
-import { IUser } from './User';
-import { IPin } from './Pin';
+import { Schema, model, Model, Document } from "mongoose";
+import { IUser } from "./User";
+import { IPin } from "./Pin";
 
 export interface IPinLocker extends Document {
     _id: string;
@@ -15,22 +15,22 @@ export interface IPinLockerModel extends Model<IPinLocker> {
     lockerUnCount(lockerId: string): Promise<any>;
     checkExists(userId: string, pinId: string): Promise<any>;
     getLockerUserList(pinId: string, userId: string): Promise<any>;
-    countLocker(): Promise<any>
+    countLocker(): Promise<any>;
 }
 
 const PinLocker = new Schema({
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     pin: {
         type: Schema.Types.ObjectId,
-        ref: 'Pin'
+        ref: "Pin",
     },
     count: {
         type: Number,
-        default: 0
-    }
+        default: 0,
+    },
 });
 
 PinLocker.statics.lockerList = function(userId: string, cursor?: string): Promise<any> {
@@ -41,65 +41,65 @@ PinLocker.statics.lockerList = function(userId: string, cursor?: string): Promis
 
     return this.find(query)
     .populate({
-        path: 'pin',
+        path: "pin",
         populate: [{
-            path: 'user',
-            model: 'User'
+            path: "user",
+            model: "User",
         }, {
-            path: 'tags',
-            model: 'Tag'
+            path: "tags",
+            model: "Tag",
         }],
     })
     .sort({ _id: -1 })
     .limit(15);
-}
+};
 
 PinLocker.statics.getLockerUserList = function(pinId: string, userId: string): Promise<any> {
     const query = Object.assign(
         {},
         { 
             pin: pinId, 
-            user: { $ne: userId } 
-        }
+            user: { $ne: userId }, 
+        },
     );
 
     return this.find(query)
-    .populate('user')
-    .sort({_id: -1}) ;
-}
+    .populate("user")
+    .sort({_id: -1});
+};
 
 PinLocker.statics.checkExists = function(userId: string, pinId: string): Promise<any> {
     return this.findOne({
         $and: [
-            { 'user': userId },
-            { 'pin': pinId }
-        ]
+            { user: userId },
+            { pin: pinId },
+        ],
     });
-}
+};
 
 PinLocker.statics.countLocker = function(): Promise<any> {
     return this.aggregate([
         {
             $group: {
-                _id: '$user',
-                count: { $sum: '$count' }
-            }
-        }
+                _id: "$user",
+                count: { $sum: "$count" },
+            },
+        },
     ]);
-}
+};
 
 PinLocker.statics.lockerCount = function(lockerId: string): Promise<any> {
     return this.findByIdAndUpdate(lockerId, {
-        $inc: { count: 1 }
+        $inc: { count: 1 },
     }, { new: true });
-}
+};
 
 PinLocker.statics.lockerUnCount = function(lockerId: string): Promise<any> {
     return this.findByIdAndUpdate(lockerId, {
-        $inc: { count: -1 }
+        $inc: { count: -1 },
     }, { new: true });
-}
+};
 
-const PinLockerModel = model<IPinLocker>('PinLocker', PinLocker) as IPinLockerModel;
+const PinLockerModel = model<IPinLocker>("PinLocker", PinLocker) as IPinLockerModel;
 
 export default PinLockerModel;

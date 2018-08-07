@@ -10,6 +10,7 @@
     "import-name": false,
     "interface-name": false,
     "semicolon": false,
+    "arrow-parens": false,
     "variable-name": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
@@ -27,6 +28,8 @@
     "prefer-const":false,
     "only-arrow-functions": false,
     "curly": false,
+    "eofline": false,
+    "max-line-length": false,
     "max-classes-per-file": [true, 8, "exclude-class-expressions"]
   }
 }

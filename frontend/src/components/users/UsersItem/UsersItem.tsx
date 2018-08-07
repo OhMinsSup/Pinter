@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
+import { Link } from 'react-router-dom';
 
 const styles = require('./UsersItem.scss');
 const cx = classNames.bind(styles);
@@ -17,17 +18,17 @@ const UsersItem: React.SFC<Props> = ({ id, username, thumbnail, displayName }) =
             <div className={cx('list-wrapper')}>
                 <div className={cx('wrapper')}>
                     <div className={cx('user-info')}>
-                        <a className={cx('thumbnail-wrapper')}>
+                        <Link to={`/@${displayName}`} className={cx('thumbnail-wrapper')}>
                             <img className={cx('thumbnail')} src={thumbnail} alt={username}/>
-                        </a>
+                        </Link>
                         <div className={cx('username-wrapper')}>
                             <div className={cx('displayName-wrapper')}>
-                                <a className={cx('displayName')}>{displayName}</a>
+                                <a className={cx('displayName')}><Link to={`/@${displayName}`}>{displayName}</Link></a>
                             </div>
-                            <div className={cx('username')}>{username}</div>
+                            <div className={cx('username')}><Link to={`/@${displayName}`}>{username}</Link></div>
                         </div>
                         <div className={cx('button-wrapper')}>
-                            <button className={cx('button')}>프로필</button>
+                            <button className={cx('button')}><Link to={`/@${displayName}`}>프로필</Link></button>
                         </div>
                     </div>
                 </div>    
