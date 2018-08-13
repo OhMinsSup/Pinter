@@ -122,7 +122,8 @@ class FollowRouter {
     private async getFollowing(req: Request, res: Response): Promise<any> {
         const { displayName } = req.params;
         const { cursor } = req.query;
-
+        console.log(displayName);
+        
         try {
             const user: IUser = await User.findByDisplayName(displayName);
             
@@ -134,10 +135,10 @@ class FollowRouter {
 
             const following: IFollow[] = await Follow.followingList(user._id, cursor);
             const next = following.length === 10 ? `/follow/${displayName}/following/?cursor=${following[9]._id}` : null; 
-            const followingsWithData = following.map(serializeFollowing);
+            const usersWithData = following.map(serializeFollowing);
             res.json({
                 next,
-                followingsWithData,
+                usersWithData,
             });
         } catch (e) {
             res.status(500).json(e);
@@ -159,10 +160,10 @@ class FollowRouter {
 
             const follwer: IFollow[] = await Follow.followerList(user._id, cursor);
             const next = follwer.length === 10 ? `/follow/${displayName}/following/?cursor=${follwer[9]._id}` : null; 
-            const follwersWithData = follwer.map(serializeFollower);
+            const usersWithData = follwer.map(serializeFollower);
             res.json({
                 next,
-                follwersWithData,
+                usersWithData,
             });
         } catch (e) {
             res.status(500).json(e);

@@ -2,6 +2,7 @@ import { handleActions, createAction } from 'redux-actions';
 import { Dispatch, Action } from 'redux';
 import * as PinAPI from '../../lib/api/pin';
 import * as TagAPI from '../../lib/api/tag';
+import * as FollowAPI from '../../lib/api/follow';
 import * as CommonAPI from '../../lib/api/common';
 import { GenericResponseAction } from '../../lib/common';
 import produce from 'immer';
@@ -36,6 +37,10 @@ export enum ListActionType {
     GET_USER_LIST_FAILING = 'list/GET_USER_LIST_FAILING',
     PREFETCH_USER_LIST_SUCCESS = 'list/PREFETCH_USER_LIST_SUCCESS',
 
+    GET_USER_FOLLOWING_LIST_PENDING = 'list/GET_USER_FOLLOWING_LIST_PENDING',
+    GET_USER_FOLLOWING_LIST_SUCCESS = 'list/GET_USER_FOLLOWING_LIST_SUCCESS',
+    GET_USER_FOLLOWING_LIST_FAILING = 'list/GET_USER_FOLLOWING_LIST_FAILING',
+    PREFETCH_USER_FOLLOWING_LIST_SUCCESS = 'list/PREFETCH_USER_FOLLOWING_LIST_SUCCESS',
 }
 
 export type GetPinListPayload = { pinWithData: PinSubState[], next: string };
@@ -43,6 +48,27 @@ export type ListPayload = { usersWithData: UserSubState[], next?: string };
 
 export const actionCreators = {
     revealPrefetched: createAction(ListActionType.REVEAL_PREFETCHED, (type: string) => type),
+    getFollowingList: (displayName: string) => (dispatch: Dispatch<Action>) => {        
+        dispatch({ type: ListActionType.GET_USER_FOLLOWING_LIST_PENDING })
+        return setTimeout(() => {
+            return FollowAPI.getFollowingAPI(displayName)
+            .then(res => dispatch({
+                type: ListActionType.GET_USER_FOLLOWING_LIST_SUCCESS,
+                payload: res,
+            }))
+            .catch(e => dispatch({
+                type: ListActionType.GET_USER_FOLLOWING_LIST_FAILING,
+                payload: e
+            }))
+        }, 2000)
+    },
+    prefetchFollowingList: (next: string) => (dispatch: Dispatch<Action>) => {
+        return FollowAPI.nextAPI(next)
+        .then(res => dispatch({
+            type: ListActionType.PREFETCH_USER_FOLLOWING_LIST_SUCCESS,
+            payload: res
+        }))
+    },
     getPinList: () => (dispatch: Dispatch<Action>) => {
         dispatch({ type: ListActionType.GET_PIN_LIST_PENDING })
         return setTimeout(() => {
@@ -161,6 +187,8 @@ type CommentUserListAction = GenericResponseAction<ListPayload, string>;
 type LockerUserListAction = GenericResponseAction<ListPayload, string>;
 type GetUsersListAction = GenericResponseAction<ListPayload, string>;
 type PrefetchUserListAction = GenericResponseAction<ListPayload, string>;
+type GetFollowingListAction = GenericResponseAction<ListPayload, string>;
+type PrefetchFollowingListAction = GenericResponseAction<ListPayload, string>;
 
 export interface PinSubState {
     pinId: string, 
@@ -207,7 +235,8 @@ export interface ListingUserSetState {
 export interface ListState {
     list: ListingSetState,
     user: ListingSetState,
-    tag: ListingSetState
+    tag: ListingSetState,
+    following: ListingUserSetState,
     users: ListingUserSetState,
     like_user: ListingUserSetState,
     comment_user: ListingUserSetState,
@@ -234,6 +263,7 @@ const initialState: ListState = {
     list: initialListingSet,
     user: initialListingSet,
     tag: initialListingSet,
+    following: initialUserListingSet,
     users: initialUserListingSet,
     like_user: initialUserListingSet,
     comment_user: initialUserListingSet,
@@ -442,4 +472,41 @@ export default handleActions<ListState, any>({
             }
         })
     },
+    [ListActionType.GET_USER_FOLLOWING_LIST_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.following.loading = true;
+        })
+    },
+    [ListActionType.GET_USER_FOLLOWING_LIST_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.following = {
+                user: [],
+                prefetched: [],
+                next: '',
+                loading: false
+            }
+        })
+    },
+    [ListActionType.GET_USER_FOLLOWING_LIST_SUCCESS]: (state, action: GetFollowingListAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            if (!data) return;
+            draft.following = {
+                user: data.usersWithData,
+                prefetched: [],
+                next: data.next,
+                loading: false
+            }
+        })
+    },
+    [ListActionType.PREFETCH_USER_FOLLOWING_LIST_SUCCESS]: (state, action: PrefetchFollowingListAction) => {
+        return produce(state, (draft) => {
+            if (action.payload.data === undefined) return;
+            draft.following.prefetched = action.payload.data.usersWithData;
+            draft.following.next = action.payload.data.next;
+            if (action.payload.data.usersWithData && action.payload.data.usersWithData.length === 0) {
+                draft.list.end = true;
+            }
+        })
+    }
 }, initialState);

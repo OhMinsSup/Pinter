@@ -12,8 +12,8 @@ export interface IPin extends Document {
     tags?: ITag[];
     likes?: number;
     comments?: number;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface IPinModel extends Model<IPin> {

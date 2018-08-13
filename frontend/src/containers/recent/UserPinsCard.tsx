@@ -31,7 +31,7 @@ class UserPinsCard extends React.Component<UserPinsCardProps> {
         if (!pins || pins.length === 0) return;
 
         if (this.props.prefetched) {
-           ListActions.revealPrefetched('user');
+           ListActions.revealPrefetched('list');
            await Promise.resolve();
         }
 

@@ -144,7 +144,6 @@ const serializeFollower = (data: any) => {
         follower,
     } = data;
     return {
-        followId,
         follower: {
             ...pick(follower, ['_id', 'username']),
             ...pick(follower.profile, ['displayName', 'thumbnail']),
@@ -158,34 +157,10 @@ const serializeFollowing = (data: any) => {
         following,
     } = data;
     return {
-        followId,
         following: {
             ...pick(following, ['_id', 'username']),
             ...pick(following.profile, ['displayName', 'thumbnail']),
         },
-    };
-};
-
-const serializeBoard = (data: any) => {
-    const {
-        _id: boardId,
-        theme,
-    } = data;
-    const user = data.user.map(user => {
-        const { profile: { displayName, thumbnail }, id: userId, username } = user;
-        return {
-            displayName,
-            thumbnail,
-            userId,
-            username,
-        };
-    });
-    const pin = data.pin.map(pin => pin);
-    return {
-        boardId,
-        theme,
-        pin,
-        user,
     };
 };
 
@@ -208,6 +183,5 @@ export {
     serializeLocker,
     serializeFollower,
     serializeFollowing,
-    serializeBoard,
     serializeUsers,
 };

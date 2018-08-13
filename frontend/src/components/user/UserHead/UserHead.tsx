@@ -72,11 +72,6 @@ const UserHead: React.SFC<Props> = ({ userId, username, displayName, thumbnail,i
                         to={`/@${displayName}/pin`}
                     />
                     <UserMenuItem
-                        text="보드"
-                        active={url === `/@${displayName}/board`}
-                        to={`/@${displayName}/board`}
-                    />
-                    <UserMenuItem
                         text="팔로우"
                         active={url === `/@${displayName}/follower`}
                         to={`/@${displayName}/follower`}

@@ -23,9 +23,13 @@ const UsersItem: React.SFC<Props> = ({ id, username, thumbnail, displayName }) =
                         </Link>
                         <div className={cx('username-wrapper')}>
                             <div className={cx('displayName-wrapper')}>
-                                <a className={cx('displayName')}><Link to={`/@${displayName}`}>{displayName}</Link></a>
+                                <div className={cx('displayName')}>
+                                    <Link to={`/@${displayName}`}>{displayName}</Link>
+                                </div>
                             </div>
-                            <div className={cx('username')}><Link to={`/@${displayName}`}>{username}</Link></div>
+                            <div className={cx('username')}>
+                                <Link to={`/@${displayName}`}>{username}</Link>
+                            </div>
                         </div>
                         <div className={cx('button-wrapper')}>
                             <button className={cx('button')}><Link to={`/@${displayName}`}>프로필</Link></button>

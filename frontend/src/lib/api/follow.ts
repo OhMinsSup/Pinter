@@ -5,3 +5,4 @@ export const followAPI = (displayName: string): Promise<any> => axios.post(`/fol
 export const unfollowAPI = (displayName: string): Promise<any> => axios.delete(`/follow/${displayName}`);
 export const getFollowingAPI = (displayName: string): Promise<any> => axios.get(`/follow/${displayName}/following`);
 export const getFollowerAPI = (displayName: string): Promise<any> => axios.get(`/follow/${displayName}/follower`);
+export const nextAPI = (next: string): Promise<any> => axios.get(next);

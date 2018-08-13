@@ -144,7 +144,9 @@ function* providerLoginFlow () {
         const { data: { user, token } }: AuthPayload.SocialLoginPayload = yield call(AuthAPI.socialLoginAPI, socialAuthResultData)
         yield put(authActions.socialLoginSuccess({ user, token }));
         const authResultData: UserSubState = yield select((state: StoreState) => state.auth.authResult);
-        yield put(userActions.setUser(authResultData));
+        yield put(userActions.setUser(authResultData
+        
+        ));
         storage.set('__pinter_user__', authResultData);
     } else {
         const { email, username: name } = verifySocialResultData;

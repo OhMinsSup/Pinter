@@ -69,6 +69,22 @@
         width: 100%;
     }
 
+    &.flex {
+        background: $oc-red-5;
+        border: none;
+        color: white;
+        justify-content: center;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background ease-in 0.125s;
+        &:hover {
+            background: $oc-red-4
+        }
+        &:active {
+            background: $oc-red-6
+        }
+    }
+
     &.gray {
         border-radius: 4px;
         background: $oc-gray-8;

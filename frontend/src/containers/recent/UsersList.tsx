@@ -27,7 +27,7 @@ class UsersList extends React.Component<UsersListProps> {
         if (!users || users.length === 0) return;
 
         if (this.props.prefetched) {
-           ListActions.revealPrefetched('list');
+           ListActions.revealPrefetched('users');
            await Promise.resolve();
         }
 
