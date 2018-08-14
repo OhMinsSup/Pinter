@@ -13,9 +13,9 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = {
     displayName: string
 }
-type UserFollowingCardProps = StateProps & DispatchProps & OwnProps;
+type UserFollowerCardProps = StateProps & DispatchProps & OwnProps;
 
-class UserFollowingCard extends React.Component<UserFollowingCardProps> {
+class UserFollowerCard extends React.Component<UserFollowerCardProps> {
     public prev: string | null = null;
     
     public onScroll = throttle(() => {
@@ -28,7 +28,7 @@ class UserFollowingCard extends React.Component<UserFollowingCardProps> {
         const { ListActions, displayName } = this.props;
         
         try {
-            await ListActions.getFollowingList(displayName);
+            await ListActions.getFollowerList(displayName);
         } catch (e) {
             console.log(e);
         }
@@ -39,7 +39,7 @@ class UserFollowingCard extends React.Component<UserFollowingCardProps> {
         if (!users || users.length === 0) return;
 
         if (this.props.prefetched) {
-           ListActions.revealPrefetched('following');
+           ListActions.revealPrefetched('follower');
            await Promise.resolve();
         }
 
@@ -47,7 +47,7 @@ class UserFollowingCard extends React.Component<UserFollowingCardProps> {
         this.prev = next as string;
 
         try {
-            await ListActions.prefetchFollowingList(next as string);
+            await ListActions.prefetchFollowerList(next as string);
         } catch (e) {
             console.log(e);
         }
@@ -81,10 +81,10 @@ class UserFollowingCard extends React.Component<UserFollowingCardProps> {
 }
 
 const mapStateToProps = ({ list }: StoreState) => ({
-    users: list.following.user,
-    prefetched: list.following.prefetched,
-    next: list.following.next,
-    loading: list.following.loading
+    users: list.follower.user,
+    prefetched: list.follower.prefetched,
+    next: list.follower.next,
+    loading: list.follower.loading
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -96,4 +96,4 @@ export default compose(
         mapStateToProps,
         mapDispatchToProps
     )
-)(UserFollowingCard);
+)(UserFollowerCard);

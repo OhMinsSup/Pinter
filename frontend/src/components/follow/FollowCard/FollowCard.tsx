@@ -6,22 +6,29 @@ import Button from '../../common/Button';
 const styles = require('./FollowCard.scss');
 const cx = classNames.bind(styles);
 
-const FollowCard = () => {
+type Props = {
+    id: string;
+    username: string;
+    displayName: string;
+    thumbnail: string;
+}
+
+const FollowCard: React.SFC<Props> = ({ id, username, displayName, thumbnail }) => {
     return (
         <div className={cx('follow-card')}>
             <div className={cx('content')}>
                 <div className={cx('head')}>
-                    <Link className={cx('thumbnail-wrapper')} to='/'>
-                        <img className={cx('thumbnail')} src="https://cdn.hashnode.com/res/hashnode/image/upload/w_70,h_70,c_thumb/hnad7r5atupz4fwxt1ld/1482944365.jpg" alt="username"/>
+                    <Link className={cx('thumbnail-wrapper')} to={`/@${displayName}`}>
+                        <img className={cx('thumbnail')} src={thumbnail} alt={username}/>
                     </Link>
                     <div className={cx('name-wrapper')}>
-                        <Link className={cx('displayName')} to="/">veloss</Link>
-                        <Link className={cx('username')} to="/">오민섭</Link>
+                        <Link className={cx('displayName')} to={`/@${displayName}`}>{displayName}</Link>
+                        <Link className={cx('username')} to={`/@${displayName}`}>{username}</Link>
                     </div>
                 </div>
             </div>
             <div className={cx('button')}>
-                <Button theme="flex">
+                <Button theme="flex" to={`/@${displayName}`}>
                     프로필
                 </Button>
             </div>

@@ -122,7 +122,6 @@ class FollowRouter {
     private async getFollowing(req: Request, res: Response): Promise<any> {
         const { displayName } = req.params;
         const { cursor } = req.query;
-        console.log(displayName);
         
         try {
             const user: IUser = await User.findByDisplayName(displayName);

@@ -41,6 +41,11 @@ export enum ListActionType {
     GET_USER_FOLLOWING_LIST_SUCCESS = 'list/GET_USER_FOLLOWING_LIST_SUCCESS',
     GET_USER_FOLLOWING_LIST_FAILING = 'list/GET_USER_FOLLOWING_LIST_FAILING',
     PREFETCH_USER_FOLLOWING_LIST_SUCCESS = 'list/PREFETCH_USER_FOLLOWING_LIST_SUCCESS',
+
+    GET_USER_FOLLOWER_LIST_PENDING = 'list/GET_USER_FOLLOWER_LIST_PENDING',
+    GET_USER_FOLLOWER_LIST_SUCCESS = 'list/GET_USER_FOLLOWER_LIST_SUCCESS',
+    GET_USER_FOLLOWER_LIST_FAILING = 'list/GET_USER_FOLLOWER_LIST_FAILING',
+    PREFETCH_USER_FOLLOWER_LIST_SUCCESS = 'list/PREFETCH_USER_FOLLOWER_LIST_SUCCESS',
 }
 
 export type GetPinListPayload = { pinWithData: PinSubState[], next: string };
@@ -48,6 +53,27 @@ export type ListPayload = { usersWithData: UserSubState[], next?: string };
 
 export const actionCreators = {
     revealPrefetched: createAction(ListActionType.REVEAL_PREFETCHED, (type: string) => type),
+    getFollowerList: (displayName: string) => (dispatch: Dispatch<Action>) => {
+        dispatch({ type: ListActionType.GET_USER_FOLLOWER_LIST_PENDING })
+        return setTimeout(() => {
+            return FollowAPI.getFollowerAPI(displayName)
+            .then(res => dispatch({
+                type: ListActionType.GET_USER_FOLLOWER_LIST_SUCCESS,
+                payload: res,
+            }))
+            .catch(e => dispatch({
+                type: ListActionType.GET_USER_FOLLOWER_LIST_FAILING,
+                payload: e
+            }))
+        }, 2000)
+    },
+    prefetchFollowerList: (next: string) => (dispatch: Dispatch<Action>) => {
+        return FollowAPI.nextAPI(next)
+        .then(res => dispatch({
+            type: ListActionType.PREFETCH_USER_FOLLOWER_LIST_SUCCESS,
+            payload: res
+        }))
+    },
     getFollowingList: (displayName: string) => (dispatch: Dispatch<Action>) => {        
         dispatch({ type: ListActionType.GET_USER_FOLLOWING_LIST_PENDING })
         return setTimeout(() => {
@@ -189,6 +215,8 @@ type GetUsersListAction = GenericResponseAction<ListPayload, string>;
 type PrefetchUserListAction = GenericResponseAction<ListPayload, string>;
 type GetFollowingListAction = GenericResponseAction<ListPayload, string>;
 type PrefetchFollowingListAction = GenericResponseAction<ListPayload, string>;
+type GetFollowerListAction = GenericResponseAction<ListPayload, string>;
+type PrefetchFollowerListAction = GenericResponseAction<ListPayload, string>;
 
 export interface PinSubState {
     pinId: string, 
@@ -236,6 +264,7 @@ export interface ListState {
     list: ListingSetState,
     user: ListingSetState,
     tag: ListingSetState,
+    follower: ListingUserSetState,
     following: ListingUserSetState,
     users: ListingUserSetState,
     like_user: ListingUserSetState,
@@ -263,6 +292,7 @@ const initialState: ListState = {
     list: initialListingSet,
     user: initialListingSet,
     tag: initialListingSet,
+    follower: initialUserListingSet,
     following: initialUserListingSet,
     users: initialUserListingSet,
     like_user: initialUserListingSet,
@@ -505,7 +535,44 @@ export default handleActions<ListState, any>({
             draft.following.prefetched = action.payload.data.usersWithData;
             draft.following.next = action.payload.data.next;
             if (action.payload.data.usersWithData && action.payload.data.usersWithData.length === 0) {
-                draft.list.end = true;
+                draft.following.end = true;
+            }
+        })
+    },
+    [ListActionType.GET_USER_FOLLOWER_LIST_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.follower.loading = true;
+        })
+    },
+    [ListActionType.GET_USER_FOLLOWER_LIST_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.follower = {
+                user: [],
+                prefetched: [],
+                next: '',
+                loading: false
+            }
+        });
+    },
+    [ListActionType.GET_USER_FOLLOWER_LIST_SUCCESS]: (state, action: GetFollowerListAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            if (!data) return;
+            draft.follower = {
+                user: data.usersWithData,
+                prefetched: [],
+                next: data.next,
+                loading: false
+            }
+        });
+    },
+    [ListActionType.PREFETCH_USER_FOLLOWER_LIST_SUCCESS]: (state, action: PrefetchFollowerListAction) => {
+        return produce(state, (draft) => {
+            if (action.payload.data === undefined) return;
+            draft.follower.prefetched = action.payload.data.usersWithData;
+            draft.follower.next = action.payload.data.next;
+            if (action.payload.data.usersWithData && action.payload.data.usersWithData.length === 0) {
+                draft.follower.end = true;
             }
         })
     }
