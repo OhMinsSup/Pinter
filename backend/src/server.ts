@@ -3,6 +3,7 @@ import * as express from "express";
 import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import * as mongoose from "mongoose";
+import * as morgan from "morgan";
 import * as config from "./config/config";
 import { jwtMiddleware } from "./lib/middleware/jwtMiddleware";
 import Auth from "./routes/AuthRouter";
@@ -11,6 +12,7 @@ import Like from "./routes/LikeRouter";
 import Comment from "./routes/CommentRouter";
 import Common from "./routes/CommonRouter";
 import Follow from "./routes/FollowRouter";
+import Locker from "./routes/LockerRouter";
 
 class Server {
     public app: express.Application;
@@ -31,6 +33,7 @@ class Server {
             jwtMiddleware(req, res, next);
         });
         app.use(cors());
+        app.use(morgan('combined'));
         app.use((req, res, next): void => {
             res.header("Access-Control-Allow-Origin", "http://localhost:3000");
             res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -61,6 +64,7 @@ class Server {
         app.use("/pin", Pin);
         app.use("/pin/likes", Like);
         app.use("/pin/comments", Comment);
+        app.use("/locker", Locker);
     }   
 }
 

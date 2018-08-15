@@ -4,6 +4,7 @@ import * as PinAPI from '../../lib/api/pin';
 import * as TagAPI from '../../lib/api/tag';
 import * as FollowAPI from '../../lib/api/follow';
 import * as CommonAPI from '../../lib/api/common';
+import * as LockerAPI from '../../lib/api/locker';
 import { GenericResponseAction } from '../../lib/common';
 import produce from 'immer';
 
@@ -46,6 +47,11 @@ export enum ListActionType {
     GET_USER_FOLLOWER_LIST_SUCCESS = 'list/GET_USER_FOLLOWER_LIST_SUCCESS',
     GET_USER_FOLLOWER_LIST_FAILING = 'list/GET_USER_FOLLOWER_LIST_FAILING',
     PREFETCH_USER_FOLLOWER_LIST_SUCCESS = 'list/PREFETCH_USER_FOLLOWER_LIST_SUCCESS',
+
+    GET_USER_SAVES_LIST_PENDING = 'list/GET_USER_SAVES_LIST_PENDING',
+    GET_USER_SAVES_LIST_SUCCESS = 'list/GET_USER_SAVES_LIST_SUCCESS',
+    GET_USER_SAVES_LIST_FAILING = 'list/GET_USER_SAVES_LIST_FAILING',
+    PREFETCH_USER_SAVES_LIST_SUCCESS = 'list/PREFETCH_USER_SAVES_LIST_SUCCESS',
 }
 
 export type GetPinListPayload = { pinWithData: PinSubState[], next: string };
@@ -53,6 +59,27 @@ export type ListPayload = { usersWithData: UserSubState[], next?: string };
 
 export const actionCreators = {
     revealPrefetched: createAction(ListActionType.REVEAL_PREFETCHED, (type: string) => type),
+    getSavesList: (displayName: string) => (dispatch: Dispatch<Action>) => {
+        dispatch({ type: ListActionType.GET_USER_SAVES_LIST_PENDING })
+        return setTimeout(() => {
+            return LockerAPI.lockerListAPI(displayName)
+            .then(res => dispatch({
+                type: ListActionType.GET_USER_SAVES_LIST_SUCCESS,
+                payload: res,
+            }))
+            .catch(e => dispatch({
+                type: ListActionType.GET_USER_SAVES_LIST_FAILING,
+                payload: e
+            }))
+        }, 2000)
+    },
+    prefetchSaveList: (next: string) => (dispatch: Dispatch<Action>) => {
+        return LockerAPI.nextAPI(next)
+        .then(res => dispatch({
+            type: ListActionType.PREFETCH_USER_FOLLOWER_LIST_SUCCESS,
+            payload: res
+        }))
+    },
     getFollowerList: (displayName: string) => (dispatch: Dispatch<Action>) => {
         dispatch({ type: ListActionType.GET_USER_FOLLOWER_LIST_PENDING })
         return setTimeout(() => {
@@ -174,7 +201,7 @@ export const actionCreators = {
         }))
     },
     lockerUserList: (id: string) => (dispatch: Dispatch<Action>) => {
-        return PinAPI.lockerUserListAPI(id)
+        return LockerAPI.lockerUserListAPI(id)
         .then(res => dispatch({
             type: ListActionType.LOCKER_USER_LIST_SUCCESS,
             payload: res
@@ -217,6 +244,8 @@ type GetFollowingListAction = GenericResponseAction<ListPayload, string>;
 type PrefetchFollowingListAction = GenericResponseAction<ListPayload, string>;
 type GetFollowerListAction = GenericResponseAction<ListPayload, string>;
 type PrefetchFollowerListAction = GenericResponseAction<ListPayload, string>;
+type GetSaveListAction = GenericResponseAction<GetPinListPayload, string>;
+type PrefetchSaveListAction = GenericResponseAction<GetPinListPayload, string>;
 
 export interface PinSubState {
     pinId: string, 
@@ -264,6 +293,7 @@ export interface ListState {
     list: ListingSetState,
     user: ListingSetState,
     tag: ListingSetState,
+    locker: ListingSetState,
     follower: ListingUserSetState,
     following: ListingUserSetState,
     users: ListingUserSetState,
@@ -292,6 +322,7 @@ const initialState: ListState = {
     list: initialListingSet,
     user: initialListingSet,
     tag: initialListingSet,
+    locker: initialListingSet,
     follower: initialUserListingSet,
     following: initialUserListingSet,
     users: initialUserListingSet,
@@ -573,6 +604,45 @@ export default handleActions<ListState, any>({
             draft.follower.next = action.payload.data.next;
             if (action.payload.data.usersWithData && action.payload.data.usersWithData.length === 0) {
                 draft.follower.end = true;
+            }
+        })
+    },
+    [ListActionType.GET_USER_SAVES_LIST_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.locker.loading = true;
+        })
+    },
+    [ListActionType.GET_USER_SAVES_LIST_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.locker = {
+                loading: false,
+                next: '',
+                prefetched: [],
+                pins: [],   
+                end: false
+            }
+        })
+    },
+    [ListActionType.GET_USER_SAVES_LIST_SUCCESS]: (state, action: GetSaveListAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            if (!data) return;
+            draft.locker = {
+                pins: data.pinWithData,
+                prefetched: [],
+                next: data.next,
+                loading: false,
+                end: false
+            }
+        });
+    },
+    [ListActionType.PREFETCH_USER_SAVES_LIST_SUCCESS]: (state, action: PrefetchSaveListAction) => {
+        return produce(state, (draft) => {
+            if (!action.payload.data) return;
+            draft.locker.prefetched = action.payload.data.pinWithData;
+            draft.locker.next = action.payload.data.next;
+            if (action.payload.data.pinWithData && action.payload.data.pinWithData.length === 0) {
+                draft.locker.end = true;
             }
         })
     }

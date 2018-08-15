@@ -11,11 +11,14 @@ const cx = classNames.bind(styles);
 
 type Props = {
     pin: any,
+    value: string,
     onToggleLike(): void,
     onClick(): void,
+    onChangeComment(e: any): void,
+    onKeyPress(e: any): void
 }
 
-const PinFeed: React.SFC<Props> = ({ pin, onToggleLike, onClick }) => {
+const PinFeed: React.SFC<Props> = ({ pin, onToggleLike, onClick, value, onChangeComment, onKeyPress }) => {
     return (
         <div className={cx('pin-feed')}>
             <header className={cx('pin-header')}>
@@ -36,7 +39,7 @@ const PinFeed: React.SFC<Props> = ({ pin, onToggleLike, onClick }) => {
             <div className={cx('pin-meta')}>
                 <PinAction  likes={pin.likes} comments={pin.comments} onClick={onToggleLike}/>
                 <PinInfo relation_url={pin.relation_url} description={pin.description} createdAt={pin.createdAt}/>
-                <PinComment />
+                <PinComment value={value} onChange={onChangeComment} onKeyPress={onKeyPress}/>
             </div>
         </div>
     )

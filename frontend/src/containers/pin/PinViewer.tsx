@@ -45,6 +45,21 @@ class PinViewer extends React.Component<PinViewerProps> {
         }
     }
 
+    public onChangeComment = (e: any) => {
+        const { PinActions } = this.props;
+        const { value } = e.target;
+    
+        PinActions.commentChagneInput(value);
+    }
+
+    public onKeyPress = (e: any) => {
+        const { key } = e;
+        if (key === "Enter") {
+            e.preventDefault();
+            console.log('작성중');
+        }
+    }
+
     public initialize = async () => {
         const { PinActions, match: { params: { id } } } = this.props;
         
@@ -61,14 +76,17 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 
     public render() {
-        const { pin, menu } = this.props;
-        const { onToggleLike, onShowMenuClick, onHideMenuClick } = this;
+        const { pin, menu, value } = this.props;
+        const { onToggleLike, onShowMenuClick, onHideMenuClick, onChangeComment, onKeyPress } = this;
         return (
             <React.Fragment>
                 <PinFeed 
                     pin={pin} 
                     onClick={onShowMenuClick}
                     onToggleLike={onToggleLike} 
+                    onChangeComment={onChangeComment}
+                    onKeyPress={onKeyPress}
+                    value={value}
                 />
                 <PinMenu 
                     onClick={onHideMenuClick}
@@ -86,6 +104,7 @@ const mapStateToProps = ({ pin }: StoreState) => ({
     pin: pin.pin,
     liked: pin.liked,
     menu: pin.menu,
+    value: pin.comment.value
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

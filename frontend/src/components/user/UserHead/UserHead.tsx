@@ -30,9 +30,6 @@ const UserHead: React.SFC<Props> = ({ userId, username, displayName, thumbnail,i
             <div className={cx('user-info')}>
                 <section className={cx('top')}>
                     <div className={cx('wrapper')}>
-                        <Button className={cx('profile-setting')} theme="outline">
-                            보드 만들기
-                        </Button>
                         <Button className={cx('profile-setting')} theme="outline" onClick={onPinScreen}>
                             작성하기
                         </Button>

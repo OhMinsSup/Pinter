@@ -6,5 +6,6 @@ export { default as Tags } from './Tags';
 export { default as UserPin } from './user/UserPin'; 
 export { default as UserFollowing } from './user/UserFollowing';
 export { default as UserFollower } from './user/UserFollower'; 
+export { default as UserSaves } from './user/UserSaves';
 export { default as Pin } from './Pin';
 export { default as Users } from './Users';

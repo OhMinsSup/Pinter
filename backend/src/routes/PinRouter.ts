@@ -237,102 +237,18 @@ class PinRouter {
             res.status(500).json(e);
         }
     }
-
-    private async getLockerList(req: Request, res: Response): Promise<any> {
-        const pinId: string = req['pin']._id;
-        const userId: string = req['user']._id;
-
-        try {
-            const user: IPinLocker[] = await PinLocker.getLockerUserList(pinId, userId);            
-            const usersWithData = user.map(serializeUser);
-            res.json({
-                usersWithData,
-            });
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    }
-
-    private async createLockerPin(req: Request, res: Response): Promise<any> {
-        const userId: string = req['user']._id;
-        const pinId: string = req['pin']._id;
-
-        try {
-            const exists: IPinLocker = await PinLocker.checkExists(userId, pinId);
-
-            if (exists) {
-                return res.status(409).json({
-                    name: '이미 보관중입니다',
-                });
-            }
-
-            const locker = await PinLocker.create({ user: userId, pin: pinId });
-            await PinLocker.lockerCount(locker._id);
-            res.json({
-                locker: !!locker,
-            });
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    }
-
-    private async deleteLockerPin(req: Request, res: Response): Promise<any> {
-        const userId: string = req['user']._id;
-        const pinId: string = req['pin']._id;
-
-        try {
-            const exists: IPinLocker = await PinLocker.checkExists(userId, pinId);
-            
-            if (!exists) {
-                return res.status(409).json({
-                    name: '보관하지 않은 핀입니다.',
-                });
-            }
-
-            await PinLocker.lockerUnCount(exists._id);
-            await exists.remove();
-            res.status(204).json({
-                locker: true,
-            });
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    }
-
-    private async lockerList(req: Request, res: Response): Promise<any> {
-        const userId: string = req['user']._id;
-        const { cursor } = req.query;
-        
-        try {
-            const locker: IPinLocker[] = await PinLocker.lockerList(userId, cursor);
-            const next = locker.length === 15 ? `/pin/locker/private/list?cusor=${locker[14]._id}` : null;
-            const lockersWithData = locker.map(serializeLocker);
-            const count: IPinLocker[] = await PinLocker.countLocker();
-            res.json({
-                next,
-                count: count.map(count => count.count).toString(),
-                lockersWithData,
-            });
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    }
     
     public routes(): void {
         const { router } = this;
 
         router.post('/create-signed-url', needAuth, upload.single('file'), this.createSignedUrl);
         router.post('/', needAuth, this.writePin);
-        router.post('/:id/locker', needAuth, checkPinExistancy, this.createLockerPin);
 
         router.get('/:id', needAuth, checkPinExistancy, this.readPin);
         router.get('/all/list', needAuth, this.listPin);
         router.get('/:displayName/list', needAuth, this.listPin);
-        router.get('/locker/private/list', needAuth, this.lockerList);
-        router.get('/:id/locker', needAuth, checkPinExistancy, this.getLockerList);
 
         router.delete('/:id', needAuth, checkPinExistancy, this.deletePin);
-        router.delete('/:id/locker', needAuth, checkPinExistancy, this.deleteLockerPin);
         router.patch('/:id', needAuth, checkPinExistancy, this.updatePin);
     }
 }

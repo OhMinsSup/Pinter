@@ -67,9 +67,6 @@ Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<an
         userId && !cursor ? { user: userId } : { },
         userId && cursor ? { _id: { $lt: cursor }, user: userId } : { },
     );
-
-    console.log(query);
-
     return this.find(query)
     .populate("user")
     .populate({

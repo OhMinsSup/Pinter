@@ -12,6 +12,7 @@ export enum PinActionType {
     SET_MAKE_PIN_FULLSCREEN_LOADER = 'pin/SET_MAKE_PIN_FULLSCREEN_LOADER',
     SET_UPLOAD_STATUS = 'pin/SET_UPLOAD_STATUS',
     REMOVE_UPLOAD_URL = 'pin/REMOVE_UPLOAD_URL',
+    COMMENT_CHANGE_INPUT = 'pin/COMMENT_CHANGE_INPUT',
 
     SHOW_PIN_MENU = 'pin/SHOW_PIN_MENU',
     HIDE_PIN_MENU = 'pin/HIDE_PIN_MENU',
@@ -54,6 +55,7 @@ export const actionCreators = {
     removeUploadUrl: createAction(PinActionType.REMOVE_UPLOAD_URL), 
     showPinMenu: createAction(PinActionType.SHOW_PIN_MENU, (visible: boolean) => visible),
     hidePinMenu: createAction(PinActionType.HIDE_PIN_MENU, (visible: boolean) => visible),
+    commentChagneInput: createAction(PinActionType.COMMENT_CHANGE_INPUT, (value: string) => value),
     createUploadUrl: (file: any) => (dispatch: Dispatch<Action>) => {
         return PinAPI.createSignedUrl(file)
         .then(res => dispatch({
@@ -124,6 +126,7 @@ export const actionCreators = {
     }
 }
 
+type CommentChangeInputAction = ReturnType<typeof actionCreators.commentChagneInput>;
 type SetMakePinFullscreenLoaderAction = ReturnType<typeof actionCreators.setMakePinFullscreenLoader>;
 type ChangeInputAction = ReturnType<typeof actionCreators.changeInput>;
 type InsertTagAction = ReturnType<typeof actionCreators.insertTag>;
@@ -170,6 +173,9 @@ export interface PinState {
     upload: UploadSubState,
     pinId: string,
     pin: PinSubState,
+    comment: {
+        value: string
+    },
     liked: boolean,
     menu: boolean
 }
@@ -201,6 +207,9 @@ const initialState: PinState = {
         },
         comments: 0,
         likes: 0,
+    },
+    comment: {
+        value: ''
     },
     liked: false,
     menu: false
@@ -238,6 +247,14 @@ export default handleActions<PinState, any>({
             }
             if (action.payload.name === 'description') {
                 draft.description = action.payload.value
+            }
+        })
+    },
+    [PinActionType.COMMENT_CHANGE_INPUT]: (state, action: CommentChangeInputAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.comment = {
+                value: action.payload
             }
         })
     },
