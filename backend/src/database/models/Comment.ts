@@ -12,7 +12,7 @@ export interface IComment extends Document {
 
 export interface ICommentModel extends Model<IComment> {
     readComment(commentId: string): Promise<any>;
-    getCommentList(pinId: string, cursor?: string): Promise<any>;
+    getCommentList(pinId: string): Promise<any>;
     getCommentUserList(pinId: string, userId: string): Promise<any>;
 }
 
@@ -45,10 +45,10 @@ Comment.statics.readComment = function(commentId: string): Promise<any> {
     });
 };
 
-Comment.statics.getCommentList = function(pinId: string, cursor?: string): Promise<any> {
+Comment.statics.getCommentList = function(pinId: string): Promise<any> {
     const query = Object.assign(
         {},
-        cursor ? { _id: { $lt: cursor }, pin: pinId } : { pin: pinId },
+        { pin: pinId },
     );
 
     return this.find(query)
@@ -60,7 +60,6 @@ Comment.statics.getCommentList = function(pinId: string, cursor?: string): Promi
         }],
     })
     .sort({_id: -1}) 
-    .limit(10); 
 };
 
 Comment.statics.getCommentUserList = function(pinId: string, userId: string): Promise<any> {

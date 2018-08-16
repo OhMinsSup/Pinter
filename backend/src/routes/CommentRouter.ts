@@ -91,14 +91,11 @@ class CommentRouter {
 
     private async getCommentList(req: Request, res: Response): Promise<any>  {
         const pinId: string = req['pin']._id;
-        const { cursor } = req.query;
 
         try {
-            const comment: IComment[] = await Comment.getCommentList(pinId, cursor);
-            const next = comment.length === 10 ? `/pin/comments/${pinId}/?cursor=${comment[9]._id}` : null;
+            const comment: IComment[] = await Comment.getCommentList(pinId);
             const commentWithData = comment.map(serializeComment);
             res.json({
-                next,
                 commentWithData,
             });
         } catch (e) {

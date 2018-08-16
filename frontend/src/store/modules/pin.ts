@@ -13,6 +13,7 @@ export enum PinActionType {
     SET_UPLOAD_STATUS = 'pin/SET_UPLOAD_STATUS',
     REMOVE_UPLOAD_URL = 'pin/REMOVE_UPLOAD_URL',
     COMMENT_CHANGE_INPUT = 'pin/COMMENT_CHANGE_INPUT',
+    SUBMIT_COMMENT = 'pin/SUBMIT_COMMENT',
 
     SHOW_PIN_MENU = 'pin/SHOW_PIN_MENU',
     HIDE_PIN_MENU = 'pin/HIDE_PIN_MENU',
@@ -36,8 +37,7 @@ export enum PinActionType {
     UNLIKE_FAILING = 'pin/UNLIKE_FAILING',
 
     GET_LIKE_SUCCESS = 'pin/GET_LIKE_SUCCESS',
-    GET_LIKE_FAILING = 'pin/GET_LIKE_FAILING'
-
+    GET_LIKE_FAILING = 'pin/GET_LIKE_FAILING',
 }
 
 type ChangeInputPayload = { name: string, value: string }
@@ -123,6 +123,12 @@ export const actionCreators = {
             type: PinActionType.GET_LIKE_FAILING,
             payload: e
         }))
+    },
+    submitComment: (id: string, text: string, has_tags: string[]) => (dispatch: Dispatch<Action>) => {
+        return PinAPI.writeCommentAPI(id, text, has_tags)
+        .then(res => dispatch({
+            type: PinActionType.SUBMIT_COMMENT
+        }))
     }
 }
 
@@ -173,9 +179,7 @@ export interface PinState {
     upload: UploadSubState,
     pinId: string,
     pin: PinSubState,
-    comment: {
-        value: string
-    },
+    value: string,
     liked: boolean,
     menu: boolean
 }
@@ -208,9 +212,7 @@ const initialState: PinState = {
         comments: 0,
         likes: 0,
     },
-    comment: {
-        value: ''
-    },
+    value: '',
     liked: false,
     menu: false
 }
@@ -253,9 +255,7 @@ export default handleActions<PinState, any>({
     [PinActionType.COMMENT_CHANGE_INPUT]: (state, action: CommentChangeInputAction) => {
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
-            draft.comment = {
-                value: action.payload
-            }
+            draft.value = action.payload;
         })
     },
     [PinActionType.INSERT_TAG]: (state, action: InsertTagAction) => {
@@ -379,6 +379,11 @@ export default handleActions<PinState, any>({
             if (!action.payload.data) return;
             draft.pin.likes = action.payload.data && action.payload.data.likes;
             draft.liked = action.payload.data.liked;
+        })
+    },
+    [PinActionType.SUBMIT_COMMENT]: (state) => {
+        return produce(state, (draft) => {
+            draft.value = '';
         })
     }
 }, initialState);

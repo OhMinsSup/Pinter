@@ -52,11 +52,12 @@ class PinViewer extends React.Component<PinViewerProps> {
         PinActions.commentChagneInput(value);
     }
 
-    public onKeyPress = (e: any) => {
+    public onKeyPress = async (e: any) => {
         const { key } = e;
+        const { PinActions, value, match: { params: { id } } } = this.props;
         if (key === "Enter") {
             e.preventDefault();
-            console.log('작성중');
+            await PinActions.submitComment(id, value, ['dsds','dswew']);
         }
     }
 
@@ -104,7 +105,7 @@ const mapStateToProps = ({ pin }: StoreState) => ({
     pin: pin.pin,
     liked: pin.liked,
     menu: pin.menu,
-    value: pin.comment.value
+    value: pin.value
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

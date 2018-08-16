@@ -188,9 +188,9 @@ class PinRouter {
         try {
             const { tags } = await Pin.findOne({ _id: pinId });
 
-            await Promise.all(tags.map(tag => Tag.findByIdAndUpdate(tag, {
-                $pop: { pin: pinId },
-            }, { new: true })));
+            await Promise.all(
+                tags.map(tag => Tag.findByIdAndUpdate(tag, { $pop: { pin: pinId }, }, { new: true }))
+            );
             await Pin.deleteOne({
                 _id: pinId,
             });

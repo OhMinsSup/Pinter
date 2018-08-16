@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-export const createSignedUrl = (file: any): Promise<any> => {
-    console.log(file);
-    
+export const createSignedUrl = (file: any): Promise<any> => {    
     const data = new FormData();
     data.append('file', file);
     return axios.post('/pin/create-signed-url', data, {
@@ -33,6 +31,6 @@ export const getlikePinAPI = (id: string): Promise<any> => axios.get(`/pin/likes
 export const liksUserListAPI = (id: string): Promise<any> =>  axios.get(`/pin/likes/${id}/list`);
 
 export const commentUserListAPI = (id: string): Promise<any> => axios.get(`/pin/comments/${id}/list`);
-export const writeCommentAPI = (id: string): Promise<any> => axios.post(`/pin/comments/${id}`);
+export const writeCommentAPI = (id: string, text: string, tags: string[]): Promise<any> => axios.post(`/pin/comments/${id}`, { text, tags });
 export const deleteCommentAPI = (id: string, commentId: string): Promise<any> => axios.delete(`/pin/comments/${id}/${commentId}`);
 export const listCommentAPI = (id: string): Promise<any> => axios.get(`/pin/comments/${id}`);
