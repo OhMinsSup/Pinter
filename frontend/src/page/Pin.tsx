@@ -4,14 +4,16 @@ import PinViewerTemplate from '../components/pin/PinViewerTemplate';
 import PinViewer from '../containers/pin/PinViewer';
 import PinCommentContainer from '../containers/pin/PinCommentContainer';
 
-const Pin = () => {
+type Props = {}
+
+const Pin: React.SFC<Props> = () => {
     return (
         <React.Fragment>
             <HeaderContainer />
             <PinViewerTemplate>
                 <PinViewer />
-                <PinCommentContainer />
             </PinViewerTemplate>
+            <PinCommentContainer />
         </React.Fragment>
     )
 }

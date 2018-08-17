@@ -18,17 +18,6 @@
                 }
             }
 
-            .comment {
-                font-size: 29px;
-                color: black;
-                &:hover {
-                    color: $oc-red-6;
-                }
-                &:active {
-                    color: $oc-red-7;
-                }
-            }
-
             .save {
                 font-size: 28px;
                 color: black;
@@ -58,10 +47,4 @@
         cursor: pointer;
     }
 
-    .like-count+.comment-count::before {
-        color: $oc-gray-5;
-        padding-left: 0.25rem;
-        padding-right: 0.25rem;
-        content: "\00B7";
-    }
 }

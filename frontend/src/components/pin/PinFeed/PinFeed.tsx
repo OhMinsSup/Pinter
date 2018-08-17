@@ -3,7 +3,7 @@ import * as classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import PinAction from '../PinAction';
 import PinInfo from '../PinInfo';
-import PinComment from '../PinComment';
+import CommentInput from '../CommentInput';
 import { FaChevronDown } from 'react-icons/lib/fa';
 
 const styles = require('./PinFeed.scss');
@@ -37,9 +37,9 @@ const PinFeed: React.SFC<Props> = ({ pin, onToggleLike, onClick, value, onChange
                 </div>
             </div>
             <div className={cx('pin-meta')}>
-                <PinAction  likes={pin.likes} comments={pin.comments} onClick={onToggleLike}/>
+                <PinAction  likes={pin.likes} onClick={onToggleLike}/>
                 <PinInfo relation_url={pin.relation_url} description={pin.description} createdAt={pin.createdAt}/>
-                <PinComment value={value} onChange={onChangeComment} onKeyPress={onKeyPress}/>
+                <CommentInput value={value} onChange={onChangeComment} onKeyPress={onKeyPress}/>
             </div>
         </div>
     )

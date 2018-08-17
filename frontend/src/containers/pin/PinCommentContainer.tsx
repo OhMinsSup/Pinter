@@ -1,10 +1,12 @@
 import * as React from 'react';
-import CommentTemplate from '../../components/pin/CommentTemplate';
+import PinComments from '../../components/pin/PinComments';
 
 class PinCommentContainer extends React.Component {
     public render() {
         return (
-            <CommentTemplate />
+            <PinComments 
+            
+            />
         )
     }
 }
