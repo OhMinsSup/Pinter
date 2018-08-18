@@ -77,7 +77,7 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 
     public render() {
-        const { pin, menu, value } = this.props;
+        const { pin, menu, value, username, displayName } = this.props;
         const { onToggleLike, onShowMenuClick, onHideMenuClick, onChangeComment, onKeyPress } = this;
         return (
             <React.Fragment>
@@ -90,6 +90,10 @@ class PinViewer extends React.Component<PinViewerProps> {
                     value={value}
                 />
                 <PinMenu 
+                    session_displayName={username}
+                    session_username={displayName}
+                    username={pin.user.username}
+                    displayName={pin.user.displayName}
                     onClick={onHideMenuClick}
                     visible={menu}
                 />
@@ -101,11 +105,13 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 }
 
-const mapStateToProps = ({ pin }: StoreState) => ({
+const mapStateToProps = ({ pin, user }: StoreState) => ({
+    username: user.user && user.user.username,
+    displayName: user.user && user.user.displayName,
     pin: pin.pin,
     liked: pin.liked,
     menu: pin.menu,
-    value: pin.value
+    value: pin.comment.value
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

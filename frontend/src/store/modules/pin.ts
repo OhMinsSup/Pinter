@@ -179,7 +179,10 @@ export interface PinState {
     upload: UploadSubState,
     pinId: string,
     pin: PinSubState,
-    value: string,
+    comment:{
+        value: string,
+        tag: string[]
+    },
     liked: boolean,
     menu: boolean
 }
@@ -212,7 +215,10 @@ const initialState: PinState = {
         comments: 0,
         likes: 0,
     },
-    value: '',
+    comment: {
+        value: '',
+        tag: []
+    },
     liked: false,
     menu: false
 }
@@ -255,7 +261,7 @@ export default handleActions<PinState, any>({
     [PinActionType.COMMENT_CHANGE_INPUT]: (state, action: CommentChangeInputAction) => {
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
-            draft.value = action.payload;
+            draft.comment.value = action.payload;
         })
     },
     [PinActionType.INSERT_TAG]: (state, action: InsertTagAction) => {
@@ -383,7 +389,10 @@ export default handleActions<PinState, any>({
     },
     [PinActionType.SUBMIT_COMMENT]: (state) => {
         return produce(state, (draft) => {
-            draft.value = '';
+            draft.comment = {
+                value: '',
+                tag: []
+            }
         })
     }
 }, initialState);

@@ -46,11 +46,11 @@
     "@types/node": "^10.1.2",
     "@types/nodemailer": "^4.6.0",
     "@types/shortid": "0.0.29",
+    "morgan": "^1.9.0",
     "nodemon": "^1.17.4",
     "ts-node": "^6.0.3",
     "tsc-watch": "^1.0.26",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3",
-    "morgan": "^1.9.0"
+    "typescript": "^2.8.3"
   }
 }

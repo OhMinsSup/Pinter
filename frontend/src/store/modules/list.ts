@@ -52,6 +52,10 @@ export enum ListActionType {
     GET_USER_SAVES_LIST_SUCCESS = 'list/GET_USER_SAVES_LIST_SUCCESS',
     GET_USER_SAVES_LIST_FAILING = 'list/GET_USER_SAVES_LIST_FAILING',
     PREFETCH_USER_SAVES_LIST_SUCCESS = 'list/PREFETCH_USER_SAVES_LIST_SUCCESS',
+
+    GET_PIN_COMMENT_LIST_PENDING = 'list/GET_PIN_COMMENT_LIST_PENGING',
+    GET_PIN_COMMENT_LIST_SUCCESS = 'list/GET_PIN_COMMENT_LIST_SUCCESS',
+    GET_PIN_COMMENT_LIST_FAILING = 'list/GET_PIN_COMMENT_FAILING'
 }
 
 export type GetPinListPayload = { pinWithData: PinSubState[], next: string };
@@ -59,6 +63,18 @@ export type ListPayload = { usersWithData: UserSubState[], next?: string };
 
 export const actionCreators = {
     revealPrefetched: createAction(ListActionType.REVEAL_PREFETCHED, (type: string) => type),
+    getCommentList: (id: string) => (dispatch: Dispatch<Action>) => {
+        dispatch({ type: ListActionType.GET_PIN_COMMENT_LIST_PENDING })
+        return PinAPI.listCommentAPI(id)
+        .then(res => dispatch({
+                type: ListActionType.GET_PIN_COMMENT_LIST_SUCCESS,
+                payload: res
+        }))
+        .catch(e => dispatch({
+                type: ListActionType.GET_PIN_COMMENT_LIST_FAILING,
+                payload: e
+        }))
+    },
     getSavesList: (displayName: string) => (dispatch: Dispatch<Action>) => {
         dispatch({ type: ListActionType.GET_USER_SAVES_LIST_PENDING })
         return setTimeout(() => {
@@ -246,6 +262,7 @@ type GetFollowerListAction = GenericResponseAction<ListPayload, string>;
 type PrefetchFollowerListAction = GenericResponseAction<ListPayload, string>;
 type GetSaveListAction = GenericResponseAction<GetPinListPayload, string>;
 type PrefetchSaveListAction = GenericResponseAction<GetPinListPayload, string>;
+type GetCommentListAction = GenericResponseAction<{ commentWithData: CommentSubState[] },string>
 
 export interface PinSubState {
     pinId: string, 
@@ -273,11 +290,30 @@ export interface UserSubState {
     }
 }
 
+export interface CommentSubState {
+    commentId: string;
+    text: string
+    createdAt: string;
+    tagId: string[]
+    tagName: string[]
+    user: {
+        _id: string,
+        username: string,
+        displayName: string, 
+        thumbnail: string,
+    },
+}
+
 export interface ListingSetState {
     pins: PinSubState[],
     prefetched: PinSubState[],
     end: boolean,
     next: string,
+    loading: boolean
+}
+
+export interface ListingCommentSetState {
+    comments: CommentSubState[],
     loading: boolean
 }
 
@@ -296,6 +332,7 @@ export interface ListState {
     locker: ListingSetState,
     follower: ListingUserSetState,
     following: ListingUserSetState,
+    comments: ListingCommentSetState
     users: ListingUserSetState,
     like_user: ListingUserSetState,
     comment_user: ListingUserSetState,
@@ -307,6 +344,11 @@ const initialListingSet = {
     prefetched: [],
     end: false,
     next: '',
+    loading: false
+}
+
+const initialCommentListingSet = {
+    comments: [],
     loading: false
 }
 
@@ -325,6 +367,7 @@ const initialState: ListState = {
     locker: initialListingSet,
     follower: initialUserListingSet,
     following: initialUserListingSet,
+    comments: initialCommentListingSet,
     users: initialUserListingSet,
     like_user: initialUserListingSet,
     comment_user: initialUserListingSet,
@@ -343,9 +386,32 @@ export default handleActions<ListState, any>({
             }
         })
     },
+    [ListActionType.GET_PIN_COMMENT_LIST_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.comments.loading = true;
+        })
+    },
+    [ListActionType.GET_PIN_COMMENT_LIST_FAILING]: (state) => {
+        return produce(state, (draft) => {
+            draft.comments = {
+                comments: [],
+                loading: false
+            }
+        })
+    },
+    [ListActionType.GET_PIN_COMMENT_LIST_SUCCESS]: (state, action: GetCommentListAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            if (data === undefined) return;
+            draft.comments= {
+                comments: data.commentWithData,
+                loading: false
+            }
+        })
+    },
     [ListActionType.GET_PIN_LIST_PENDING]: (state) => {
         return produce(state, (draft) => {
-            draft.list.loading = true
+            draft.list.loading = true;
         });
     },
     [ListActionType.GET_PIN_LIST_SUCCESS]: (state, action: GetListAction) => {
