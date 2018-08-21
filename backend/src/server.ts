@@ -3,7 +3,6 @@ import * as express from "express";
 import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import * as mongoose from "mongoose";
-import * as morgan from "morgan";
 import * as config from "./config/config";
 import { jwtMiddleware } from "./lib/middleware/jwtMiddleware";
 import Auth from "./routes/AuthRouter";
@@ -33,7 +32,6 @@ class Server {
             jwtMiddleware(req, res, next);
         });
         app.use(cors());
-        app.use(morgan('combined'));
         app.use((req, res, next): void => {
             res.header("Access-Control-Allow-Origin", "http://localhost:3000");
             res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");

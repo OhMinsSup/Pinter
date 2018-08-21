@@ -8,21 +8,21 @@
     background-size: cover;
     padding-bottom: 1000px;
     overflow: auto;
-.LandingTemplate {
-    padding-bottom: 70px;
-    padding-top: 106px;
-    min-height: 533px;
-    left: 50%;
-    position: fixed;
-    transform: translateX(-50%);
-    .FormBox {
-        box-sizing: border-box;
-        position: relative;
-        background-color: rgb(255, 255, 255);
-        border-radius: 8px;
+    .LandingTemplate {
+        padding-bottom: 70px;
+        padding-top: 106px;
         min-height: 533px;
-        padding-top: 10px;
-        width: 400px;
+        left: 50%;
+        position: fixed;
+        transform: translateX(-50%);
+        .FormBox {
+            box-sizing: border-box;
+            position: relative;
+            background-color: rgb(255, 255, 255);
+            border-radius: 8px;
+            min-height: 533px;
+            padding-top: 10px;
+            width: 400px;
+        }
     }
-}
 }

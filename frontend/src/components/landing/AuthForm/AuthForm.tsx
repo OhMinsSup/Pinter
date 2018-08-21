@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
 import Spinner from '../../common/Spinner';
-import SocialLoginButton from '../SocialLoginButton';
+import SocialLoginButton from '../../base/SocialLoginButton';
 
+const PlaneIcon = require('react-icons/lib/io/paper-airplane')
 const CheckIcon =  require('react-icons/lib/md/check');
 const LogoIcons = require('react-icons/lib/fa/pinterest-square');
 const styles = require('./AuthForm.scss');
@@ -55,7 +56,7 @@ const AuthForm: React.SFC<Props> = ({
                             onKeyPress={onEnterKeyPress}
                         />
                         <div className={cx('Button')} onClick={onSendVerification}>
-                            { sending ? <Spinner size="3rem" /> : '시작하기'}
+                            { sending ? <Spinner size="3rem" /> : <PlaneIcon />}
                         </div>
                     </div>
                 )

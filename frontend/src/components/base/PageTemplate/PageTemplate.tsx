@@ -10,7 +10,7 @@ type Props = {
 
 const PageTemplate: React.SFC<Props> = ({ children }) => {
     return (
-        <div className={cx('PageTemplate')}>
+        <div className={cx('page-template')}>
             { children }
         </div>
     )

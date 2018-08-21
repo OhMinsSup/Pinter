@@ -4,8 +4,8 @@ import { bindActionCreators, Dispatch, compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { History } from 'history';
 import { StoreState } from '../../store/modules';
-import { actionCreators as baseActions } from '../../store/modules/base';
-import { actionCreators as authActions } from '../../store/modules/auth';
+import { baseCreators } from '../../store/modules/base';
+import { authCreators } from '../../store/modules/auth';
 import AuthForm from '../../components/landing/AuthForm';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -31,20 +31,20 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
     }
 
     public onSendVerification = async () => {
-        const { email, AuthActions } = this.props;
+        const {  } = this.props;
 
         try {
-            await AuthActions.sendAuthEmailRequest(email);
+
         } catch (e) {
             console.log(e);
         }
     }
 
     public onSocialLogin = async (provider: string) => {
-        const { AuthActions, BaseActions, history } = this.props;
+        const { BaseActions } = this.props;
         BaseActions.setFullscreenLoader(true);
         try {
-           await AuthActions.providerLoginRequest({ provider, history });
+
         } catch (e) {
             BaseActions.setFullscreenLoader(false);
         }
@@ -75,8 +75,8 @@ const mapStateToProps = ({ auth }: StoreState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    AuthActions: bindActionCreators(authActions, dispatch),
-    BaseActions: bindActionCreators(baseActions, dispatch),
+    AuthActions: bindActionCreators(authCreators, dispatch),
+    BaseActions: bindActionCreators(baseCreators, dispatch),
 });
 
 export default compose(
@@ -86,4 +86,3 @@ export default compose(
         mapDispatchToProps
     )
 )(AuthFormContainer);
-

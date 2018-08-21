@@ -4,8 +4,11 @@ import './styles/main.scss';
 import registerServiceWorker from './registerServiceWorker';
 import Root from './Root';
 
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root') as HTMLElement
-);
+const render = (window as any).__REDUX_STATE__ ? ReactDOM.hydrate : ReactDOM.render;
+
+render(
+  <Root/>,
+  document.getElementById('root') as HTMLElement 
+)
+
 registerServiceWorker();
