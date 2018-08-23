@@ -7,7 +7,7 @@ const HIDE_USER_MENU = 'base/HIDE_USER_MENU';
 const SET_FULLSCREEN_LOADER = 'base/SET_FULLSCREEN_LOADER';
 const SEARCH_FULLSCREEN_LOADER = 'base/SEARCH_FULLSCREEN_LOADER';
 const BOX_FULLSCREEN_LOADER = 'base/BOX_FULLSCREEN_LOADER';
-
+const GET_BOWSER_SIZE = 'base/GET_BOWSER_SIZE';
 
 export type BoxFullscreenLoaderPayload = { name: 'like' | 'comment' | 'save' , visible: boolean, id: string, theme: any }
 
@@ -17,13 +17,15 @@ export const baseCreators = {
     hideUserMenu: createAction(HIDE_USER_MENU),
     setFullscreenLoader: createAction(SET_FULLSCREEN_LOADER, (visible: boolean) => visible),
     searchFullscreenLoader: createAction(SEARCH_FULLSCREEN_LOADER, (visible: boolean) => visible),
-    boxFullscreenLoader: createAction(BOX_FULLSCREEN_LOADER, (payload: BoxFullscreenLoaderPayload) => payload)
+    boxFullscreenLoader: createAction(BOX_FULLSCREEN_LOADER, (payload: BoxFullscreenLoaderPayload) => payload),
+    getbowserSize: createAction(GET_BOWSER_SIZE, (size: number) => size),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
 type SetHeaderVisibilityAction = ReturnType<typeof baseCreators.setHeaderVisibility>;
 type SetFullscreenLoaderAction = ReturnType<typeof baseCreators.setFullscreenLoader>;
 type BoxFullscreenLoaderAction = ReturnType<typeof baseCreators.boxFullscreenLoader>;
+type GetBowserSizeAction = ReturnType<typeof baseCreators.getbowserSize>;
 
 export interface BaseState {
     userMenu: boolean;
@@ -36,7 +38,8 @@ export interface BaseState {
         like: boolean,
         comment: boolean,
         save: boolean
-    }
+    },
+    size: number;
 }
 
 const initialState: BaseState = {
@@ -50,7 +53,8 @@ const initialState: BaseState = {
         like: false,
         comment: false,
         save: false
-    }
+    },
+    size: 0,
 };
 
 export default handleActions<BaseState, any>({
@@ -88,6 +92,12 @@ export default handleActions<BaseState, any>({
             draft.box[action.payload.name] = action.payload.visible;
             draft.box.pinId = action.payload.id;
             draft.box.theme = action.payload.theme;
+        })
+    },
+    [GET_BOWSER_SIZE]: (state, action: GetBowserSizeAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.size = action.payload;
         })
     }
 }, initialState);

@@ -6,9 +6,9 @@ const GoogleIcon = require('react-icons/lib/fa/google');
 const styles = require('./SocialLoginButton.scss');
 const cx = classNames.bind(styles);
 
-type Props = {
-  type: 'facebook' | 'google' ,
-  onSocialLogin(provider: string): void
+interface Props {
+  type: 'facebook' | 'google' ;
+  onSocialLogin(provider: string): void;
 };
 
 const providers = {

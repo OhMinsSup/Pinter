@@ -9,14 +9,13 @@ import needAuth from '../lib/middleware/needAuth';
 import User, { IUser } from '../database/models/User';
 import Pin, { IPin } from '../database/models/Pin';
 import Tag, { ITag } from '../database/models/Tag';
-import PinLocker, { IPinLocker } from '../database/models/PinLocker';
 import Count from '../database/models/Count';
 import {
     filterUnique,
     checkPinExistancy,
 } from '../lib/common';
 import {
-    serializePin, serializeLocker, serializeUser,
+    serializePin,
 } from '../lib/serialize';
 
 const s3 = new AWS.S3({
@@ -189,7 +188,7 @@ class PinRouter {
             const { tags } = await Pin.findOne({ _id: pinId });
 
             await Promise.all(
-                tags.map(tag => Tag.findByIdAndUpdate(tag, { $pop: { pin: pinId }, }, { new: true }))
+                tags.map(tag => Tag.findByIdAndUpdate(tag, { $pop: { pin: pinId } }, { new: true })),
             );
             await Pin.deleteOne({
                 _id: pinId,

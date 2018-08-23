@@ -1,0 +1,45 @@
+@import 'utils';
+
+.logo-wrapper {
+    display: block;
+    box-sizing: border-box;
+    position: relative;
+    .logo {
+        font-weight: bold;
+        text-decoration: none;
+        .nav-icons {
+            height: 48px;
+            width: 48px;
+            box-sizing: border-box;
+            border-radius: 50%;
+            cursor: pointer;
+            &:hover {
+                background-color: $oc-gray-2;
+            }
+            .icons {
+                display: flex;
+                height: 48px;
+                width: 48px;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                box-sizing: border-box;
+                padding-left: 4px;
+                padding-right: 4px;
+                padding-bottom: 4px;
+                padding-top: 4px;
+
+                svg {
+                    display: block;
+                    font-size: 2.1rem;
+                    color: $oc-red-8;
+                    stroke-width: 0;
+                    vertical-align: middle;
+                    height: 28;
+                    width: 28;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+}
