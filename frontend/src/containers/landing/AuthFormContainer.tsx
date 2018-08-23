@@ -6,7 +6,9 @@ import { History } from 'history';
 import { StoreState } from '../../store/modules';
 import { baseCreators } from '../../store/modules/base';
 import { authCreators } from '../../store/modules/auth';
+import { userCreators } from '../../store/modules/user';
 import AuthForm from '../../components/landing/AuthForm';
+import storage from '../../lib/storage';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -31,23 +33,55 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
     }
 
     public onSendVerification = async () => {
-        const {  } = this.props;
+        const { email, AuthActions } = this.props;
 
         try {
-
+            await AuthActions.sendAuthEmail(email);
         } catch (e) {
             console.log(e);
         }
     }
 
     public onSocialLogin = async (provider: string) => {
-        const { BaseActions } = this.props;
+        const { BaseActions, AuthActions, history, UserActions } = this.props;
         BaseActions.setFullscreenLoader(true);
         try {
-
+            AuthActions.providerLoginType(provider);
+            await AuthActions.providerLogin(provider);
         } catch (e) {
             BaseActions.setFullscreenLoader(false);
         }
+
+        try {
+            const { socialAuthResult } = this.props;   
+            if (socialAuthResult.accessToken === "" || socialAuthResult.provider === "") return;
+            const { accessToken } = socialAuthResult;     
+            await AuthActions.verifySocial({ accessToken, provider });    
+
+            const { verifySocialResult } = this.props;
+            if (verifySocialResult.id === "") return;
+            const { exists } = verifySocialResult;
+
+            if (exists) {
+                await AuthActions.socialLogin({ accessToken, provider });
+                const { authResult } = this.props;
+                const { user } = authResult;
+                UserActions.setUser(user);
+                storage.set('__pinter_user__', user);
+            } else {
+                const { email, username } = verifySocialResult;
+                if (!email || !username) {
+                    return;
+                }
+                AuthActions.autoRegisterForm({ email, username });
+                history.push('/email-register')
+            }
+           console.log('test');
+           
+        } catch (e) {
+            history.push('/');
+        }
+        BaseActions.setFullscreenLoader(false);
     }
 
     public render() {
@@ -72,11 +106,15 @@ const mapStateToProps = ({ auth }: StoreState) => ({
     sendEmail: auth.sendEmail,
     isUser: auth.isUser,
     sending: auth.sending,
+    socialAuthResult: auth.socialAuthResult,
+    verifySocialResult: auth.verifySocialResult,
+    authResult: auth.authResult
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     AuthActions: bindActionCreators(authCreators, dispatch),
     BaseActions: bindActionCreators(baseCreators, dispatch),
+    UserActions: bindActionCreators(userCreators, dispatch),
 });
 
 export default compose(

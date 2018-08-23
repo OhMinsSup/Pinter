@@ -19,7 +19,7 @@ type CheckUserAction = GenericResponseAction<{ user: UserSubState }, string>;
 type SetUserAction = ReturnType<typeof userCreators.setUser>;
 
 export interface UserSubState {
-    _id: string;
+    id: string;
     username: string;
     displayName: string;
     thumbnail: string | null;

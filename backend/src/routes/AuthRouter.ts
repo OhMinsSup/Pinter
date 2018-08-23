@@ -234,14 +234,12 @@ class AuthRouter {
 
     private async socialRegister(req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            socialEmail: string,
             accessToken: string,
             displayName: string,
             username: string,
         };
 
         const schema = joi.object().keys({
-            socialEmail: joi.string().email(),
             accessToken: joi.string().required(),
             displayName: joi.string().min(1).max(40),
             username: joi.string().min(3).max(16).required(),
@@ -257,7 +255,7 @@ class AuthRouter {
         }
         
         const { provider } = req.params;
-        const { socialEmail, displayName, username, accessToken }: BodySchema = req.body;
+        const { displayName, username, accessToken }: BodySchema = req.body;
 
         let profile: IProfile = null;
 

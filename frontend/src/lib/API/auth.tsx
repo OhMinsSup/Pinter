@@ -16,7 +16,6 @@ type SocialRegisterPayload = {
     accessToken :string,
     displayName: string, 
     username: string, 
-    socialEmail: string
 };
 
 export const sendAuthEmailAPI = (email: string): Promise<any> => axios.post('auth/send-auth-email', { email });
@@ -33,8 +32,7 @@ export const localRegisterAPI = ({
 export const localLoginAPI = (code: string): Promise<any> => axios.post('auth/email-login', { code });
 export const socialLoginAPI = ({ accessToken, provider }: SocialPayload): Promise<any> => axios.post(`/auth/login/${provider}`, { accessToken });
 export const verifySocialAPI = ({ accessToken, provider }: SocialPayload): Promise<any> => axios.post(`/auth/verify-social/${provider}`, { accessToken });
-export const socialRegisterAPI = ({ provider, accessToken, displayName, username, socialEmail }: SocialRegisterPayload): Promise<any> => axios.post(`/auth/register/${provider}`, {
-    socialEmail,
+export const socialRegisterAPI = ({ provider, accessToken, displayName, username }: SocialRegisterPayload): Promise<any> => axios.post(`/auth/register/${provider}`, {
     accessToken, 
     displayName, 
     username,

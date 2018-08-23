@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { Home} from './page';
-// import EmailLogin from './containers/landing/EmailLoginContainer';
-// import Core from './containers/base/Core';
+import { Home, Register } from './page';
+import EmailLogin from './containers/auth/EmailLogin';
+import Core from './containers/base/Core';
 
 const App = () => {
   return (
     <React.Fragment>
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route exact path='/email-register' component={Register} />
+        <Route exact path='/email-login' component={EmailLogin} />
       </Switch>
+      <Core />
     </React.Fragment>
   );
 }

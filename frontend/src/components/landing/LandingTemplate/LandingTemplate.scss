@@ -23,6 +23,27 @@
             min-height: 533px;
             padding-top: 10px;
             width: 400px;
+        
+            @include media("<small") {
+                width: 340px;
+            }
+        }
+        
+    }
+
+    @include media("<=medium") {
+       padding-right: 2rem;
+       .LandingTemplate {
+           padding-top: 80px;
+       }
+    }
+
+    @include media("<=320px") {
+        .LandingTemplate {
+            padding-top: 0;
+            padding-right: 0.8rem;
+            background-image: none;
+            background-color: white;
         }
     }
 }

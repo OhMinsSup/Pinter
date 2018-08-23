@@ -1,24 +1,23 @@
-import { Dispatch, Action, ActionCreator } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch, Action } from 'redux';
 
-export function createPromiseThunk(actionType: string, promiseCreator: any): ActionCreator<ThunkAction<Promise<Action>, any, any, any>> {
+export function createPromiseThunk(actionType: string, promiseCreator: any) {
     return (...params: any[]) => {
         return async (dispatch: Dispatch<any>): Promise<Action> => {
             // promise begins
             dispatch({ type: `${actionType}_PENDING` });
             try {
-            const response = await promiseCreator(...params);
-            dispatch({
-                type: `${actionType}_SUCCESS`,
-                payload: response
-            });
-            return response;
+                const response = await promiseCreator(...params);
+                dispatch({
+                    type: `${actionType}_SUCCESS`,
+                    payload: response,
+                });
+                return response;
             } catch (e) {
-            dispatch({
-                type: `${actionType}_ERROR`,
-                payload: e
-            });
-            throw e;
+                dispatch({
+                    type: `${actionType}_ERROR`,
+                    payload: e
+                });
+                throw e;
             }
         };
     }
@@ -57,3 +56,9 @@ export type GenericResponseAction<D, M> = {
     },
     meta: M
 } 
+
+export type GenericAction<D, M> = {
+    type: string,
+    payload: D,
+    meta: M
+}

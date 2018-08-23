@@ -59,7 +59,7 @@ Comment.statics.getCommentList = function(pinId: string): Promise<any> {
             path: "has_tags",
         }],
     })
-    .sort({_id: -1}) 
+    .sort({_id: -1}); 
 };
 
 Comment.statics.getCommentUserList = function(pinId: string, userId: string): Promise<any> {

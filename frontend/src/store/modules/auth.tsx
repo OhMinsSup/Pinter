@@ -1,30 +1,54 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
-import { createPromiseThunk, GenericResponseAction } from '../../lib/common';
-import * as soicalAuth from '../../lib/social';
+import { createPromiseThunk, GenericResponseAction, GenericAction } from '../../lib/common';
 import * as AuthAPI from '../../lib/API/auth';
+import social from '../../lib/social';
 
 const SET_EMAIL_INPUT = 'auth/SET_EMAIL_INPUT';
+
 const SEND_AUTH_EMAIL = 'auth/SEND_AUTH_EMAIL';
+const SEND_AUTH_EMAIL_PENDING = 'auth/SEND_AUTH_EMAIL_PENDING';
+const SEND_AUTH_EMAIL_SUCCESS = 'auth/SEND_AUTH_EMAIL_SUCCESS';
+const SEND_AUTH_EMAIL_ERROR = 'auth/SEND_AUTH_EMAIL_ERROR';
+
+const AUTO_REGISTER_FORM = 'auth/AUTO_REGISTER_FORM';
 const CHANGE_REGISTER_FORM = 'auth/CHANGE_REGISTER_FORM';
+
 const GET_CODE = 'auth/GET_CODE';
+const GET_CODE_SUCCESS = 'auth/GET_CODE_SUCCESS';
+
 const LOCAL_REGISTER = 'auth/LOCAL_REGISTER';
+const LOCAL_REGISTER_SUCCESS = 'auth/LOCAL_REGISTER_SUCCESS';
+
 const LOCAL_LOGIN = 'auth/LOCAL_LOGIN';
+const LOCAL_LOGIN_SUCCESS = 'auth/LOCAL_LOGIN_SUCCESS';
+
 const PROVIDER_LOGIN = 'auth/PROVIDER_LOGIN';
+const PROVIDER_LOGIN_SUCCESS = 'auth/PROVIDER_LOGIN_SUCCESS';
+const PROVIDER_LOGIN_TYPE = 'auth/PROVIDER_LOGIN_TYPE';
+
 const SOCIAL_LOGIN = 'auth/SOCIAL_LOGIN';
+const SOCIAL_LOGIN_SUCCESS = 'auth/SOCIAL_LOGIN_SUCCESS';
+
 const SOCIAL_REGISTER = 'auth/SOCIAL_REGISTER';
+const SOCIAL_REGISTER_SUCCESS = 'auth/SOCIAL_REGISTER_SUCCESS';
+
 const VERIFY_SOCIAL = 'auth/VERIFY_SOCIAL';
+const VERIFY_SOCIAL_SUCCESS = 'auth/VERIFY_SOCIAL_SUCCESS';
 
 type ChangeRegisterFormPayload  = { name: string, value: string };
+type AutoCompleteFormPayload = { email: string,  username: string };
 
 export const authCreators = {
     setEmailInput: createAction(SET_EMAIL_INPUT, (value: string) => value),
+    autoRegisterForm: createAction(AUTO_REGISTER_FORM, (payload: AutoCompleteFormPayload) => payload),
     sendAuthEmail: createPromiseThunk(SEND_AUTH_EMAIL, AuthAPI.sendAuthEmailAPI),
     changeRegisterForm: createAction(CHANGE_REGISTER_FORM, (payload: ChangeRegisterFormPayload) => payload),
     getCode: createPromiseThunk(GET_CODE, AuthAPI.getCodeAPI),
     localRegister: createPromiseThunk(LOCAL_REGISTER, AuthAPI.localRegisterAPI),
     localLogin: createPromiseThunk(LOCAL_LOGIN, AuthAPI.localLoginAPI),
-    providerLogin: createAction(PROVIDER_LOGIN, (provider: string) => soicalAuth[provider](), (provider: string) => provider),
+    providerLoginType: createAction(PROVIDER_LOGIN_TYPE, (provider: string) => provider),
+    providerLogin: createPromiseThunk(PROVIDER_LOGIN, (provider: string) => social[provider]()),
     socialLogin: createPromiseThunk(SOCIAL_LOGIN, AuthAPI.socialLoginAPI),
     socialRegister: createPromiseThunk(SOCIAL_REGISTER, AuthAPI.socialRegisterAPI),
     verifySocial: createPromiseThunk(VERIFY_SOCIAL, AuthAPI.verifySocialAPI),
@@ -32,14 +56,16 @@ export const authCreators = {
 
 type SetEmailInputAction = ReturnType<typeof authCreators.setEmailInput>;
 type ChangeRegisterFormAction = ReturnType<typeof authCreators.changeRegisterForm>;
+type ProviderLoginTypeAction = ReturnType<typeof authCreators.providerLoginType>;
 type SendAuthEmailAction = GenericResponseAction<{ isUser: boolean }, string>;
 type GetCodeAction = GenericResponseAction<{ email: string, registerToken: string }, string>;
 type LocalRegisterAction = GenericResponseAction<{ user: UserSubState, token: string }, string>;
 type LocalLoginAction = GenericResponseAction<{ user: UserSubState, token: string }, string>;
-type ProviderLoginAction = ReturnType<typeof authCreators.providerLogin>;
+type ProviderLoginAction = GenericAction<string, string>;
 type SocialLoginAction = GenericResponseAction<{ user: UserSubState, token: string }, string>;
 type SocialRegisterAction = GenericResponseAction<{ user: UserSubState, token: string }, string>;
 type VerifySocialAction = GenericResponseAction<{ profile: { id: string, thumbnail: string ,email: string ,username: string }, exists: boolean }, string>; 
+type AutoRegisterFormAction = ReturnType<typeof authCreators.autoRegisterForm>;
 
 export type SocialResultSubState = {
     accessToken: string
@@ -124,12 +150,12 @@ export default handleActions<AuthState, any>({
             draft.email = action.payload;
         })
     },
-    SEND_AUTH_EMAIL_PENDING: (state) => {
+    [SEND_AUTH_EMAIL_PENDING]: (state) => {
         return produce(state, (draft) => {
             draft.sending = true;
         })
     },
-    SEND_AUTH_EMAIL_SUCCESS: (state, action: SendAuthEmailAction) => {
+    [SEND_AUTH_EMAIL_SUCCESS]: (state, action: SendAuthEmailAction) => {
         return produce(state, (draft) => {
             const { payload: { data } } = action;
             if (data === undefined) return;
@@ -137,7 +163,7 @@ export default handleActions<AuthState, any>({
             draft.isUser = data.isUser;
         })
     },
-    SEND_AUTH_EMAIL_ERROR: (state) => {
+    [SEND_AUTH_EMAIL_ERROR]: (state) => {
         return produce(state, (draft) => {
             draft.isUser = false;
             draft.email = '';
@@ -151,7 +177,7 @@ export default handleActions<AuthState, any>({
             draft.registerForm[action.payload.name] = action.payload.value;
         })
     },
-    [GET_CODE]: (state, action: GetCodeAction) => {
+    [GET_CODE_SUCCESS]: (state, action: GetCodeAction) => {
         return produce(state, (draft) => {
             const { payload: { data } } = action;
             if (data === undefined) return;
@@ -159,7 +185,7 @@ export default handleActions<AuthState, any>({
             draft.registerToken = data.registerToken;
         })
     },
-    LOCAL_REGISTER_SUCCESS: (state, action: LocalRegisterAction) => {
+    [LOCAL_REGISTER_SUCCESS]: (state, action: LocalRegisterAction) => {
         return produce(state, (draft) => {
             const { payload: { data } } = action;
             if (data === undefined) return;
@@ -169,7 +195,7 @@ export default handleActions<AuthState, any>({
             }
         });
     },
-    LOCAL_LOGIN_SUCCESS: (state, action: LocalLoginAction) => {
+    [LOCAL_LOGIN_SUCCESS]: (state, action: LocalLoginAction) => {
         return produce(state, (draft) => {
             const { payload: { data } } = action;
             if (data === undefined) return;
@@ -179,17 +205,21 @@ export default handleActions<AuthState, any>({
             }
         });
     },
-    [PROVIDER_LOGIN]: (state, action: ProviderLoginAction) => {
-        return produce(state, (draft) => {
+    [PROVIDER_LOGIN_SUCCESS]: (state, action: ProviderLoginAction) => {
+        return produce(state, (draft) => {            
             if (action === undefined) return;
-            const { payload: response, meta: provider } = action;
-            draft.socialAuthResult = {
-                accessToken: response,
-                provider: provider
-            }
+            const { payload: response } = action;
+            draft.socialAuthResult.accessToken =response;
         });
     },
-    SOCIAL_LOGIN_SUCCESS: (state, action: SocialLoginAction) => {
+    [PROVIDER_LOGIN_TYPE]: (state, action: ProviderLoginTypeAction) => {
+        return produce(state, (draft) => {
+            const { payload: provider } = action;
+            if (action.payload === undefined) return;
+            draft.socialAuthResult.provider = provider as string;
+        })
+    },
+    [SOCIAL_LOGIN_SUCCESS]: (state, action: SocialLoginAction) => {
         return produce(state, (draft) => {
             const { payload: { data } } = action;
             if (data === undefined) return;
@@ -199,7 +229,7 @@ export default handleActions<AuthState, any>({
             }
         });
     },
-    SOCIAL_REGISTER_SUCCESS: (state, action: SocialRegisterAction) => {
+    [SOCIAL_REGISTER_SUCCESS]: (state, action: SocialRegisterAction) => {
         return produce(state, (draft) => {
             const { payload: { data } } = action;
             if (data === undefined) return;
@@ -209,7 +239,7 @@ export default handleActions<AuthState, any>({
             }
         })
     },
-    VERIFY_SOCIAL_SUCCESS: (state, action: VerifySocialAction) => {
+    [VERIFY_SOCIAL_SUCCESS]: (state, action: VerifySocialAction) => {
         return produce(state, (draft) => {
             const { payload: { data } } = action;
             if (data === undefined) return;
@@ -221,5 +251,16 @@ export default handleActions<AuthState, any>({
                 exists: data.exists
             }
         })
-    } 
+    },
+    [AUTO_REGISTER_FORM]: (state, action: AutoRegisterFormAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.registerForm = {
+                displayName: '',
+                email: action.payload.email,
+                username: action.payload.username,
+            }
+            draft.isSocial = true;
+        });
+    },
 }, initialState);
