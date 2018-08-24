@@ -4,7 +4,7 @@ const serializePin = (data: any) => {
     const {
         _id: pinId,
         relation_url,
-        description,
+        body,
         createdAt,
         urls,
         comments,
@@ -16,7 +16,7 @@ const serializePin = (data: any) => {
     return {
         pinId,
         relation_url,
-        description,
+        body,
         urls: url,
         createdAt,
         likes,
@@ -84,7 +84,7 @@ const serializeTagPin = (data: any) => {
         likes,
         comments,
         relation_url,
-        description,
+        body,
         user,
         createdAt,
     } = data;
@@ -92,7 +92,7 @@ const serializeTagPin = (data: any) => {
     const urls = data.urls.map(url => url);
     return {
         pinId,
-        description,
+        body,
         relation_url,
         createdAt,
         tags,
@@ -116,7 +116,7 @@ const serializeLocker = (data: any) => {
             comments,
             _id: pinId,
             relation_url,
-            description,
+            body,
             createdAt,
             user,
         },
@@ -129,7 +129,7 @@ const serializeLocker = (data: any) => {
         comments,
         pinId,
         relation_url,
-        description,
+        body,
         createdAt,
         user: {
             ...pick(user, ['_id', 'username']),

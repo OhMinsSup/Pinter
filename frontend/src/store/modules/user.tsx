@@ -4,6 +4,8 @@ import { GenericResponseAction, createPromiseThunk } from '../../lib/common';
 import * as UserAPI from '../../lib/API/user';
 
 const CHECK_USER = 'user/CHECK_USER';
+const CHECK_USER_SUCCESS = 'user/CHECK_USER_SUCCESS';
+const CHECK_USER_ERROR = 'user/CHECK_USER_ERROR';
 const SET_USER = 'user/SET_USER';
 const PROCESS = 'user/PROCESS';
 const LOGOUT = 'user/LOGOUT';
@@ -47,14 +49,14 @@ export default handleActions<UserState, any>({
             draft.processed = true;
         });
     },
-    CHECK_USER_SUCCESS: (state, action: CheckUserAction) => {
+    [CHECK_USER_SUCCESS]: (state, action: CheckUserAction) => {
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.user = action.payload.data.user;
             draft.processed = true;
         });
     },
-    CHECK_USER_ERROR: (state) => {
+    [CHECK_USER_ERROR]: (state) => {
         return produce(state, (draft) => {
             draft.user = null;
             draft.processed = true;

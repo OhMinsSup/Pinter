@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import { Home, Register } from './page';
 import EmailLogin from './containers/auth/EmailLogin';
 import Core from './containers/base/Core';
+import MakePin from './containers/pin/MakePin';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route exact path='/email-login' component={EmailLogin} />
       </Switch>
       <Core />
+      <MakePin />
     </React.Fragment>
   );
 }

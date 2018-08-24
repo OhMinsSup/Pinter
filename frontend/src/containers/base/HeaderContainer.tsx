@@ -40,7 +40,6 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
     public render() {
         const { thumbnail, displayName, size } = this.props;
         const { onLogout } = this;
-        console.log(size);
         
         return (
             <Header 

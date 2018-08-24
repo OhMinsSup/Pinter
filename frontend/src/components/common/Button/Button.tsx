@@ -6,7 +6,7 @@ const styles = require('./Button.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    theme: 'default' | 'outline' | 'paper' | 'noline' | 'flex',
+    theme: 'default' | 'outline' | 'paper' | 'noline' | 'flex' | 'submit',
     to?: string | null,
     children: React.ReactNode,
     className?: string,

@@ -9,6 +9,8 @@ const SEARCH_FULLSCREEN_LOADER = 'base/SEARCH_FULLSCREEN_LOADER';
 const BOX_FULLSCREEN_LOADER = 'base/BOX_FULLSCREEN_LOADER';
 const GET_BOWSER_SIZE = 'base/GET_BOWSER_SIZE';
 
+const OPEN_PIN_BOX = 'base/OPEN_PIN_BOX';
+
 export type BoxFullscreenLoaderPayload = { name: 'like' | 'comment' | 'save' , visible: boolean, id: string, theme: any }
 
 export const baseCreators = {
@@ -19,6 +21,7 @@ export const baseCreators = {
     searchFullscreenLoader: createAction(SEARCH_FULLSCREEN_LOADER, (visible: boolean) => visible),
     boxFullscreenLoader: createAction(BOX_FULLSCREEN_LOADER, (payload: BoxFullscreenLoaderPayload) => payload),
     getbowserSize: createAction(GET_BOWSER_SIZE, (size: number) => size),
+    openPinBox: createAction(OPEN_PIN_BOX, (visible: boolean) => visible),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
@@ -26,6 +29,7 @@ type SetHeaderVisibilityAction = ReturnType<typeof baseCreators.setHeaderVisibil
 type SetFullscreenLoaderAction = ReturnType<typeof baseCreators.setFullscreenLoader>;
 type BoxFullscreenLoaderAction = ReturnType<typeof baseCreators.boxFullscreenLoader>;
 type GetBowserSizeAction = ReturnType<typeof baseCreators.getbowserSize>;
+type OpenPinBoxAction =ReturnType<typeof baseCreators.openPinBox>;
 
 export interface BaseState {
     userMenu: boolean;
@@ -40,6 +44,9 @@ export interface BaseState {
         save: boolean
     },
     size: number;
+    pin: {
+        visible: boolean
+    }
 }
 
 const initialState: BaseState = {
@@ -55,6 +62,9 @@ const initialState: BaseState = {
         save: false
     },
     size: 0,
+    pin: {
+        visible: false
+    }
 };
 
 export default handleActions<BaseState, any>({
@@ -98,6 +108,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.size = action.payload;
+        })
+    },
+    [OPEN_PIN_BOX]: (state, action: OpenPinBoxAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.pin.visible = action.payload;
         })
     }
 }, initialState);

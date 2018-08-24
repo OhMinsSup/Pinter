@@ -83,14 +83,14 @@ class PinRouter {
     private async writePin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             relation_url: string;
-            description: string;
+            body: string;
             urls: string[];
             tags: string[];
         };
 
         const schema = joi.object().keys({
             relation_url: joi.string(),
-            description: joi.string().max(200),
+            body: joi.string(),
             urls:  joi.array().items(joi.string()).required(),
             tags: joi.array().items(joi.string()).required(),
         });
@@ -104,14 +104,14 @@ class PinRouter {
             });
         }
 
-        const { relation_url, description, urls, tags }: BodySchema = req.body;
+        const { relation_url, body, urls, tags }: BodySchema = req.body;
         const userId: string = req['user']._id;
         const uniqueTags: string[] = filterUnique(tags);
 
         try {            
             const pin = await new Pin({
                 relation_url,
-                description,
+                body,
                 urls,
                 user: userId,
             });
@@ -132,14 +132,14 @@ class PinRouter {
     private async updatePin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
             relationUrl: string,
-            description: string,
+            body: string,
             urls: string,
             tags: string[],
         };
 
         const schema = joi.object().keys({
             relationUrl: joi.string(),
-            description: joi.string().max(200),
+            body: joi.string(),
             urls: joi.array().items(joi.string()).required(),
             tags: joi.array().items(joi.string()).required(),
         });
@@ -153,7 +153,7 @@ class PinRouter {
             });
         }
 
-        const { relationUrl, description, urls, tags }: BodySchema = req.body;
+        const { relationUrl, body, urls, tags }: BodySchema = req.body;
         const pinId: string = req['pin']._id;
         if (tags) {
             const currentTags = await Tag.getTagNames(pinId);
@@ -167,7 +167,7 @@ class PinRouter {
                 
                 await Pin.findByIdAndUpdate(pinId, {
                     relation_url: relationUrl,
-                    description,
+                    body,
                     urls,
                 }, { new: true });
 
