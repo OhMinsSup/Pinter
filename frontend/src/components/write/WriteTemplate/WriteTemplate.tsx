@@ -6,15 +6,20 @@ const styles = require('./WriteTemplate.scss');
 const cx = classNames.bind(styles);
 
 interface Props {
+    size: number,
     children: React.ReactNode,
     onClick(): void
 }
 
-const WriteTemplate: React.SFC<Props> = ({ children, onClick }) => {
+const WriteTemplate: React.SFC<Props> = ({ children, onClick, size }) => {
     return (
         <div className={cx('write-template')}>
             {children}
-            <CancelButton onClick={onClick}/>
+            {
+                size <= 768 ? null: (
+                    <CancelButton onClick={onClick}/>
+                )
+            }
         </div>
     )
 }

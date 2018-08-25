@@ -34,7 +34,7 @@ const Pin = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Tag",
     }],
-    description: String,
+    body: String,
     relation_url: String,
     urls: [String],
     likes: {

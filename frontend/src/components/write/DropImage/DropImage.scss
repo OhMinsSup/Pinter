@@ -1,0 +1,57 @@
+@import 'utils';
+
+.upload-mask {
+    margin-top: 8px;
+    cursor: pointer;
+    border: 1px solid $oc-gray-4;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    height: 120px;
+    width: 600px;
+    position: fixed;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    svg {
+        font-size: 2rem;
+     }
+    h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+
+    @include media ("<=645px") {
+        width: 100%;
+        h3 {
+            font-size: 0.9rem;
+            font-weight: 250;
+        }
+    }
+}
+
+/*
+    @include media("<=1442px") {
+        width: 800px;
+    }
+
+    @include media("<=1345px") {
+        width: 720px;
+    }
+
+    @include media("<=1200px") {
+        width: 640px;
+    }
+
+    @include media("<=medium") {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    @include media("<=425px") {
+        padding: 16px 0;
+    }
+
+*/

@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import WriteForm from '../../components/write/WriteForm';
 import InputTags from '../../components/write/InputTags';
+import DropImage from '../../components/write/DropImage';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -18,6 +19,38 @@ class MakePin extends React.Component<MakePinProps> {
         BaseActions.openPinBox(false);
     }
 
+    public uploadUrl = async (file: any) => {
+        console.log(file);
+        
+    }
+
+    public uploadRemove = () => {
+        console.log('gkgk');
+    }
+
+    public onDrop = (e: any) => {
+        e.preventDefault();
+        const { files } = e.dataTransfer;
+        if (!files) return;
+        this.uploadUrl(files[0]);
+    }
+
+    public onPasteImage = (file: any) => {
+        if (!file) return;
+        this.uploadUrl(file);
+    };
+
+    public onUploadClick = () => {
+        const upload = document.createElement('input');
+        upload.type = 'file';
+        upload.onchange = (e) => {                        
+            if (!upload.files) return;
+            const file = upload.files[0];
+            this.uploadUrl(file);
+        }
+        upload.click();
+    }
+
     public onInsertTag = (tag: string) => {
         console.log('gkgk');
     }
@@ -27,19 +60,27 @@ class MakePin extends React.Component<MakePinProps> {
     };
 
     public render() {
-        const { visible } = this.props;
+        const { visible, size } = this.props;
+        const { onInsertTag, onRemoveTag, onDrop, onPasteImage, onUploadClick, onCloseBox } = this;
 
         if (!visible) return null;
         return (
             <PinTemplate
-                onClick={this.onCloseBox}
+                size={size}
+                onClick={onCloseBox}
             >
                 <WriteForm 
                     inputTags={<InputTags
                         tags={['tag', 'tags', 'hey']}
-                        onInsert={this.onInsertTag} 
-                        onRemove={this.onRemoveTag}
+                        onInsert={onInsertTag} 
+                        onRemove={onRemoveTag}
                     />}
+                    dropImage={<DropImage
+                        onDrop={onDrop}
+                        onPaste={onPasteImage}
+                        onUploadClick={onUploadClick}
+                    />}
+                    size={size}
                 />
             </PinTemplate>
         )
@@ -47,7 +88,8 @@ class MakePin extends React.Component<MakePinProps> {
 }
 
 const mapStateToProps = ({ base }: StoreState) => ({
-    visible: base.pin.visible
+    visible: base.pin.visible,
+    size: base.size,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
