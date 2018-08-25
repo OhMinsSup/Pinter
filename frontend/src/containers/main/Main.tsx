@@ -21,13 +21,14 @@ class Main extends React.Component<MainProps> {
     }
 
     public render() {       
-        const { path } = this.props; 
+        const { path, sidebar } = this.props; 
         const { onOpenBox } = this;
         return(
             <MainTemplate
                 path={path}
                 onClick={onOpenBox}
                 header={<HeaderContainer />}
+                sidebar={sidebar}
             >
                 sdsds
             </MainTemplate>
@@ -36,7 +37,8 @@ class Main extends React.Component<MainProps> {
 }
 
 const mapStateToProps = ({ base }: StoreState) => ({
-    visible: base.pin.visible
+    visible: base.pin.visible,
+    sidebar: base.sidebar.visible
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

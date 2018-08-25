@@ -24,14 +24,14 @@ class EmailLoginContainer extends React.Component<EmailLoginContainerProps> {
         const { code } = queryString.parse(search);
         const { AuthActions, UserActions } = this.props;
         try {
-            AuthActions.localLogin(code);
+            await AuthActions.localLogin(code);
             const { authResult } = this.props;
             
             if (authResult.user.displayName === "" || authResult.user.id === "" || authResult.user.username === "") { 
                 return this.props.history.push('/');
             }
-            
-            const { user } = authResult;
+        
+            const { user } = authResult;            
             UserActions.setUser(user);
             storage.set('__pinter_user__', user);
         } catch (e) {

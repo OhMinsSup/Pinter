@@ -10,6 +10,7 @@ const BOX_FULLSCREEN_LOADER = 'base/BOX_FULLSCREEN_LOADER';
 const GET_BOWSER_SIZE = 'base/GET_BOWSER_SIZE';
 
 const OPEN_PIN_BOX = 'base/OPEN_PIN_BOX';
+const SET_SIDE_BAR = 'base/SET_SIDE_BAR';
 
 export type BoxFullscreenLoaderPayload = { name: 'like' | 'comment' | 'save' , visible: boolean, id: string, theme: any }
 
@@ -22,6 +23,7 @@ export const baseCreators = {
     boxFullscreenLoader: createAction(BOX_FULLSCREEN_LOADER, (payload: BoxFullscreenLoaderPayload) => payload),
     getbowserSize: createAction(GET_BOWSER_SIZE, (size: number) => size),
     openPinBox: createAction(OPEN_PIN_BOX, (visible: boolean) => visible),
+    setSidebar: createAction(SET_SIDE_BAR, (visible: boolean) => visible),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
@@ -29,7 +31,8 @@ type SetHeaderVisibilityAction = ReturnType<typeof baseCreators.setHeaderVisibil
 type SetFullscreenLoaderAction = ReturnType<typeof baseCreators.setFullscreenLoader>;
 type BoxFullscreenLoaderAction = ReturnType<typeof baseCreators.boxFullscreenLoader>;
 type GetBowserSizeAction = ReturnType<typeof baseCreators.getbowserSize>;
-type OpenPinBoxAction =ReturnType<typeof baseCreators.openPinBox>;
+type OpenPinBoxAction = ReturnType<typeof baseCreators.openPinBox>;
+type SetSidebarAction = ReturnType<typeof baseCreators.setSidebar>; 
 
 export interface BaseState {
     userMenu: boolean;
@@ -45,6 +48,9 @@ export interface BaseState {
     },
     size: number;
     pin: {
+        visible: boolean
+    },
+    sidebar: {
         visible: boolean
     }
 }
@@ -63,6 +69,9 @@ const initialState: BaseState = {
     },
     size: 0,
     pin: {
+        visible: false
+    },
+    sidebar: {
         visible: false
     }
 };
@@ -114,6 +123,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.pin.visible = action.payload;
+        })
+    },
+    [SET_SIDE_BAR]: (state, action: SetSidebarAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.sidebar.visible = action.payload;
         })
     }
 }, initialState);

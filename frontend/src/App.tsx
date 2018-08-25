@@ -4,6 +4,7 @@ import { Home, Register } from './page';
 import EmailLogin from './containers/auth/EmailLogin';
 import Core from './containers/base/Core';
 import MakePin from './containers/pin/MakePin';
+import SidebarContainer from './containers/base/SidebarContainer';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       </Switch>
       <Core />
       <MakePin />
+      <SidebarContainer />
     </React.Fragment>
   );
 }

@@ -16,10 +16,11 @@ type Props = {
     displayName: string | any,
     thumbnail: string | any,
     size: number,
-    onLogout(): void
+    onLogout(): void,
+    onSidebar(): void
 }
 
-const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size }) => {
+const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSidebar }) => {
     return (
         <div className={cx('header')}>
             <div className={cx('header-wrapper')}>
@@ -29,7 +30,7 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size }) =>
                     {
                         size <= 790 ? (
                             <div className={cx('button-group')}>
-                                <Button theme='noline'>
+                                <Button theme='noline' onClick={onSidebar}>
                                     <FaBars/>
                                 </Button>
                             </div>

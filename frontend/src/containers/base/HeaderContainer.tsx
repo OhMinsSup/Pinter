@@ -22,6 +22,11 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
         this.props.BaseActions.getbowserSize(document.body.scrollWidth);
     } 
 
+    public onSidebar = () => {
+        const { BaseActions, visible } = this.props;
+        visible ? BaseActions.setSidebar(false) : BaseActions.setSidebar(true);
+    }
+
     public onLogout = async () => {
         const { UserActions } = this.props;
         try {
@@ -39,13 +44,14 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
 
     public render() {
         const { thumbnail, displayName, size } = this.props;
-        const { onLogout } = this;
+        const { onLogout, onSidebar } = this;
         
         return (
             <Header 
                 thumbnail={thumbnail}
                 displayName={displayName}
                 onLogout={onLogout}
+                onSidebar={onSidebar}
                 size={size}
             />
         )
@@ -53,6 +59,7 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
 }
 
 const mapStateToProps = ({ user, base }: StoreState) => ({
+    visible: base.sidebar.visible,
     user: user.user && user.user,
     displayName: user.user && user.user.displayName,
     thumbnail: user.user && user.user.thumbnail,

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PinTemplate from '../../components/write/WriteTemplate';
+import WriteTemplate from '../../components/write/WriteTemplate';
 import { StoreState } from '../../store/modules';
 import { Dispatch, connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -65,7 +65,7 @@ class MakePin extends React.Component<MakePinProps> {
 
         if (!visible) return null;
         return (
-            <PinTemplate
+            <WriteTemplate
                 size={size}
                 onClick={onCloseBox}
             >
@@ -81,8 +81,9 @@ class MakePin extends React.Component<MakePinProps> {
                         onUploadClick={onUploadClick}
                     />}
                     size={size}
+                    onCloseBox={onCloseBox}
                 />
-            </PinTemplate>
+            </WriteTemplate>
         )
     }
 }

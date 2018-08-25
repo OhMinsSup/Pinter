@@ -1,0 +1,28 @@
+@import 'utils';
+
+
+.dimmer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sidebar {
+    flex-direction: column;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background: #424242;
+    height: 100vh;
+    width: 300px;
+    z-index: 10;
+    display: flex;
+    box-shadow: 0 3px 8px rgba(0,0,0,.6), 0 15px 12px rgba(0,0,0,.44);
+    transition: all .1s ease-in-out;
+    transform: translate(0);
+}

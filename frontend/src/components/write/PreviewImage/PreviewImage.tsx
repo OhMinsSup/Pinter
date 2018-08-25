@@ -4,28 +4,50 @@ import * as classNames from 'classnames/bind';
 const styles = require('./PreviewImage.scss');
 const cx = classNames.bind(styles);
 
-type Props = {}
+type Props = {
+    images?: string[] 
+}
 
-const PreviewImage: React.SFC<Props> = ({ }) => {
-    const images = [
-        "https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&h=350",
-        "https://velopert.com/wp-content/uploads/2018/07/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA-2018-07-24-%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE-4.58.00-1.png",
+const PreviewImage: React.SFC<Props> = ({ images }) => { 
+    const imagesList = (images as string[]).map((image, index) => {
+        return (
+            <div key={index} className={cx('composer-image')}>
+                <div className={cx('composer-image-container')}>
+                    <img key={index} src={image} alt={image}/>
+                </div>
+            </div>
+        )
+    });
+
+    return (
+        <React.Fragment>
+        {
+            (images as string[]).length === 0 ? null : (
+                <div className={cx('preview-image')}>
+                    <div className={cx('image-container')}>
+                        <div className={cx('image-wrapper')}>
+                            <div className={cx('composer-images')}>
+                                {imagesList}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+        </React.Fragment>
+    )
+}
+
+PreviewImage.defaultProps = {
+    images: [
         "https://velopert.com/wp-content/uploads/2018/04/prettier.png",
         "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
-    ]    
-    return (
-        <div className={cx('preview-image')}>
-            <div className={cx('wrapper')}>
-                {   
-                    
-                    images.map((i) => {
-                        return <img key={i} src={i} alt="test"/>
-                    })
-                    
-                }
-            </div>
-        </div>
-    )
+        "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
+        "https://velopert.com/wp-content/uploads/2018/04/prettier.png",
+        "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
+        "https://velopert.com/wp-content/uploads/2018/04/prettier.png",
+        "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
+    ]
 }
 
 export default PreviewImage;
