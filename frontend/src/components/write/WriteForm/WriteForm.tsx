@@ -12,10 +12,14 @@ type Props = {
     size: number,
     inputTags: React.ReactNode,
     dropImage: React.ReactNode,
-    onCloseBox(): void
+    body: string,
+    urls: string[],
+    relationUrl: string,
+    onCloseBox(): void,
+    onChange(e: any): void,
 }
 
-const WriteForm: React.SFC<Props> = ({ inputTags, dropImage, size, onCloseBox }) => {
+const WriteForm: React.SFC<Props> = ({ inputTags, dropImage, size, onCloseBox, onChange, relationUrl, body, urls }) => {
     return (
         <div className={cx('write-form')}>
             <div className={cx('form-header')}>
@@ -36,14 +40,18 @@ const WriteForm: React.SFC<Props> = ({ inputTags, dropImage, size, onCloseBox })
                     placeholder="이 핀에 연결된 URL을 작성해주세요"
                     name="relation_url"
                     type="input"
+                    value={relationUrl}
+                    onChange={onChange}
                 />
                 <WriteItem
                     title="내용"
                     placeholder="이 핀에 대해 자세히 알려 주세요"
-                    name="description"
+                    name="body"
                     type="input"
+                    value={body}
+                    onChange={onChange}
                 />
-                <PreviewImage />
+                <PreviewImage urls={urls}/>
                 <WriteItem
                     title="태그"
                     element={inputTags}

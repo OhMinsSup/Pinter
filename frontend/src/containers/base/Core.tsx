@@ -12,7 +12,7 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type CoreProps = StateProps & DispatchProps;
 
 class Core extends React.Component<CoreProps>{
-  public checkUser = () => {
+  public checkUser = async () => {
     const storageUser = Storage.get('__pinter_user__');
     const { UserActions } = this.props;
     if (!storageUser) {
@@ -21,7 +21,7 @@ class Core extends React.Component<CoreProps>{
     }
     UserActions.setUser(storageUser);
     try {
-      UserActions.checkUser();
+      await UserActions.checkUser();
     } catch (e) {
       Storage.remove('__pinter_user__');
     }

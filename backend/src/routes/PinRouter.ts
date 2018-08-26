@@ -155,6 +155,7 @@ class PinRouter {
 
         const { relationUrl, body, urls, tags }: BodySchema = req.body;
         const pinId: string = req['pin']._id;
+
         if (tags) {
             const currentTags = await Tag.getTagNames(pinId);
             const tagNames: string[] = currentTags.map(tag => tag.name);

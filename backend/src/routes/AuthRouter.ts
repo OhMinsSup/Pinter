@@ -215,8 +215,12 @@ class AuthRouter {
 
     private async check(req: Request, res: Response): Promise<any> {
         const user = req['user'];
+        
         if (!user) {
-            return res.status(401);
+            return res.status(401).json({
+                name: '로그인을 하지않았습니다.',
+                payload: 'login',
+            });
         }
 
         res.json({

@@ -1,8 +1,8 @@
-import { Dispatch, Action } from 'redux';
+import { Dispatch } from 'redux';
 
 export function createPromiseThunk(actionType: string, promiseCreator: any) {
     return (...params: any[]) => {
-        return async (dispatch: Dispatch<any>): Promise<Action> => {
+        return async (dispatch: Dispatch<any>): Promise<any> => {
             // promise begins
             dispatch({ type: `${actionType}_PENDING` });
             try {

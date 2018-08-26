@@ -1,19 +1,23 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
 
+const CancelIcon = require('react-icons/lib/md/close');
 const styles = require('./PreviewImage.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    images?: string[] 
+    urls?: string[] 
 }
 
-const PreviewImage: React.SFC<Props> = ({ images }) => { 
-    const imagesList = (images as string[]).map((image, index) => {
+const PreviewImage: React.SFC<Props> = ({ urls }) => { 
+    const imagesList = (urls as string[]).map((image, index) => {
         return (
             <div key={index} className={cx('composer-image')}>
                 <div className={cx('composer-image-container')}>
                     <img key={index} src={image} alt={image}/>
+                </div>
+                <div className={cx('composer-image-remove')}>
+                    <CancelIcon />
                 </div>
             </div>
         )
@@ -22,7 +26,7 @@ const PreviewImage: React.SFC<Props> = ({ images }) => {
     return (
         <React.Fragment>
         {
-            (images as string[]).length === 0 ? null : (
+            (urls as string[]).length === 0 ? null : (
                 <div className={cx('preview-image')}>
                     <div className={cx('image-container')}>
                         <div className={cx('image-wrapper')}>
@@ -38,16 +42,5 @@ const PreviewImage: React.SFC<Props> = ({ images }) => {
     )
 }
 
-PreviewImage.defaultProps = {
-    images: [
-        "https://velopert.com/wp-content/uploads/2018/04/prettier.png",
-        "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
-        "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
-        "https://velopert.com/wp-content/uploads/2018/04/prettier.png",
-        "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
-        "https://velopert.com/wp-content/uploads/2018/04/prettier.png",
-        "https://velopert.com/wp-content/uploads/2018/04/shovel.png",
-    ]
-}
-
 export default PreviewImage;
+

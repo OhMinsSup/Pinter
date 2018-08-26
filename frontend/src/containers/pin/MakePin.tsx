@@ -7,6 +7,7 @@ import { baseCreators } from '../../store/modules/base';
 import WriteForm from '../../components/write/WriteForm';
 import InputTags from '../../components/write/InputTags';
 import DropImage from '../../components/write/DropImage';
+import { writeCreators } from '../../store/modules/write';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -19,9 +20,22 @@ class MakePin extends React.Component<MakePinProps> {
         BaseActions.openPinBox(false);
     }
 
-    public uploadUrl = async (file: any) => {
-        console.log(file);
+    public OnUploadUrl = async (file: any) => {
+        const { WriteActions } = this.props;
         
+        WriteActions.setUploadStatus(true);
+
+        try {
+            await WriteActions.createUploadUrl(file);
+        } catch (e) {
+            console.log(e);
+        }
+        WriteActions.setUploadStatus(false);
+    }
+
+    public onRemoveURl = (url: string) => {
+        const { WriteActions } = this.props;
+        WriteActions.removeUploadUrl(url);
     }
 
     public uploadRemove = () => {
@@ -32,12 +46,12 @@ class MakePin extends React.Component<MakePinProps> {
         e.preventDefault();
         const { files } = e.dataTransfer;
         if (!files) return;
-        this.uploadUrl(files[0]);
+        this.OnUploadUrl(files[0]);
     }
 
     public onPasteImage = (file: any) => {
         if (!file) return;
-        this.uploadUrl(file);
+        this.OnUploadUrl(file);
     };
 
     public onUploadClick = () => {
@@ -46,22 +60,43 @@ class MakePin extends React.Component<MakePinProps> {
         upload.onchange = (e) => {                        
             if (!upload.files) return;
             const file = upload.files[0];
-            this.uploadUrl(file);
+            this.OnUploadUrl(file);
         }
         upload.click();
     }
 
     public onInsertTag = (tag: string) => {
-        console.log('gkgk');
+        const { WriteActions, tags } = this.props;
+        const processedTag = tag.trim();
+        if (processedTag === '') return;
+        if (tags.indexOf(tag) !== -1) return;
+        WriteActions.insertTag(tag);
     }
 
     public onRemoveTag = (tag: string) => {
-        console.log('gkgk');
+        console.log(tag);
+        
+        const { WriteActions } = this.props;
+        WriteActions.removeTag(tag)
     };
 
+    public onChangeInput = (e: any) => {
+        const { value, name } = e.target;
+        const { WriteActions } = this.props;
+        WriteActions.changeInput({ name, value });
+    }
+
     public render() {
-        const { visible, size } = this.props;
-        const { onInsertTag, onRemoveTag, onDrop, onPasteImage, onUploadClick, onCloseBox } = this;
+        const { visible, size, body, relationUrl,tags, urls } = this.props;
+        const { 
+            onInsertTag, 
+            onRemoveTag, 
+            onDrop, 
+            onPasteImage, 
+            onUploadClick, 
+            onCloseBox, 
+            onChangeInput 
+        } = this;
 
         if (!visible) return null;
         return (
@@ -71,7 +106,7 @@ class MakePin extends React.Component<MakePinProps> {
             >
                 <WriteForm 
                     inputTags={<InputTags
-                        tags={['tag', 'tags', 'hey']}
+                        tags={tags}
                         onInsert={onInsertTag} 
                         onRemove={onRemoveTag}
                     />}
@@ -82,19 +117,28 @@ class MakePin extends React.Component<MakePinProps> {
                     />}
                     size={size}
                     onCloseBox={onCloseBox}
+                    onChange={onChangeInput}
+                    body={body}
+                    urls={urls}
+                    relationUrl={relationUrl}
                 />
             </WriteTemplate>
         )
     }
 }
 
-const mapStateToProps = ({ base }: StoreState) => ({
+const mapStateToProps = ({ base, write }: StoreState) => ({
     visible: base.pin.visible,
     size: base.size,
+    body: write.form.body,
+    relationUrl: write.form.relation_url,
+    tags: write.form.tags,
+    urls: write.form.urls,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    BaseActions: bindActionCreators(baseCreators, dispatch)
+    BaseActions: bindActionCreators(baseCreators, dispatch),
+    WriteActions: bindActionCreators(writeCreators, dispatch),
 })
 
 export default connect<StateProps, DispatchProps>(

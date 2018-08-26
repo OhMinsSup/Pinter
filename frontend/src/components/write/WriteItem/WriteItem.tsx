@@ -10,10 +10,12 @@ type Props = {
     placeholder?: string,
     name?: string,
     type?: string,
-    element?: React.ReactNode
+    element?: React.ReactNode,
+    value?: string,
+    onChange?(e: any): void,
 }
 
-const WriteItem: React.SFC<Props> = ({ title, name, placeholder, type, element }) => {
+const WriteItem: React.SFC<Props> = ({ title, name, placeholder, type, element, onChange, value }) => {
     return (
         <div className={cx('write-item')}>
             <label className={cx('input-title')}>
@@ -23,7 +25,7 @@ const WriteItem: React.SFC<Props> = ({ title, name, placeholder, type, element }
                 type === 'input' ? (
                     <div className={cx('input')}>
                         <span>
-                            <AutoTextarea placeholder={placeholder} name={name}/>
+                            <AutoTextarea placeholder={placeholder} name={name} value={value} onChange={onChange}/>
                         </span>
                     </div>
                 ) : (

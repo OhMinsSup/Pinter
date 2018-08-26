@@ -48,6 +48,24 @@
                             margin-top: 0px;
                         }
                     }
+                    .composer-image-remove {
+                        border-radius: 10px;
+                        height: 19px;
+                        right: 4px;
+                        top: 4px;
+                        width: 19px;
+                        background: #14171a;
+                        color: #fff;
+                        margin-top: 0;
+                        position: absolute;
+                        svg {
+                            font-size: 1rem;
+                            font-weight: 500;
+                            position: relative;
+                            left: 0.1rem;
+                            top: 0.05rem;
+                        }
+                    }
                 }
 
                 .composer-image + .composer-image {
