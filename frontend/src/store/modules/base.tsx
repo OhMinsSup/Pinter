@@ -11,6 +11,7 @@ const GET_BOWSER_SIZE = 'base/GET_BOWSER_SIZE';
 
 const OPEN_PIN_BOX = 'base/OPEN_PIN_BOX';
 const SET_SIDE_BAR = 'base/SET_SIDE_BAR';
+const SET_MAIN = 'base/SET_MAIN';
 
 export type BoxFullscreenLoaderPayload = { name: 'like' | 'comment' | 'save' , visible: boolean, id: string, theme: any }
 
@@ -24,6 +25,7 @@ export const baseCreators = {
     getbowserSize: createAction(GET_BOWSER_SIZE, (size: number) => size),
     openPinBox: createAction(OPEN_PIN_BOX, (visible: boolean) => visible),
     setSidebar: createAction(SET_SIDE_BAR, (visible: boolean) => visible),
+    setMain: createAction(SET_MAIN, (visible: boolean) => visible),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
@@ -33,6 +35,7 @@ type BoxFullscreenLoaderAction = ReturnType<typeof baseCreators.boxFullscreenLoa
 type GetBowserSizeAction = ReturnType<typeof baseCreators.getbowserSize>;
 type OpenPinBoxAction = ReturnType<typeof baseCreators.openPinBox>;
 type SetSidebarAction = ReturnType<typeof baseCreators.setSidebar>; 
+type SetMainAction = ReturnType<typeof baseCreators.setMain>;
 
 export interface BaseState {
     userMenu: boolean;
@@ -52,6 +55,9 @@ export interface BaseState {
     },
     sidebar: {
         visible: boolean
+    },
+    main: {
+        visible: boolean,
     }
 }
 
@@ -72,6 +78,9 @@ const initialState: BaseState = {
         visible: false
     },
     sidebar: {
+        visible: false
+    },
+    main: {
         visible: false
     }
 };
@@ -129,6 +138,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.sidebar.visible = action.payload;
+        })
+    },
+    [SET_MAIN]: (state, action: SetMainAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.main.visible = action.payload;
         })
     }
 }, initialState);

@@ -3,7 +3,7 @@ import { pick } from "lodash";
 const serializePin = (data: any) => {
     const {
         _id: pinId,
-        relation_url,
+        relationUrl,
         body,
         createdAt,
         urls,
@@ -15,7 +15,7 @@ const serializePin = (data: any) => {
     const url = urls.map(url => url);
     return {
         pinId,
-        relation_url,
+        relationUrl,
         body,
         urls: url,
         createdAt,
@@ -83,7 +83,7 @@ const serializeTagPin = (data: any) => {
         _id: pinId,
         likes,
         comments,
-        relation_url,
+        relationUrl,
         body,
         user,
         createdAt,
@@ -93,7 +93,7 @@ const serializeTagPin = (data: any) => {
     return {
         pinId,
         body,
-        relation_url,
+        relationUrl,
         createdAt,
         tags,
         urls,
@@ -115,7 +115,7 @@ const serializeLocker = (data: any) => {
             likes,
             comments,
             _id: pinId,
-            relation_url,
+            relationUrl,
             body,
             createdAt,
             user,
@@ -128,7 +128,7 @@ const serializeLocker = (data: any) => {
         urls: urls.map(url => url),
         comments,
         pinId,
-        relation_url,
+        relationUrl,
         body,
         createdAt,
         user: {

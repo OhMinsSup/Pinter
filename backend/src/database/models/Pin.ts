@@ -35,7 +35,7 @@ const Pin = new Schema({
         ref: "Tag",
     }],
     body: String,
-    relation_url: String,
+    relationUrl: String,
     urls: [String],
     likes: {
         type: Number,

@@ -14,6 +14,10 @@ const CREATE_UPLOAD_URL = 'write/CREATE_UPLOAD_URL';
 const CREATE_UPLOAD_URL_SUCCESS = 'write/CREATE_UPLOAD_URL_SUCCESS';
 const CREATE_UPLOAD_URL_ERROR = 'write/CREATE_UPLOAD_URL_ERROR';
 
+const WRITE_SUBMIT = 'write/WRITE_SUBMIT';
+const WRITE_SUBMIT_SUCCESS = 'write/WRITE_SUBMIT_SUCCESS';
+const WRITE_SUBMIT_ERROR = 'write/WRITE_SUBMIT_ERROR';
+
 type ChangeInputPayload = { name: string, value: string };
 
 export const writeCreators = {
@@ -23,7 +27,8 @@ export const writeCreators = {
     removeTag: createAction(REMOVE_TAG, (tag: string) => tag),
     setUploadStatus: createAction(SET_UPLOAD_STATUS, (uploading: boolean) => uploading),
     createUploadUrl: createPromiseThunk(CREATE_UPLOAD_URL, WriteAPI.createSignedUrl),
-    removeUploadUrl: createAction(REMOVE_UPLOAD_URL, (url: string) => url)
+    removeUploadUrl: createAction(REMOVE_UPLOAD_URL, (url: string) => url),
+    writeSubmit: createPromiseThunk(WRITE_SUBMIT, WriteAPI.writePinAPI),
 }
 
 type ChangeInputAction = ReturnType<typeof writeCreators.changeInput>;
@@ -32,6 +37,7 @@ type RemoveTagAction = ReturnType<typeof writeCreators.removeTag>;
 type SetUploadStatusAction = ReturnType<typeof writeCreators.setUploadStatus>;
 type CreateSignedUrlAction = GenericResponseAction<{ url: string, path: string }, string>;
 type RemoveUploadUrlAction = ReturnType<typeof writeCreators.removeUploadUrl>;
+type WriteSubmitAction = GenericResponseAction<{ pinId: string } ,string>;
 
 export interface WriteState {
     form: {
@@ -44,7 +50,8 @@ export interface WriteState {
         url: string,
         path: string,
         uploading: boolean
-    }
+    },
+    pinId: string,
 }
 
 const initialState: WriteState = {
@@ -58,12 +65,26 @@ const initialState: WriteState = {
         url: '',
         path: '',
         uploading: false
-    }
+    },
+    pinId: '',
 }
 
 export default handleActions<WriteState, any>({
     [INITIAL_STATE]: (state) => {
-        return state;
+        return produce(state, (draft) => {
+            draft.form = {
+                relation_url: '',
+                body: '',
+                tags: [],
+                urls: []
+            };
+            draft.upload = {
+                url: '',
+                path: '',
+                uploading: false
+            };
+            draft.pinId = '';
+        });
     },
     [CHANGE_INPUT]: (state, action: ChangeInputAction) => {
         const { payload } = action;
@@ -116,6 +137,16 @@ export default handleActions<WriteState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.form.urls = draft.form.urls.filter(u => u !== action.payload);
+        })
+    },
+    [WRITE_SUBMIT_SUCCESS]: (state, action: WriteSubmitAction) => {
+        return produce(state, (draft) => {
+            draft.pinId = action.payload.data.pinId;
+        })
+    },
+    [WRITE_SUBMIT_ERROR]: (state) => {
+        return produce(state, (draft) => {
+            draft.pinId = '';
         })
     }
 }, initialState)

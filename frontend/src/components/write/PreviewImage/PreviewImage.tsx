@@ -6,17 +6,18 @@ const styles = require('./PreviewImage.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    urls?: string[] 
+    urls?: string[],
+    onClick(url: string): void, 
 }
 
-const PreviewImage: React.SFC<Props> = ({ urls }) => { 
+const PreviewImage: React.SFC<Props> = ({ urls, onClick }) => { 
     const imagesList = (urls as string[]).map((image, index) => {
         return (
             <div key={index} className={cx('composer-image')}>
                 <div className={cx('composer-image-container')}>
                     <img key={index} src={image} alt={image}/>
                 </div>
-                <div className={cx('composer-image-remove')}>
+                <div className={cx('composer-image-remove')} onClick={() => onClick(image)}>
                     <CancelIcon />
                 </div>
             </div>

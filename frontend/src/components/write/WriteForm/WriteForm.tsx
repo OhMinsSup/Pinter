@@ -17,9 +17,11 @@ type Props = {
     relationUrl: string,
     onCloseBox(): void,
     onChange(e: any): void,
+    onRemoveUrl(url: string): void,
+    onSubmit(): void,
 }
 
-const WriteForm: React.SFC<Props> = ({ inputTags, dropImage, size, onCloseBox, onChange, relationUrl, body, urls }) => {
+const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, size, onCloseBox, onChange, relationUrl, body, urls, onRemoveUrl }) => {
     return (
         <div className={cx('write-form')}>
             <div className={cx('form-header')}>
@@ -31,7 +33,7 @@ const WriteForm: React.SFC<Props> = ({ inputTags, dropImage, size, onCloseBox, o
                     ) : null
                 }
                 <div className={cx('submit-btn')}>
-                    <Button theme='submit'>작성하기</Button>
+                    <Button theme='submit' onClick={onSubmit}>작성하기</Button>
                 </div>
             </div>
             <div className={cx('form-widget')}>
@@ -51,7 +53,7 @@ const WriteForm: React.SFC<Props> = ({ inputTags, dropImage, size, onCloseBox, o
                     value={body}
                     onChange={onChange}
                 />
-                <PreviewImage urls={urls}/>
+                <PreviewImage urls={urls} onClick={onRemoveUrl}/>
                 <WriteItem
                     title="태그"
                     element={inputTags}

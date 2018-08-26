@@ -82,14 +82,14 @@ class PinRouter {
 
     private async writePin(req: Request, res: Response): Promise<any> {
         type BodySchema = {
-            relation_url: string;
+            relationUrl: string;
             body: string;
             urls: string[];
             tags: string[];
         };
 
         const schema = joi.object().keys({
-            relation_url: joi.string(),
+            relationUrl: joi.string(),
             body: joi.string(),
             urls:  joi.array().items(joi.string()).required(),
             tags: joi.array().items(joi.string()).required(),
@@ -104,13 +104,13 @@ class PinRouter {
             });
         }
 
-        const { relation_url, body, urls, tags }: BodySchema = req.body;
+        const { relationUrl, body, urls, tags }: BodySchema = req.body;
         const userId: string = req['user']._id;
         const uniqueTags: string[] = filterUnique(tags);
 
         try {            
             const pin = await new Pin({
-                relation_url,
+                relationUrl,
                 body,
                 urls,
                 user: userId,

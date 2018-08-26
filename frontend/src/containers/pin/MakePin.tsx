@@ -15,6 +15,23 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type MakePinProps = StateProps & DispatchProps
 
 class MakePin extends React.Component<MakePinProps> {
+    public onSubmit = async () => {
+        const { WriteActions, tags, relationUrl, body, urls } = this.props;
+
+        try {
+            await WriteActions.writeSubmit({
+                tags,
+                body,
+                urls,
+                relationUrl
+            });
+
+            WriteActions.initialState();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     public onCloseBox = () => {
         const { BaseActions } = this.props;
         BaseActions.openPinBox(false);
@@ -33,7 +50,7 @@ class MakePin extends React.Component<MakePinProps> {
         WriteActions.setUploadStatus(false);
     }
 
-    public onRemoveURl = (url: string) => {
+    public onRemoveUrl = (url: string) => {
         const { WriteActions } = this.props;
         WriteActions.removeUploadUrl(url);
     }
@@ -95,7 +112,9 @@ class MakePin extends React.Component<MakePinProps> {
             onPasteImage, 
             onUploadClick, 
             onCloseBox, 
-            onChangeInput 
+            onChangeInput,
+            onRemoveUrl,
+            onSubmit, 
         } = this;
 
         if (!visible) return null;
@@ -121,6 +140,8 @@ class MakePin extends React.Component<MakePinProps> {
                     body={body}
                     urls={urls}
                     relationUrl={relationUrl}
+                    onRemoveUrl={onRemoveUrl}
+                    onSubmit={onSubmit}
                 />
             </WriteTemplate>
         )

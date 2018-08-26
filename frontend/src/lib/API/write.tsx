@@ -14,12 +14,12 @@ export const createSignedUrl  = (file: any): Promise<any> => {
 }
 
 type WritePinPayload = {
-    relation_url: string,
+    relationUrl: string,
     body: string,
     urls: string[],
     tags: string[]
 }
 
-export const writePinAPI = ({ relation_url, body, urls, tags }: WritePinPayload): Promise<any> => axios.post('/pin', {
-    relation_url, body, urls, tags 
+export const writePinAPI = ({ relationUrl, body, urls, tags }: WritePinPayload): Promise<any> => axios.post('/pin', {
+    relationUrl, body, urls, tags 
 });
