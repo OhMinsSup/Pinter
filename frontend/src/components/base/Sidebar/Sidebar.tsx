@@ -5,12 +5,14 @@ import SidebarMenu from '../SidebarMenu';
 const styles = require('./Sidebar.scss');
 const cx = classNames.bind(styles);
 
-type Props = {}
+type Props = {
+    onClose(): void
+}
 
-const Sidebar: React.SFC<Props> = ({  }) => {
+const Sidebar: React.SFC<Props> = ({ onClose }) => {
     return (
         <React.Fragment>
-            <div className={cx('dimmer')}/>
+            <div className={cx('dimmer')} onClick={onClose}/>
             <div className={cx('sidebar')}>
                 <SidebarMenu
                     to="/"

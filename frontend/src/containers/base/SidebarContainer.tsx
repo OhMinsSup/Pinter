@@ -10,7 +10,7 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type SidebarContainerProps = StateProps & DispatchProps;
 
 class SidebarContainer extends React.Component<SidebarContainerProps> {
-    public onClickOutside = (e: any) => {
+    public onClose = () => {
         const { BaseActions } = this.props;
         BaseActions.setSidebar(false);
     }
@@ -21,6 +21,7 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
         
         return (
             <Sidebar
+                onClose={this.onClose}
             />
         );
     }
