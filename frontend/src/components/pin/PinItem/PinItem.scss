@@ -1,0 +1,78 @@
+@import 'utils';
+
+.group {
+    display: inline-block;
+    min-width: 80px;
+    .btn {
+        color: #657786;
+        display: inline-block;
+        font-size: 16px;
+        line-height: 1;
+        padding: 0 2px;
+        position: relative;
+        border: 0;
+        background: transparent;
+        transition: box-shadow .15s ease-in-out;
+        cursor: pointer;
+        margin: 0;
+        text-transform: none;
+        .item {
+            display: inline-block;
+            line-height: 0;
+            position: relative;
+            vertical-align: middle;
+
+            &.comment {
+                font-size: 1rem;
+                &:hover {
+                    color: $oc-blue-4;
+                }
+            }
+
+            &.like {
+                font-size: 1rem;
+                &:hover {
+                    color: $oc-pink-4;
+                }
+            }
+
+            &.save {
+                font-size: 1rem;
+                &:hover {
+                    color: $oc-red-4;
+                }
+            }
+        }
+        .item-count {
+            color: #657786;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1;
+            margin-left: 6px;
+            position: relative;
+            vertical-align: text-bottom;
+
+            &.comment {
+                font-size: 0.9rem;
+                &:hover {
+                    color: $oc-blue-4;
+                }
+            }
+
+            &.like {
+                font-size: 0.9rem;
+                &:hover {
+                    color: $oc-pink-4;
+                }
+            }
+
+            &.save {
+                font-size: 0.9rem;
+                &:hover {
+                    color: $oc-red-4;
+                }
+            }
+        }
+    }
+}
