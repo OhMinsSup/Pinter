@@ -6,7 +6,7 @@ const cx = classNames.bind(styles);
 
 type Props = {
     icons: React.ReactNode,
-    count: number,
+    count?: number,
     type: string,
 }
 

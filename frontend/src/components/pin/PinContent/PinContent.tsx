@@ -11,26 +11,25 @@ const styles = require('./PinContent.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    images?: string[],
-    tags?: string[],
+    pin: any,
 }
 
-const PinContent:React.SFC<Props> = ({ images, tags }) => {
-    const imageList = (images as string[]).map((image, index) => {
+const PinContent:React.SFC<Props> = ({ pin }) => {
+    const imageList = pin.urls.map((url: string, index: number) => {
         return (
             <div key={index} className={cx('image-containter')}>
                 <div className={cx('images')}>
                     <div className={cx('image')}>
-                        <img src={image} alt={image}/>
+                        <img src={url} alt={url}/>
                     </div>
                 </div>
             </div>
         )
     });
 
-    const tagList = (tags as string[]).map((tag, index) => {
+    const tagList = pin.tags.map((tag: string) => {
         return (
-            <Link to={`/tags/${escapeForUrl(tag)}}`} key={index}>
+            <Link to={`/tags/${escapeForUrl(tag)}}`} key={tag}>
                 {tag}
             </Link>
         )
@@ -39,25 +38,24 @@ const PinContent:React.SFC<Props> = ({ images, tags }) => {
     return (
         <div className={cx('pin-content')}>
             <p className={cx('body')}>
-                content
-                <span className={cx('relation-url')}>https://www.docker.com/</span>
+                {pin.body}
+                <span className={cx('relation-url')}>{pin.relationUrl}</span>
             </p>
             {imageList}
             <div className={cx('content-footer')}>
                 <div className={cx('action-list')}>
                     <PinItem
                         icons={<CommentIcon/>}
-                        count={2}
+                        count={pin.comments}
                         type="comment"
                     />
                     <PinItem
                         icons={<LikeIcon/>}
-                        count={3}
+                        count={pin.likes}
                         type="like"
                     />
                     <PinItem
                         icons={<SaveIcon/>}
-                        count={5}
                         type="save"
                     />
                 </div>
@@ -67,17 +65,6 @@ const PinContent:React.SFC<Props> = ({ images, tags }) => {
             </div>
         </div>
     )
-}
-
-PinContent.defaultProps = {
-    images: [
-        "https://pbs.twimg.com/media/DljDsXrXoAAk_rH.jpg",
-    ],
-    tags: [
-        "tag",
-        "hey",
-        "ghgh"
-    ]
 }
 
 export default PinContent;

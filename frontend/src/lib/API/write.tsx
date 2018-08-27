@@ -23,5 +23,3 @@ type WritePinPayload = {
 export const writePinAPI = ({ relationUrl, body, urls, tags }: WritePinPayload): Promise<any> => axios.post('/pin', {
     relationUrl, body, urls, tags 
 });
-
-export const readPinAPI = (id :string): Promise<any> => axios.get(`/pin/${id}`);

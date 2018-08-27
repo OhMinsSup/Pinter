@@ -10,6 +10,8 @@ type PinCommentContainerProps = StateProps & DispatchProps;
 
 class PinCommentContainer extends React.Component<PinCommentContainerProps> {
     public render() {
+        const { loading } = this.props;
+        if (loading) return null;
         return (
             <React.Fragment>
                 <PinComment/>
@@ -19,8 +21,8 @@ class PinCommentContainer extends React.Component<PinCommentContainerProps> {
     }
 }
 
-const mapStateToProps = ({}: StoreState) => ({
-
+const mapStateToProps = ({ pin }: StoreState) => ({
+    loading: pin.loading.pin
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

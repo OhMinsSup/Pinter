@@ -7,17 +7,24 @@ const Dropdown = require('react-icons/lib/fa/angle-down');
 const styles = require('./PinHeader.scss');
 const cx = classNames.bind(styles);
 
-const PinHeader = () => {
+type Props = {
+    id: string,
+    username: string,
+    displayName: string,
+    thumbnail: string,
+}
+
+const PinHeader:React.SFC<Props> = ({ username, displayName, thumbnail, id }) => {
     return (
         <div className={cx('pin-header')}>
             <div className={cx('premalink-header')}>
                 <Link className={cx('user-group')} to="/">
-                    <img className={cx('profile-thumbnail')} src="https://pbs.twimg.com/profile_images/1012762345238454272/Q9jiI1pL_bigger.jpg" alt="Docker" />
+                    <img className={cx('profile-thumbnail')} src={thumbnail} alt={username} />
                     <span className={cx('displayName-group')}>
-                        <strong className={cx('displayNmae')}>Docker</strong>
+                        <strong className={cx('displayNmae')}>{displayName}</strong>
                         <span>&rlm;</span>
                     </span>
-                    <span className={cx('username')}>@<b>Docker</b></span>
+                    <span className={cx('username')}>@<b>{username}</b></span>
                 </Link>
                 <div className={cx('follow-bar')}>
                     <Button theme="default">팔로우</Button>
