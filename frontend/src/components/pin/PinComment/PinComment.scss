@@ -1,0 +1,40 @@
+@import 'utils';
+
+.pin-comment {
+    top: 3rem;
+    right: 2rem;
+    position: relative;
+    background-color: white;
+    border-radius: 0;
+    .comment-wrapper {
+        position: relative;
+        padding: 15px 40px 15px 95px;
+        border-radius: 0;
+        .comment-group {
+            position: relative;
+            margin-bottom: 0;
+            margin-top: 0em;
+            height: auto;
+            .comment {
+                width: 100%;
+                border: none;
+                outline: none;
+                font-size: 1rem;
+                padding: 1rem;
+                border: 1px solid $oc-gray-2;
+                border-radius: 4px;
+                resize: none;
+                color: $oc-gray-9;
+                display: block;
+            }
+            .button-wrapper {
+                margin-top: 1rem;
+                display: flex;
+                justify-content: flex-end;
+                .comment-btn + .comment-btn {
+                    margin-left: 1rem;
+                }
+            }
+        }
+    }
+}

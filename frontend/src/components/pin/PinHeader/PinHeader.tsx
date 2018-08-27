@@ -20,7 +20,7 @@ const PinHeader = () => {
                     <span className={cx('username')}>@<b>Docker</b></span>
                 </Link>
                 <div className={cx('follow-bar')}>
-                    <Button theme="outline">팔로우</Button>
+                    <Button theme="default">팔로우</Button>
                 </div>
                 <div className={cx('action-menu')}>
                     <div className={cx('dropdown')}>

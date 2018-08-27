@@ -1,0 +1,106 @@
+@import 'utils';
+
+.pin-comments {
+    top: 10rem;
+    position: relative;
+    width: 768px;
+    padding: 2rem;
+    min-height: 5rem;
+    transform: translateY(-1.5rem);
+    margin: 0 auto;
+    background: white;
+    text-align: left;
+    .comment-item {
+        padding: 1.5rem;
+        transition: all .15s ease-in;
+
+        .comment-header {
+            display: flex;
+            
+            .thumbnail {
+                width: 3rem;
+                height: 3rem;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+
+            .username {
+                padding-left: 0.5rem;
+                padding-top: 0.5rem;
+                font-size: 1rem;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            .date {
+                padding-left: 0.5rem;
+                padding-top: 0.7rem;
+                font-size: 0.85rem;
+                color: $oc-gray-5;
+            }
+
+            div + div {
+                padding-left: 0.75rem;
+            }
+        }
+
+        p {
+            font-weight: 600;
+            color: $oc-gray-7;
+        }
+
+        .tags {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding-top: 0.1rem;
+            padding-bottom: 0.1rem;
+            padding-left: 0.4rem;
+            padding-right: 0.4rem;
+            background: $oc-gray-7;
+            margin-right: 0.4rem;
+            margin-bottom: 0.4rem;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all .3s;
+            user-select: none;
+            
+            &:hover {
+                background: $oc-gray-5;
+            }
+        
+            &:active {
+                background: $oc-gray-5;
+            }
+            
+        }
+
+        .info-footer {
+            svg {
+                font-size: 1.5rem;
+                color: $oc-pink-4;
+                cursor: pointer;
+
+                &:hover {
+                    color: $oc-pink-6;
+                }
+
+                &:active {
+                    color: $oc-pink-8;
+                }
+            }
+
+            span {
+                padding-left: 0.5rem;
+            }
+        }
+        &:hover {
+            background: rgba($oc-blue-6, 0.1);
+        }
+    }  
+
+    .comment-item {
+        border-top: 1px solid $oc-gray-3;
+    }
+}
