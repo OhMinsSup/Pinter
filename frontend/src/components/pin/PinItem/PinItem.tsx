@@ -8,12 +8,13 @@ type Props = {
     icons: React.ReactNode,
     count?: number,
     type: string,
+    onClick?(): Promise<void>
 }
 
-const PinItem:React.SFC<Props> = ({ icons, count, type }) => {
+const PinItem:React.SFC<Props> = ({ icons, count, type, onClick }) => {
     return (
         <div className={cx('group')}>
-            <button className={cx('btn')}>
+            <button className={cx('btn')} onClick={onClick}>
                 <div className={cx('item', type)}>
                     <span>
                         {icons}

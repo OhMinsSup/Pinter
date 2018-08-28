@@ -90,9 +90,7 @@ class MakePin extends React.Component<MakePinProps> {
         WriteActions.insertTag(tag);
     }
 
-    public onRemoveTag = (tag: string) => {
-        console.log(tag);
-        
+    public onRemoveTag = (tag: string) => {        
         const { WriteActions } = this.props;
         WriteActions.removeTag(tag)
     };

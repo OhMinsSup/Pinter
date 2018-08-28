@@ -8,8 +8,13 @@ const styles = require('./PinComment.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-
-}
+    value: string,
+    tags: string[],
+    onChangeComment(e: any): void,
+    onInsert(tag: string): void, 
+    onRemove(tag: string):void,
+    onSubmit(): Promise<void>
+}   
 
 type State = {
     visible: boolean
@@ -28,6 +33,14 @@ class PinComment extends React.Component<Props, State> {
     }
 
     public render() {
+        const { 
+            value, 
+            tags, 
+            onChangeComment, 
+            onInsert, 
+            onRemove, 
+            onSubmit 
+        } = this.props;
         return(
             <div className={cx('pin-comment')}>
                 <div className={cx('comment-wrapper')}>
@@ -35,23 +48,26 @@ class PinComment extends React.Component<Props, State> {
                         <Textarea
                             minRows={3}
                             maxRows={10}
+                            value={value}
+                            name='value'
+                            onChange={onChangeComment}
                             placeholder={`댓글을 작성해보세요.`}
                             className={cx('comment')}
                         />
                         <div className={cx('button-wrapper')}>
                             <Button theme='default' className={cx('comment-btn')} onClick={this.onSetTagInpuBox}>
-                               태그 달기
+                               태그
                             </Button>
-                            <Button theme='default' className={cx('comment-btn')}>
+                            <Button theme='default' className={cx('comment-btn')} onClick={onSubmit}>
                                댓글 작성
                             </Button>
                         </div>
                         {
                             this.state.visible ? (
                                 <InputTags 
-                                    tags={["ts", "dss", "rdss"]}
-                                    onInsert={() => console.log("test insert")}
-                                    onRemove={() => console.log("test remove")}
+                                    tags={tags}
+                                    onInsert={onInsert}
+                                    onRemove={onRemove}
                                 /> 
                             ) : null
                         }

@@ -12,9 +12,11 @@ const cx = classNames.bind(styles);
 
 type Props = {
     pin: any,
+    onToggleLike(): Promise<void>,
+    onToggleLocker(): Promise<void>,
 }
 
-const PinContent:React.SFC<Props> = ({ pin }) => {
+const PinContent:React.SFC<Props> = ({ pin, onToggleLike, onToggleLocker }) => {
     const imageList = pin.urls.map((url: string, index: number) => {
         return (
             <div key={index} className={cx('image-containter')}>
@@ -39,7 +41,11 @@ const PinContent:React.SFC<Props> = ({ pin }) => {
         <div className={cx('pin-content')}>
             <p className={cx('body')}>
                 {pin.body}
-                <span className={cx('relation-url')}>{pin.relationUrl}</span>
+                <span className={cx('relation-url')} 
+                    onClick={() => window.open(`${pin.relationUrl}`)}
+                >
+                    {pin.relationUrl}
+                </span>
             </p>
             {imageList}
             <div className={cx('content-footer')}>
@@ -53,10 +59,12 @@ const PinContent:React.SFC<Props> = ({ pin }) => {
                         icons={<LikeIcon/>}
                         count={pin.likes}
                         type="like"
+                        onClick={onToggleLike}
                     />
                     <PinItem
                         icons={<SaveIcon/>}
                         type="save"
+                        onClick={onToggleLocker}
                     />
                 </div>
             </div>

@@ -77,6 +77,29 @@ class LockerRouter {
         }
     }
 
+    private async getLockerPin(req: Request, res: Response): Promise<any> {
+        const userId: string = req['user']._id;
+        const pinId: string = req['pin']._id;
+
+        let locker = false;
+
+        if (userId) {
+            const exists = await PinLocker.checkExists(userId, pinId);
+            locker = !!exists;
+        }
+
+        try {
+            const locker = await PinLocker.findById(pinId);
+
+            res.json({
+                locker,
+            });
+            
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    }
+
     private async lockerList(req: Request, res: Response): Promise<any> {
         const { cursor } = req.query;
         const { displayName } = req.params;
@@ -101,8 +124,9 @@ class LockerRouter {
 
         router.post('/:id', needAuth, checkPinExistancy, this.createLockerPin);
         router.delete('/:id', needAuth, checkPinExistancy, this.deleteLockerPin);
+        router.get('/:id', needAuth, checkPinExistancy, this.getLockerPin);
 
-        router.get('/:id', needAuth, checkPinExistancy, this.getLockerList);
+        router.get('/:id/list', needAuth, checkPinExistancy, this.getLockerList);
         router.get('/:displayName/list', needAuth, this.lockerList);
     }
 }
