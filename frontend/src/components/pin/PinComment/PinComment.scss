@@ -37,4 +37,10 @@
             }
         }
     }
+
+    .comment-visible-btn {
+        padding: 2rem;
+        display: flex;
+        flex-direction: row-reverse;
+    }
 }

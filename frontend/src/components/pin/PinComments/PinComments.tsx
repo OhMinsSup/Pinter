@@ -8,6 +8,8 @@ const cx = classNames.bind(styles);
 
 type Props = {
     comments: any[],
+    ownUser: any,
+    onRemoveComment(commendId: string): Promise<void>
 }
 
 const Comment:React.SFC<{ 
@@ -15,8 +17,11 @@ const Comment:React.SFC<{
     createdAt: string, 
     tags: string[],
     tagId: string[],
-    user: any
-}> = ({ text, user, createdAt, tags }) => {
+    user: any,
+    id: string,
+    ownUser: any,
+    onClick(commendId: string): Promise<void>
+}> = ({ text, user, createdAt, tags, onClick, id, ownUser }) => {
     const tagList = tags.map(
         (tag: string) => <Link className={cx('tags')} key={tag} to='/'>{tag}</Link>
     );    
@@ -26,6 +31,15 @@ const Comment:React.SFC<{
                 <img className={cx('thumbnail')} src={user.thumbnail} alt="thumbnail"/>
                 <div className={cx('username')}>@{user.displayName}</div>
                 <div className={cx('date')}>{moment(createdAt).format('ll')}</div>
+                {
+                    (user.displayName === ownUser.displayName) && (user.username === ownUser.username) ? (
+                        <div className={cx('delete')}>
+                            <button onClick={() => onClick(id)}>
+                                삭제
+                            </button>
+                        </div>
+                    ) : null
+                }
             </div>
             <p>{text}</p>
             <div>
@@ -35,7 +49,7 @@ const Comment:React.SFC<{
     )
 }
 
-const PinComments: React.SFC<Props> = ({ comments }) => {
+const PinComments: React.SFC<Props> = ({ comments, onRemoveComment, ownUser }) => {
     const commentList = comments.map(
         (comment) => {
             const { commentId, text, createdAt, tagName, tagId, user } = comment;
@@ -45,8 +59,11 @@ const PinComments: React.SFC<Props> = ({ comments }) => {
                     createdAt={createdAt}
                     tags={tagName}
                     key={commentId}
+                    id={commentId}
                     tagId={tagId}
                     user={user}
+                    onClick={onRemoveComment}
+                    ownUser={ownUser}
                 />
             );
         }

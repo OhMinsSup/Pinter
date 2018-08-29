@@ -14,6 +14,8 @@ const REMOVE_TAG = 'pin/REMOVE_TAG';
 const WRITE_COMMENT = 'pin/WRITE_COMMENT';
 const WRITE_COMMENT_SUCCESS = 'pin/WRITE_COMMENT_SUCCESS';
 
+const REMOVE_COMMENT = 'pim/REMOVE_COMMENT';
+
 const LIST_COMMENT = 'pin/LIST_COMMENT';
 const LIST_COMMENT_SUCCESS = 'pin/LIST_COMMENT_SUCCESS';
 
@@ -42,6 +44,7 @@ export const pinCreators = {
     likePin: createPromiseThunk(LIKE_PIN, PinAPI.likePinAPI),
     unlikePin: createPromiseThunk(UNLIKE_PIN, PinAPI.unlikePinAPI),
     getLike: createPromiseThunk(GET_LIKE, PinAPI.getlikePinAPI),
+    removeComment: createAction(REMOVE_COMMENT, PinAPI.deleteCommentAPI),
 }
 
 type GetPinAction = GenericResponseAction<{

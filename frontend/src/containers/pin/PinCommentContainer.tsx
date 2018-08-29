@@ -12,7 +12,22 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ id: string }> };
 type PinCommentContainerProps = StateProps & DispatchProps & OwnProps;
 
-class PinCommentContainer extends React.Component<PinCommentContainerProps> {
+type OwnState = {
+    visible: boolean,
+}
+
+class PinCommentContainer extends React.Component<PinCommentContainerProps, OwnState> {
+    public state = {
+        visible: false,
+    }
+
+    public onClickComments = () => {
+        const { visible } = this.state;
+        this.setState({
+            visible: !visible ? true : false
+        });
+    }
+
     public onSubmit = async () => {
         const { PinActions, match, value, tags } = this.props;
         const { params: { id } } = match;
@@ -36,6 +51,16 @@ class PinCommentContainer extends React.Component<PinCommentContainerProps> {
         if (processedTag === '') return;
         if (tags.indexOf(tag) !== -1) return;
         PinActions.insertTag(tag);
+    }
+
+    public onRemoveComment = async (commentId: string) => {
+        const { PinActions, match: { params: { id } } } = this.props;
+
+        try {
+            await PinActions.removeComment(id, commentId);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     public onRemoveTag = (tag: string) => {        
@@ -65,8 +90,9 @@ class PinCommentContainer extends React.Component<PinCommentContainerProps> {
     }
 
     public render() {
-        const { loading, value, tags, comments } = this.props;
-        const { onChangeComment, onInsertTag, onRemoveTag, onSubmit } = this;
+        const { loading, value, tags, comments, user: ownUser } = this.props;
+        const { visible } = this.state;
+        const { onChangeComment, onInsertTag, onRemoveTag, onSubmit, onRemoveComment, onClickComments } = this;
         if (loading) return null;
         return (
             <React.Fragment>
@@ -77,21 +103,29 @@ class PinCommentContainer extends React.Component<PinCommentContainerProps> {
                     onInsert={onInsertTag} 
                     onRemove={onRemoveTag}
                     onSubmit={onSubmit}
+                    onClick={onClickComments}
                 />
-                <PinComments
-                    comments={comments}
-                />
+                {
+                    !visible ? null : (
+                        <PinComments
+                            comments={comments}
+                            ownUser={ownUser}
+                            onRemoveComment={onRemoveComment}
+                        />
+                    ) 
+                }
             </React.Fragment>
         )
     }
 }
 
-const mapStateToProps = ({ pin }: StoreState) => ({
+const mapStateToProps = ({ pin, user }: StoreState) => ({
     pinId: pin.pin.pinId,
     loading: pin.loading.pin,
     value: pin.comment.value,
     tags: pin.comment.tags,
-    comments: pin.comments
+    comments: pin.comments,
+    user: user.user && user.user
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

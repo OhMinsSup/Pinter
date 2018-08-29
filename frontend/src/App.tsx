@@ -5,6 +5,7 @@ import EmailLogin from './containers/auth/EmailLogin';
 import Core from './containers/base/Core';
 import MakePin from './containers/pin/MakePin';
 import SidebarContainer from './containers/base/SidebarContainer';
+import FullScreenImageContainer from './containers/common/FullScreenImageContainer';
 
 const App = () => {
   return (
@@ -18,19 +19,8 @@ const App = () => {
       <Core />
       <MakePin />
       <SidebarContainer />
+      <FullScreenImageContainer />
     </React.Fragment>
   );
 }
 export default App;
-
-/*
-      <Route exact path='/' component={Home}/>
-      <Route path='/(tags|users)' component={Home} />
-      <Route exact path='/email-register' component={Register} />
-      <Route exact path='/email-login' component={EmailLogin} />
-      <Route exact path='/@:displayName/' component={User} />
-      <Route exact path='/@:displayName/(pin|following|follower|saves)' component={User} />
-      <Route exact path='/pin/:id' component={Pin}/>
-      <Core />
-
-*/

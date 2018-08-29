@@ -1,0 +1,69 @@
+@import 'utils';
+
+.wrapper {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: #8aa6c1;
+    .btn {
+        align-items: center;
+        background: 0 0;
+        border: 0;
+        cursor: pointer;
+        display: flex;
+        flex-grow: 0;
+        justify-content: center;
+        .icon {
+            &.like {
+                display: block;
+                height: 24px;
+                width: 24px;
+                svg {
+                    font-size: 1.5rem;
+                }
+                &:hover {
+                    color: $oc-pink-4;
+                }
+                &:active {
+                    color: $oc-pink-5;
+                }
+            }
+    
+            &.comment {
+                display: block;
+                height: 24px;
+                width: 24px;
+                svg {
+                    font-size: 1.55rem;
+                }
+                &:hover {
+                    color: $oc-red-6;
+                }
+                &:active {
+                    color: $oc-red-7;
+                }
+            }
+    
+            &.save {
+                display: block;
+                height: 24px;
+                width: 24px;
+                svg {
+                    font-size: 1.5rem;
+                }
+                &:hover {
+                    color: $oc-blue-4;
+                }
+                &:active {
+                    color: $oc-blue-5;
+                }
+            }
+        }  
+        
+        span+span::before {
+            color: $oc-gray-5;
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+            content: "\00B7";
+          }
+    }
+}

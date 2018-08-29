@@ -5,6 +5,7 @@ import base, { BaseState } from './base';
 import write, { WriteState } from './write';
 import pin, { PinState } from './pin';
 import locker, { LockerState } from './locker';
+import list, { ListState } from './list';
 
 export default combineReducers({
     auth: auth,
@@ -13,6 +14,7 @@ export default combineReducers({
     pin: pin,
     write: write,
     locker: locker,
+    list: list
 });
 
 export interface StoreState { 
@@ -22,4 +24,5 @@ export interface StoreState {
     write: WriteState,
     pin: PinState,
     locker: LockerState,
+    list: ListState,
 }

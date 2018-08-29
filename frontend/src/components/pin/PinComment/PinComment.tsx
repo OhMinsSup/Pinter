@@ -13,7 +13,8 @@ type Props = {
     onChangeComment(e: any): void,
     onInsert(tag: string): void, 
     onRemove(tag: string):void,
-    onSubmit(): Promise<void>
+    onSubmit(): Promise<void>,
+    onClick(): void,
 }   
 
 type State = {
@@ -39,7 +40,8 @@ class PinComment extends React.Component<Props, State> {
             onChangeComment, 
             onInsert, 
             onRemove, 
-            onSubmit 
+            onSubmit,
+            onClick
         } = this.props;
         return(
             <div className={cx('pin-comment')}>
@@ -72,6 +74,9 @@ class PinComment extends React.Component<Props, State> {
                             ) : null
                         }
                     </div>
+                </div>
+                <div className={cx('comment-visible-btn')}>
+                    <Button theme="noline" onClick={onClick}>댓글 열기</Button>
                 </div>
             </div>
         )

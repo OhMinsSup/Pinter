@@ -245,6 +245,7 @@ class PinRouter {
         router.post('/', needAuth, this.writePin);
 
         router.get('/:id', needAuth, checkPinExistancy, this.readPin);
+        
         router.get('/all/list', needAuth, this.listPin);
         router.get('/:displayName/list', needAuth, this.listPin);
 

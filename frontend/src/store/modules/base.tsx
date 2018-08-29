@@ -12,6 +12,7 @@ const GET_BOWSER_SIZE = 'base/GET_BOWSER_SIZE';
 const OPEN_PIN_BOX = 'base/OPEN_PIN_BOX';
 const SET_SIDE_BAR = 'base/SET_SIDE_BAR';
 const SET_MAIN = 'base/SET_MAIN';
+const SET_PIN_IMAGE = 'base/SET_PIN_IMAGE';
 
 export type BoxFullscreenLoaderPayload = { name: 'like' | 'comment' | 'save' , visible: boolean, id: string, theme: any }
 
@@ -26,6 +27,7 @@ export const baseCreators = {
     openPinBox: createAction(OPEN_PIN_BOX, (visible: boolean) => visible),
     setSidebar: createAction(SET_SIDE_BAR, (visible: boolean) => visible),
     setMain: createAction(SET_MAIN, (visible: boolean) => visible),
+    setPinImage: createAction(SET_PIN_IMAGE, (visible: boolean) => visible),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
@@ -36,6 +38,7 @@ type GetBowserSizeAction = ReturnType<typeof baseCreators.getbowserSize>;
 type OpenPinBoxAction = ReturnType<typeof baseCreators.openPinBox>;
 type SetSidebarAction = ReturnType<typeof baseCreators.setSidebar>; 
 type SetMainAction = ReturnType<typeof baseCreators.setMain>;
+type SetPinImageAction = ReturnType<typeof baseCreators.setPinImage>;
 
 export interface BaseState {
     userMenu: boolean;
@@ -57,6 +60,9 @@ export interface BaseState {
         visible: boolean
     },
     main: {
+        visible: boolean,
+    },
+    image: {
         visible: boolean,
     }
 }
@@ -81,6 +87,9 @@ const initialState: BaseState = {
         visible: false
     },
     main: {
+        visible: false
+    },
+    image: {
         visible: false
     }
 };
@@ -144,6 +153,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.main.visible = action.payload;
+        })
+    },
+    [SET_PIN_IMAGE]: (state, action: SetPinImageAction) => {
+        return produce(state, (darft) => {
+            if (action.payload === undefined) return;
+            darft.image.visible = action.payload;
         })
     }
 }, initialState);
