@@ -5,7 +5,7 @@ import EmailLogin from './containers/auth/EmailLogin';
 import Core from './containers/base/Core';
 import MakePin from './containers/pin/MakePin';
 import SidebarContainer from './containers/base/SidebarContainer';
-import FullScreenImageContainer from './containers/common/FullScreenImageContainer';
+import GalleryContainer from './containers/common/GalleryContainer';
 
 const App = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
       <Core />
       <MakePin />
       <SidebarContainer />
-      <FullScreenImageContainer />
+      <GalleryContainer />
     </React.Fragment>
   );
 }

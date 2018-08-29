@@ -3,18 +3,23 @@ import { StoreState } from '../../store/modules';
 import { Dispatch, bindActionCreators } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
-import FullScreenImage from '../../components/common/FullScreenImage';
+import Gallery from '../../components/common/Gallery';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
-type FullScreenImageContainerProps = StateProps & DispatchProps;
+type GalleryContainerProps = StateProps & DispatchProps;
 
-class FullScreenImageContainer extends React.Component<FullScreenImageContainerProps> {
+class GalleryContainer extends React.Component<GalleryContainerProps> {
     public render() {
-      return (
-        <FullScreenImage/>
-      )
+        let urls = [
+            "https://pbs.twimg.com/media/DltmAN7X0AMOtdc.jpg:large",
+            // "https://pbs.twimg.com/media/DltmAN7X0AMOtdc.jpg:large",
+           // "https://pbs.twimg.com/media/DltmAN7X0AMOtdc.jpg:large"
+        ]
+        return (
+            <Gallery urls={urls}/>
+        )
     };
 } 
 
@@ -29,4 +34,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(FullScreenImageContainer);
+)(GalleryContainer);
