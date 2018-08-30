@@ -15,7 +15,6 @@
     width: 100%;
     box-sizing: border-box;
     .gallery-content {
-        width: 800px;
         min-height: 200px;
         background-color: rgb(36,48,64);
         border-radius: 7px;
@@ -39,7 +38,7 @@
                 color: white;
             }
         }
-
+        
         .gallery-media {
             background-color: rgb(36, 48, 64);
             border-radius: 0 0 4px 4px;

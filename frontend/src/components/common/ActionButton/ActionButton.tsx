@@ -8,13 +8,13 @@ type Props = {
     icon: React.ReactNode,
     id: string
     theme: 'like' | 'comment' | 'save',
-    onClick(): void
+    onClick(name: 'like' | 'comment' | 'save', id: string, theme: string): Promise<any>,
 }
 
 const ActionButton: React.SFC<Props> = ({ icon, id, theme, onClick }) => {
     return (
         <span className={cx('wrapper')}>
-            <button className={cx('btn')}>
+            <button className={cx('btn')} onClick={() => onClick(theme, id, theme)}>
                 <span className={cx('icon', theme)}>
                     {icon}
                 </span>

@@ -7,6 +7,7 @@ import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { Recent } from '../../page';
+import ActionUserList from '../list/ActionUserList';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -38,6 +39,7 @@ class Main extends React.Component<MainProps> {
                 <Switch>
                     <Route exact path="/" component={Recent} />
                 </Switch>
+                <ActionUserList />
             </MainTemplate>
         )
     }

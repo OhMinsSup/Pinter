@@ -1,0 +1,41 @@
+@import 'utils';
+
+.box-template {
+    position: fixed;
+    right: 0;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    overflow-y: auto;
+    bottom: 0;
+    justify-content: space-between;
+    background-color: rgba(0,0,0,.5);
+    .wrapper {
+        display: flex;
+        min-height: 100%;
+        overflow: auto;
+        width: auto;
+        z-index: 1;
+        padding: 0 40px;
+        pointer-events: none;
+        transform: translate3d(0, 0, 0);
+    }
+    .cancel-btn {
+        background: 0 0;
+        border: 0;
+        cursor: pointer;
+        height: 36px;
+        outline: 0;
+        overflow: hidden;
+        position: relative;
+        top: 4rem;
+        right: 4rem;
+        cursor: pointer;
+        z-index: 2;
+        float: right;
+        svg {
+            font-size: 2.5rem;
+            color: white;
+        }
+    }
+}

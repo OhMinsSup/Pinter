@@ -8,7 +8,8 @@ const styles = require('./Gallery.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    urls: string[]
+    urls: string[],
+    onClose(): void,
 }
 
 type State = {
@@ -20,9 +21,8 @@ class Gallery extends React.Component<Props, State> {
         currentNumber: 0,
     }
 
-    public onNext() {
-        const { urls } = this.props;
-        if (this.state.currentNumber === urls.length - 1) {
+    public onNext = () => {
+        if (this.state.currentNumber === this.props.urls.length - 1) {
             return this.setState({
                 currentNumber: 0
             })
@@ -33,10 +33,10 @@ class Gallery extends React.Component<Props, State> {
         })
     }
 
-    public onPrev() {
-        if (this.state.currentNumber === 0) {
+    public onPrev = () => {
+        if (this.state.currentNumber <= 0) {
             return this.setState({
-                currentNumber: 0,
+                currentNumber: this.props.urls.length - 1,
             })
         }
 
@@ -46,21 +46,28 @@ class Gallery extends React.Component<Props, State> {
     }
 
     public render() {
-        const { urls } = this.props;
+        const { urls, onClose } = this.props;
         const { onNext, onPrev } = this;
+        
         return (
             <div className={cx('gallery')}>
                 <div className={cx('gallery-content')}>
-                    <button className={cx('cancel-button')}>
+                    <button className={cx('cancel-button')} onClick={onClose}>
                         <CancelIcon />
                     </button>
+                
                     <div className={cx('gallery-media')}>
-                    {
-                       urls.map((url: string, index: number) => {
-                           return (
-                                <img className={cx('image')} key={index} src={url} alt={url}/>
-                           )
-                       }) 
+                    {   
+                        urls.map((url: string, index: number) => {
+                            return (
+                                this.state.currentNumber === index ? (
+                                    <img className={cx('image')} key={index} src={urls[index]} alt={url}/>
+
+                                ) : (
+                                    <img className={cx('image')} key={index} src={url} alt={url} style={{ display: "none" }}/>
+                                )
+                            )
+                        })
                     }
                     </div>
                     <div className={cx('nav-prev')} onClick={onPrev}>

@@ -14,7 +14,7 @@ export default combineReducers({
     pin: pin,
     write: write,
     locker: locker,
-    list: list
+    list: list,
 });
 
 export interface StoreState { 
