@@ -2,11 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames/bind';
 import * as moment from 'moment';
 import { Link } from 'react-router-dom';
-import ActionButton from '../ActionButton';
 
-const HeartIcon = require('react-icons/lib/fa/heart-o');
-const CommentIcon = require('react-icons/lib/fa/comment-o');
-const SaveIcon = require('react-icons/lib/fa/bookmark-o');
 const styles = require('./CommonCard.scss');
 const cx = classNames.bind(styles);
 
@@ -59,32 +55,12 @@ const CommonCard: React.SFC<Props>= ({
               <span>{moment(createdAt).format('ll')}</span>
               <span>{comments} 개의 댓글</span>
               <span>{likes} 개의 좋아요</span>
-              <section className={cx('action-group')}>
-                <ActionButton
-                  icon={<HeartIcon/>}
-                  id={id}
-                  theme="like"
-                  onClick={onAction}
-                />
-                <ActionButton
-                  icon={<CommentIcon/>}
-                  id={id}
-                  theme="comment"
-                  onClick={onAction}
-                />
-                <ActionButton
-                  icon={<SaveIcon/>}
-                  id={id}
-                  theme="save"
-                  onClick={onAction}
-                />
-              </section>
             </div>
           </div>
-          <Link to={`/pin/${id}`} className={cx('description')}>
-            {body}
+          <div className={cx('description')}>
+            <Link to={`/pin/${id}`}>{body}</Link>
             <span className={cx('relation')} onClick={() => window.open(`${relationUrl}`)}>{relationUrl}</span>    
-          </Link>
+          </div>
         </div>
       </div>
     )

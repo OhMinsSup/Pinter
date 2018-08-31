@@ -16,21 +16,6 @@ class LockerRouter {
         this.routes();
     }
 
-    private async getLockerList(req: Request, res: Response): Promise<any> {
-        const pinId: string = req['pin']._id;
-        const userId: string = req['user']._id;
-
-        try {
-            const user: IPinLocker[] = await PinLocker.getLockerUserList(pinId, userId);            
-            const usersWithData = user.map(serializeUser);
-            res.json({
-                usersWithData,
-            });
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    }
-
     private async createLockerPin(req: Request, res: Response): Promise<any> {
         const userId: string = req['user']._id;
         const pinId: string = req['pin']._id;
@@ -126,7 +111,6 @@ class LockerRouter {
         router.delete('/:id', needAuth, checkPinExistancy, this.deleteLockerPin);
         router.get('/:id', needAuth, checkPinExistancy, this.getLockerPin);
 
-        router.get('/:id/list', needAuth, checkPinExistancy, this.getLockerList);
         router.get('/:displayName/list', needAuth, this.lockerList);
     }
 }

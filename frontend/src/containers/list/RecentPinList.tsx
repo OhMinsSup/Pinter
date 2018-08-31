@@ -99,8 +99,11 @@ class RecentPinList extends React.Component<RecentPinListProps> {
     }
 
     public render() {
-        const { pins } = this.props;
+        const { pins, loading } = this.props;
         const { onOpen, onActionBox } = this;
+
+        if (loading) return null;
+
         return (
             <CommonCardList
                 pins={pins} 

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
-import { FaUser, FaBars } from 'react-icons/lib/fa'
+import { FaUser, FaBars } from 'react-icons/lib/fa';
 import Logo from '../Logo';
+import { escapeForUrl } from '../../../lib/common';
 import SearchInput from '../SearchInput';
 import Button from '../../common/Button';
 
@@ -45,7 +46,7 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                                 <Button theme='noline' to='/users'>
                                     <FaUser className={cx('users')}/>
                                 </Button>
-                                <Button theme='noline' to={`/@${displayName}`}>
+                                <Button theme='noline' to={`/@${escapeForUrl(displayName)}`}>
                                     <img className={cx('thumbnail')} src={thumbnail} alt={displayName}/>
                                     <span className={cx('username')}>{displayName}</span>
                                 </Button>

@@ -80,6 +80,19 @@ class Gallery extends React.Component<Props, State> {
                             <NextIcon/>
                         </span>
                     </div>
+                    <div className={cx('location-wrapper')}>
+                    {
+                        urls.map((url: string, index: number) => {
+                            return (
+                                this.state.currentNumber === index ? (
+                                    <div className={cx('location')} style={{ backgroundColor: "#3897f0" }}/>
+                                ) : (
+                                    <div className={cx('location')} style={{ backgroundColor: "#dbdbdb" }}/>
+                                )
+                            )
+                        })
+                    }
+                    </div>
                 </div>
             </div>
         )

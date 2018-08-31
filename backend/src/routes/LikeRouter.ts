@@ -16,21 +16,6 @@ class LikeRouter {
         this.routes();
     }
 
-    private async likeList(req: Request, res: Response): Promise<any> {
-        const pinId: string = req['pin']._id;
-        const userId: string = req['user']._id;
-
-        try {
-            const user: ILike[] = await Like.getLikeUserList(pinId, userId);            
-            const usersWithData = user.map(serializeUser);
-            res.json({
-                usersWithData,
-            });
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    }
-
     private async getLike(req: Request, res: Response): Promise<any> {
         const pinId: string = req['pin']._id;
         const userId: string = req['user']._id;
@@ -104,7 +89,6 @@ class LikeRouter {
     public routes(): void {
         const { router } = this;
         
-        router.get('/:id/list', needAuth, checkPinExistancy, this.likeList);
         router.get('/:id', needAuth, checkPinExistancy, this.getLike);
         router.post('/:id', needAuth, checkPinExistancy, this.likePin);
         router.delete('/:id', needAuth, checkPinExistancy, this.unlikePin);

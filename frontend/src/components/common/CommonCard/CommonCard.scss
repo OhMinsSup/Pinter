@@ -74,7 +74,7 @@
       }
     }
     .content-head {
-      height: 7rem;
+      height: 5rem;
       padding-bottom: 1.5rem;
       border-bottom: 1px solid $oc-gray-2;
       .displayName {
@@ -95,13 +95,8 @@
       }
       .subinfo {
         font-size: 0.875rem;
-        margin-top: 0.5rem;
+        margin-top: 1.5rem;
         color: #8aa6c1;
-        .action-group {
-          margin-top: 1rem;
-          flex-direction: row;
-          float: right;
-        }
         span+span::before {
           color: $oc-gray-5;
           padding-left: 0.25rem;
@@ -112,8 +107,8 @@
     }
     .description {
       margin-top: 1.5rem;
-      line-height: 1.5rem;
-      height: 6.5rem;
+      line-height: 2rem;
+      height: 4rem;
       overflow-y: hidden;
       color: #4c657d;
       word-break: break-all;
