@@ -46,7 +46,7 @@ class Server {
         (mongoose as any).Promise = global.Promise;
         mongoose.connect(MONGO_URL, { useNewUrlParser: true })
         .then(() => {
-            console.log("connected to mongoDB");
+            console.log("connected to mongoDB ✅");
         })
         .catch((e) => {
             console.log("MongoDB connection error. Please make sure MongoDB is running. " + e);
@@ -63,6 +63,10 @@ class Server {
         app.use("/pin", Pin);
         app.use("/pin/likes", Like);
         app.use("/pin/comments", Comment);
+
+        app.get("/test", (req, res) => {
+            res.status(200).json('test');
+        });
     }   
 }
 

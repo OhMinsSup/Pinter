@@ -9,6 +9,9 @@ import needAuth from '../lib/middleware/needAuth';
 import User, { IUser } from '../database/models/User';
 import Pin, { IPin } from '../database/models/Pin';
 import Tag, { ITag } from '../database/models/Tag';
+import Like from '../database/models/Like';
+import Locker from '../database/models/PinLocker';
+import Comment from '../database/models/Comment';
 import Count from '../database/models/Count';
 import {
     filterUnique,
@@ -187,10 +190,17 @@ class PinRouter {
 
         try {
             const { tags } = await Pin.findOne({ _id: pinId });
+            const comments = await Comment.find({ pin: pinId });
+            const likes = await Like.find({ pin: pinId });
+            const lockers = await Locker.find({ pin: pinId });
 
-            await Promise.all(
+            await Promise.all([
                 tags.map(tag => Tag.findByIdAndUpdate(tag, { $pop: { pin: pinId } }, { new: true })),
-            );
+                comments.map(comment => Comment.findByIdAndRemove(comment._id)),
+                likes.map(like => Like.findByIdAndRemove(like._id)),
+                lockers.map(locker => Locker.findByIdAndRemove(locker._id)),
+            ]);
+            
             await Pin.deleteOne({
                 _id: pinId,
             });

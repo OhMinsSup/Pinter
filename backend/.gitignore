@@ -3,6 +3,7 @@
 
 # production
 /dist
+/.webpack
 
 # config
 src/config/config.ts

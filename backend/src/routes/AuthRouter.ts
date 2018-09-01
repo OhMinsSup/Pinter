@@ -43,7 +43,7 @@ class AuthRouter {
                 type: 'email-register',
                 text: '회원가입',
             };
-
+                        
             const verification = await EmailAuth.create({
                 email,
             });

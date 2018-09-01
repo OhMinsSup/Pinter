@@ -1,10 +1,15 @@
 import * as React from 'react';
+import UserTemplate from '../../components/user/UserTemplate';
+import HeaderContainer from '../../containers/base/HeaderContainer';
+import UserHeadContainer from '../../containers/user/UserHeaderContainer';
 
 const User = () => {
     return (
-        <div>
-            유저 페이지
-        </div>
+        <UserTemplate
+            header={<HeaderContainer />}
+        >
+            <UserHeadContainer />
+        </UserTemplate>
     )
 }
 
