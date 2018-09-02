@@ -46,7 +46,7 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
                 />
                 <UserNav
                     url={url}
-                    displayName={'veloss'}
+                    displayName={profile.displayName}
                 />
             </React.Fragment>
         )

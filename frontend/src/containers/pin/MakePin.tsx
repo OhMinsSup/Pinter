@@ -2,21 +2,31 @@ import * as React from 'react';
 import WriteTemplate from '../../components/write/WriteTemplate';
 import { StoreState } from '../../store/modules';
 import { Dispatch, connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import WriteForm from '../../components/write/WriteForm';
 import InputTags from '../../components/write/InputTags';
 import DropImage from '../../components/write/DropImage';
 import { writeCreators } from '../../store/modules/write';
+import { History } from 'history';
+import { withRouter } from 'react-router';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type OwnProps = { history: History };
 
-type MakePinProps = StateProps & DispatchProps
+type MakePinProps = StateProps & DispatchProps & OwnProps;
 
 class MakePin extends React.Component<MakePinProps> {
     public onSubmit = async () => {
-        const { WriteActions, tags, relationUrl, body, urls } = this.props;
+        const { 
+            WriteActions, 
+            tags, 
+            relationUrl, 
+            body, 
+            urls, 
+            BaseActions 
+        } = this.props;
 
         try {
             await WriteActions.writeSubmit({
@@ -26,7 +36,9 @@ class MakePin extends React.Component<MakePinProps> {
                 relationUrl
             });
 
+            BaseActions.openPinBox(false);
             WriteActions.initialState();
+            this.props.history.push(`/pin/${this.props.pinId}`);
         } catch (e) {
             console.log(e);
         }
@@ -153,6 +165,7 @@ const mapStateToProps = ({ base, write }: StoreState) => ({
     relationUrl: write.form.relation_url,
     tags: write.form.tags,
     urls: write.form.urls,
+    pinId: write.pinId,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -160,7 +173,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     WriteActions: bindActionCreators(writeCreators, dispatch),
 })
 
-export default connect<StateProps, DispatchProps>(
-    mapStateToProps,
-    mapDispatchToProps
+export default compose(
+    withRouter, 
+    connect<StateProps, DispatchProps, OwnProps>(
+        mapStateToProps,
+        mapDispatchToProps
+    )
 )(MakePin);

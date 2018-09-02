@@ -1,13 +1,17 @@
 import * as React from 'react';
+import * as classNames from 'classnames/bind';
 import CommonCard from '../CommonCard';
+
+const styles = require('./CommonCardList.scss');
+const cx = classNames.bind(styles);
 
 type Props = {
     pins: any[],
+    theme?: string,
     onOpen(id: string): Promise<void>,
-    onAction(name: 'like' | 'comment' | 'save', id: string, theme: string): Promise<any>,
 }
 
-const CommonCardList:React.SFC<Props> = ({ onOpen, pins, onAction }) => {
+const CommonCardList:React.SFC<Props> = ({ onOpen, pins, theme }) => {
     const pinList = pins.map((pin) => {
         const { 
             comments,
@@ -36,15 +40,15 @@ const CommonCardList:React.SFC<Props> = ({ onOpen, pins, onAction }) => {
                 key={pinId}
                 id={pinId}
                 createdAt={createdAt}
-                onAction={onAction}
                 onOpen={onOpen}
+                theme={theme}
             />
         )
     })
     return (
-        <React.Fragment>
+        <div className={cx(theme)}>
             {pinList}
-        </React.Fragment>
+        </div>
     )
 }
 

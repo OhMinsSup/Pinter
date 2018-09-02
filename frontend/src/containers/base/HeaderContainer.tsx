@@ -43,9 +43,11 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
     }
 
     public render() {
-        const { thumbnail, displayName, size } = this.props;
+        const { thumbnail, displayName, size, pin } = this.props;
         const { onLogout, onSidebar } = this;
         
+        if (pin && size <= 788) return null;
+
         return (
             <Header 
                 thumbnail={thumbnail}
@@ -64,6 +66,7 @@ const mapStateToProps = ({ user, base }: StoreState) => ({
     displayName: user.user && user.user.displayName,
     thumbnail: user.user && user.user.thumbnail,
     size: base.size,
+    pin: base.pin.visible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

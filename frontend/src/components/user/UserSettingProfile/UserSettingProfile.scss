@@ -1,0 +1,128 @@
+@import 'utils';
+
+.setting-profile-wrapper {
+    display: block;
+    width: 700px;
+    margin: 0 auto 70px;
+    .setting-profile {
+        position: relative;
+        height: 100%;
+        top: 1rem;
+        margin-top: 16px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        @media (min-width: 840px) {
+            max-width: 645.5px;
+        }
+        .edit-card-wrapper {
+            overflow: visible;
+            background-color: #fff;
+            margin-bottom: 16px;
+            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 0;
+            border-radius: 2px;
+            .card-background {
+                position: relative;
+                height: 210px;
+                background-color: $oc-gray-4;
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: cover;
+                .thumbnail {
+                    position: relative;
+                    width: 100px;
+                    height: 100px;
+                    left: 40%;
+                    top: 3rem;
+                    border-radius: 50%;
+                }
+                .menu-anchor {
+                    position: absolute;
+                    right: 16px;
+                    bottom: 16px;
+                    cursor: pointer;
+                    overflow: visible;
+                    .circle {
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        justify-content: center;
+                        cursor: pointer;
+                        align-items: center;
+                        display: inline-flex;
+                        background: rgba(0, 0, 0, 0.54);
+                        svg {
+                            font-size: 1.25rem;
+                            color: white;
+                        }
+                        &:hover {
+                            background-color: $oc-blue-5;
+                        }
+                    }
+                }
+            }
+            .card-primary {
+                padding: 16px;
+            }
+            .card-action {
+                margin-top: 15px;
+                padding-bottom: 16px;
+                padding-top: 0;
+                align-items: center;
+                justify-content: flex-end;
+                display: flex;
+                box-sizing: border-box;
+                padding: 8px 16px;
+                .separator {
+                    margin: 0 8px 0 0;
+                    flex-grow: 1;
+                }
+                .action-button {
+                    text-indent: 0px;
+                    text-shadow: none;
+                    font: 400 13.3333px Arial;
+                    text-rendering: auto;
+                    cursor: pointer;
+                    align-items: flex-start;
+                    user-select: none;
+                    overflow: hidden;
+                    border: none;
+                    outline: none;
+                    text-align: center;
+                    display: inline-block;
+                    position: relative;
+                    box-sizing: border-box;
+                    height: 32px;
+                    font-size: .8125rem;
+                    line-height: 32px;
+                    padding: 0 8px;
+                    background-color: transparent;
+                    min-width: 64px;
+                    font-weight: 500;
+                    letter-spacing: 0.04em;
+                    text-decoration: none;
+                    text-transform: uppercase;
+                    vertical-align: middle;
+                    border-radius: 2px;
+                    &.cancle {
+                        &:hover {
+                            background-color: $oc-red-5;
+                            color: white;
+                        }
+                    }
+                    &.save {
+                        &:hover {
+                            background-color: $oc-blue-5;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

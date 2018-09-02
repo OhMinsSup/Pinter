@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { StoreState } from '../../store/modules';
-import { Dispatch, compose, bindActionCreators } from 'redux';
+import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
-import { withRouter, match } from 'react-router-dom';
+import { match } from 'react-router-dom';
 import { baseCreators } from '../../store/modules/base';
-import CommonCardList from '../../components/common/CommonCardList';
 import { getScrollBottom } from '../../lib/common';
 import { recentCreators } from '../../store/modules/list/recent';
 import { pinCreators } from '../../store/modules/pin';
+import CommonCardList from '../../components/common/CommonCardList';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = { match: match<{ id: string }> };
+type OwnProps = { match: match<{ displayName: string }> };
 
-type RecentPinListProps = StateProps & DispatchProps & OwnProps;
+type UserPinListProps = StateProps & DispatchProps & OwnProps;
 
-class RecentPinList extends React.Component<RecentPinListProps> {
+class UserPinList extends React.Component<UserPinListProps> {
     public prev: string | null = null;
 
     public onScroll = throttle(() => {
@@ -56,9 +56,9 @@ class RecentPinList extends React.Component<RecentPinListProps> {
     }
 
     public initialize = async () => {
-        const { ListActions } = this.props;
+        const { ListActions, match: { params: { displayName } } } = this.props;
         try {
-            await ListActions.getPinList();
+            await ListActions.getPinList(displayName);
         } catch (e) {
             console.log(e);
         }
@@ -89,8 +89,9 @@ class RecentPinList extends React.Component<RecentPinListProps> {
 
         return (
             <CommonCardList
-                pins={pins} 
+                pins={pins}
                 onOpen={onOpen}
+                theme="user"
             />
         )
     }
@@ -109,10 +110,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     PinActions: bindActionCreators(pinCreators, dispatch),
 })
 
-export default compose(
-    withRouter,
-    connect<StateProps, DispatchProps, OwnProps>(
-        mapStateToProps,
-        mapDispatchToProps
-    )
-)(RecentPinList);
+export default connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
+)(UserPinList);

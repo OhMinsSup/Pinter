@@ -17,8 +17,8 @@ type Props = {
   createdAt: string,
   relationUrl: string,
   id: string,
+  theme?: string,
   onOpen(id: string): Promise<void>,
-  onAction(name: 'like' | 'comment' | 'save', id: string, theme: string): Promise<any>,
 }
 
 const CommonCard: React.SFC<Props>= ({ 
@@ -33,10 +33,10 @@ const CommonCard: React.SFC<Props>= ({
     onOpen, 
     username, 
     id,
-    onAction, 
+    theme
   }) => {
-    return (
-        <div className={cx('common-card')}>
+    return ( 
+        <div className={cx('common-card', theme)}>
         {
           urls ? (
             <div className={cx('thumbnail-wrapper')} onClick={() => onOpen(id)}>
