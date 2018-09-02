@@ -6,6 +6,7 @@ import write, { WriteState } from './write';
 import pin, { PinState } from './pin';
 import locker, { LockerState } from './locker';
 import list, { ListState } from './list';
+import common, { CommonState } from './common';
 
 export default combineReducers({
     auth: auth,
@@ -15,6 +16,7 @@ export default combineReducers({
     write: write,
     locker: locker,
     list: list,
+    common: common
 });
 
 export interface StoreState { 
@@ -25,4 +27,5 @@ export interface StoreState {
     pin: PinState,
     locker: LockerState,
     list: ListState,
+    common: CommonState,
 }

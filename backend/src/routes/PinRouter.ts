@@ -185,27 +185,25 @@ class PinRouter {
     }
 
     private async deletePin(req: Request, res: Response): Promise<any> {
-        const pinId = req['pin']._id;
+        const pinId: string = req['pin']._id;
+        const tags: string[] = req['pin'].tags;
         const userId: string = req['user']._id;
-
+       
         try {
-            const { tags } = await Pin.findOne({ _id: pinId });
-            const comments = await Comment.find({ pin: pinId });
-            const likes = await Like.find({ pin: pinId });
-            const lockers = await Locker.find({ pin: pinId });
-
+            // TODO 태그 삭제 작업을 아직 안함
             await Promise.all([
-                tags.map(tag => Tag.findByIdAndUpdate(tag, { $pop: { pin: pinId } }, { new: true })),
-                comments.map(comment => Comment.findByIdAndRemove(comment._id)),
-                likes.map(like => Like.findByIdAndRemove(like._id)),
-                lockers.map(locker => Locker.findByIdAndRemove(locker._id)),
+                Comment.deleteMany({ pin: pinId }),
+                Like.deleteMany({ pin: pinId }),
+                Locker.deleteMany({ pin: pinId }),
+                tags.forEach(tag => Tag.findOneAndUpdate({ _id: tag }, { $pop: { pin: pinId } }, { new: true })),
             ]);
-            
+
             await Pin.deleteOne({
                 _id: pinId,
             });
             await Count.unpinCount(userId);
-            res.status(204).json({
+
+            res.json({
                 pin: true,
             });
         } catch (e) {

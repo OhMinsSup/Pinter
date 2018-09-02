@@ -36,4 +36,9 @@
     .text {
       padding-top: 0.8rem;
     }
+
+    @include media("<medium") {
+        min-width: 78px;
+        min-height: 30px;
+    }
   }

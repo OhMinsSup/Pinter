@@ -1,0 +1,14 @@
+@import 'utils';
+
+.nav-menu-itmes {
+    margin-top: 2rem;
+    align-items: center;
+    color: $oc-gray-6;
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+    font-weight: 600;
+    justify-content: center;
+    letter-spacing: 1px;
+    text-align: center;
+}

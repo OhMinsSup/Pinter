@@ -1,0 +1,16 @@
+@import "utils";
+
+.user-content {
+  display: flex;
+  margin-top: 4rem;
+  .tab-wrapper {
+    flex: 1;
+  }
+  .side-wrapper {
+    @include media("<medium") {
+      display: none;
+    }
+    width: 15rem;
+    margin-left: 2rem;
+  }
+}
