@@ -22,5 +22,6 @@ module.exports = {
     },
     plugins: [
         new webpack.IgnorePlugin(/^hiredis$/),
+        new webpack.IgnorePlugin(/^uws$/),
     ]
 }
