@@ -4,15 +4,11 @@ import LandingTemplateContainer from '../containers/landing/LandingTemplateConta
 import AuthFormContainer from '../containers/landing/AuthFormContainer';
 import Main from '../containers/main/Main';
 
-type Props = {
-    location: Location
-}
-
-const Home: React.SFC<Props> = ({ location }) => {
+const Home: React.SFC<{}> = () => {
     return (
         <PageTemplate>
             <LandingTemplateContainer form={<AuthFormContainer/>} />
-            <Main path={location.pathname}/>
+            <Main/>
         </PageTemplate>
     )
 }

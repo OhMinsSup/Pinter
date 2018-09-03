@@ -8,6 +8,7 @@ import locker, { LockerState } from './locker';
 import list, { ListState } from './list';
 import common, { CommonState } from './common';
 import follow, { FollowState } from './follow';
+import tag, { TagState } from './tag';
 
 export default combineReducers({
     auth: auth,
@@ -19,6 +20,7 @@ export default combineReducers({
     list: list,
     common: common,
     follow: follow,
+    tag: tag,
 });
 
 export interface StoreState { 
@@ -31,4 +33,5 @@ export interface StoreState {
     list: ListState,
     common: CommonState,
     follow: FollowState,
+    tag: TagState,
 }

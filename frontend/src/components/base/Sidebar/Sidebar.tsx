@@ -21,17 +21,16 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName }) => {
                     onClick={onClose}
                 />
                 <SidebarMenu
-                    to="/"
+                    to="/tags"
                     name="태그"
                     onClick={onClose}
                 />
                 <SidebarMenu
-                    to="/"
+                    to="/users"
                     name="유저"
                     onClick={onClose}
                 />
                 <SidebarMenu
-                    to="/"
                     name="로그아웃"
                     onClick={onClose}
                 />

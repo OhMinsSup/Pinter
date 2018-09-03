@@ -6,7 +6,7 @@ const styles  = require('./SidebarMenu.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    to: string,
+    to?: string,
     name :string,
     onClick(): void,
 }
@@ -14,7 +14,13 @@ type Props = {
 const SidebarMenu: React.SFC<Props> = ({ to, name, onClick }) => {
     return (
         <div className={cx('sidebar-menu')} onClick={onClick}>
-            <Link  to={to} className={cx('sidebar-menu-item')}>{name}</Link>
+        {
+            to ? (
+                <Link to={to} className={cx('sidebar-menu-item')}>{name}</Link>
+            ) : (
+                <div className={cx('sidebar-menu-item')}>{name}</div>
+            )
+        }
         </div>
     )
 }

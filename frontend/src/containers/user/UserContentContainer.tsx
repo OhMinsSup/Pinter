@@ -7,6 +7,7 @@ import { Switch, Route, withRouter, match } from 'react-router-dom';
 import UserPinList from '../list/UserPinList';
 import FollowerUserList from '../list/FollowerUserList';
 import FollowingUserList from '../list/FollowingUserList';
+import LockerPinList from '../list/LockerPinList';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -26,8 +27,9 @@ class UserContentContainer extends React.Component<UserContentContainerProps> {
                 <Switch>
                     <Route exact path="/@:displayName/" component={UserPinList} />
                     <Route exact path="/@:displayName/pin" component={UserPinList} />
-                    <Route exact path="/@:displayName/follower" component={FollowerUserList} />                    <Route exact path="/@:displayName/follower" component={FollowerUserList} />
+                    <Route exact path="/@:displayName/follower" component={FollowerUserList} />                    
                     <Route exact path="/@:displayName/following" component={FollowingUserList} />
+                    <Route exact path="/@:displayName/locker" component={LockerPinList} />
                 </Switch>
             </UserContent>
         )

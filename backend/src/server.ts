@@ -13,6 +13,7 @@ import Common from "./routes/CommonRouter";
 import Follow from "./routes/FollowRouter";
 import Locker from "./routes/LockerRouter";
 import File from './routes/FileRouter';
+import Tag from './routes/TagRouter';
 
 class Server {
     public app: express.Application;
@@ -62,6 +63,7 @@ class Server {
         app.use("/follow", Follow);
         app.use("/locker", Locker);
         app.use("/file", File);
+        app.use("/tag", Tag);
         app.use("/pin", Pin);
         app.use("/pin/likes", Like);
         app.use("/pin/comments", Comment);

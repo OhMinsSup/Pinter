@@ -28,7 +28,7 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                     <Logo />
                     <SearchInput />
                     {
-                        size <= 790 ? (
+                        size <= 790  || size <= 796 ? (
                             <div className={cx('button-group')}>
                                 <Button theme='noline' onClick={onSidebar}>
                                     <FaBars/>

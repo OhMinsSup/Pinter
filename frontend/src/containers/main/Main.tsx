@@ -2,17 +2,16 @@ import * as React from 'react';
 import MainTemplate from '../../components/main/MainTemplate';
 import HeaderContainer from '../base/HeaderContainer';
 import { StoreState } from '../../store/modules';
-import { Dispatch, bindActionCreators } from 'redux';
+import { Dispatch, bindActionCreators, compose } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
-import { Recent } from '../../page';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import { Recent, Tag } from '../../page';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = {
-    path: string
-}
+type OwnProps = {  location: Location };
+
 
 type MainProps = OwnProps & StateProps & DispatchProps; 
 
@@ -23,20 +22,21 @@ class Main extends React.Component<MainProps> {
     }
 
     public render() {       
-        const { path, sidebar, user } = this.props; 
+        const { location, sidebar, user } = this.props; 
         const { onOpenBox } = this;
 
         if (!user) return null;
 
         return(
             <MainTemplate
-                path={path}
+                path={location.pathname}
                 onClick={onOpenBox}
                 header={<HeaderContainer />}
                 sidebar={sidebar}
             >
                 <Switch>
                     <Route exact path="/" component={Recent} />
+                    <Route exact path='/tags/:tag?' component={Tag}/>
                 </Switch>
             </MainTemplate>
         )
@@ -53,7 +53,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch)
 })
 
-export default connect<StateProps, DispatchProps, OwnProps>(
-    mapStateToProps,
-    mapDispatchToProps
+export default compose(
+    withRouter,
+    connect<StateProps, DispatchProps, OwnProps>(
+        mapStateToProps,
+        mapDispatchToProps
+    )
 )(Main);

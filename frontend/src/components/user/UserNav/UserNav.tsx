@@ -30,8 +30,8 @@ const UserNav:React.SFC<Props> = ({ url, displayName }) => {
             />
             <UserMenuItem
                 text="보관함"
-                active={url === `/@${displayName}/saves`}
-                to={`/@${displayName}/saves`}
+                active={url === `/@${displayName}/locker`}
+                to={`/@${displayName}/locker`}
             />            
         </section>
     )

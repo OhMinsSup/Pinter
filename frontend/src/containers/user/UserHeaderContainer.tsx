@@ -73,13 +73,15 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 
     public render() {
-        const { match: { url }, profile, loading, follow } = this.props;
+        const { match: { url }, profile, loading, follow, username, displayName } = this.props;
         const { onClick, onSetting, onToggleFollow } = this;
 
         if (loading) return <FullscreenLoader visible={loading}/>
         return (
             <React.Fragment>
                 <UserHeader
+                    displayName={displayName}
+                    username={username}
                     profile={profile}
                     follow={follow}
                     onClick={onClick}
@@ -95,12 +97,14 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 }
 
-const mapStateToProps = ({ base, common, follow }: StoreState) => ({
+const mapStateToProps = ({ base, common, follow, user }: StoreState) => ({
     pin: base.pin.visible,
     profile: common.profile,
     loading: common.profile.loading,
     visible: base.profile.visible,
     follow: follow.user.follow,
+    username: user.user && user.user.username,
+    displayName: user.user && user.user.displayName,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

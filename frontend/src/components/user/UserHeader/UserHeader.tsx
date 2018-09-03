@@ -6,6 +6,8 @@ const styles = require('./UserHeader.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
+    username: any,
+    displayName: any,
     profile: any,
     follow: boolean,
     onClick(): void,
@@ -14,6 +16,8 @@ type Props = {
 }
 
 const UserHeader: React.SFC<Props> = ({ 
+    username,
+    displayName,
     follow, 
     onClick, 
     profile, 
@@ -30,9 +34,13 @@ const UserHeader: React.SFC<Props> = ({
                             <Button className={cx('setting')} theme="outline" onClick={onClick}>
                                 글쓰기
                             </Button>
-                            <Button className={cx('setting')} theme="outline" onClick={onSetting}>
-                                프로필
-                            </Button>                            
+                            {
+                                (username === profile.username) && (displayName === profile.displayName) ? (
+                                    <Button className={cx('setting')} theme="outline" onClick={onSetting}>
+                                        프로필
+                                    </Button>  
+                                ) : null
+                            }                           
                             {
                                 follow ? (
                                     <Button className={cx('subscribe')} theme="default" onClick={onFollow}>
