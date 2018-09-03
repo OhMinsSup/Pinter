@@ -10,7 +10,6 @@ const styles = require('./Header.scss');
 const ChatIcon = require('react-icons/lib/fa/commenting-o');
 const LogoutIcon = require('react-icons/lib/fa/sign-out');
 const TagIcon = require('react-icons/lib/fa/tags');
-const HomeIcon = require('react-icons/lib/fa/home');
 const cx = classNames.bind(styles);
 
 type Props = { 
@@ -37,9 +36,6 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                             </div>
                         )  : (
                             <div className={cx('button-group')}>
-                                <Button theme='noline' to='/'>
-                                    <HomeIcon className={cx('home')}/>
-                                </Button>
                                 <Button theme='noline' to='/tags'>
                                     <TagIcon className={cx('tag')}/>
                                 </Button>

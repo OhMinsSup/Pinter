@@ -6,15 +6,13 @@ const SHOW_USER_MENU = 'base/SHOW_USER_MENU';
 const HIDE_USER_MENU = 'base/HIDE_USER_MENU';
 const SET_FULLSCREEN_LOADER = 'base/SET_FULLSCREEN_LOADER';
 const SEARCH_FULLSCREEN_LOADER = 'base/SEARCH_FULLSCREEN_LOADER';
-const SET_BOX = 'base/SET_BOX';
 const GET_BOWSER_SIZE = 'base/GET_BOWSER_SIZE';
 
 const OPEN_PIN_BOX = 'base/OPEN_PIN_BOX';
 const SET_SIDE_BAR = 'base/SET_SIDE_BAR';
 const SET_MAIN = 'base/SET_MAIN';
 const SET_PIN_IMAGE = 'base/SET_PIN_IMAGE';
-
-type SetBoxPayload = { name: 'like' | 'comment' | 'save' , visible: boolean, id: string, theme: any }
+const SET_PROFILE = 'base/SET_PROFILET;'
 
 export const baseCreators = {
     setHeaderVisibility: createAction(SET_HEADER_VISIBILITY, (visible: boolean) => visible),
@@ -22,36 +20,29 @@ export const baseCreators = {
     hideUserMenu: createAction(HIDE_USER_MENU),
     setFullscreenLoader: createAction(SET_FULLSCREEN_LOADER, (visible: boolean) => visible),
     searchFullscreenLoader: createAction(SEARCH_FULLSCREEN_LOADER, (visible: boolean) => visible),
-    setBox: createAction(SET_BOX, (payload: SetBoxPayload) => payload),
     getbowserSize: createAction(GET_BOWSER_SIZE, (size: number) => size),
     openPinBox: createAction(OPEN_PIN_BOX, (visible: boolean) => visible),
     setSidebar: createAction(SET_SIDE_BAR, (visible: boolean) => visible),
     setMain: createAction(SET_MAIN, (visible: boolean) => visible),
     setPinImage: createAction(SET_PIN_IMAGE, (visible: boolean) => visible),
+    setProfile: createAction(SET_PROFILE, (visible: boolean) => visible),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
 type SetHeaderVisibilityAction = ReturnType<typeof baseCreators.setHeaderVisibility>;
 type SetFullscreenLoaderAction = ReturnType<typeof baseCreators.setFullscreenLoader>;
-type SetBoxAction = ReturnType<typeof baseCreators.setBox>;
 type GetBowserSizeAction = ReturnType<typeof baseCreators.getbowserSize>;
 type OpenPinBoxAction = ReturnType<typeof baseCreators.openPinBox>;
 type SetSidebarAction = ReturnType<typeof baseCreators.setSidebar>; 
 type SetMainAction = ReturnType<typeof baseCreators.setMain>;
 type SetPinImageAction = ReturnType<typeof baseCreators.setPinImage>;
+type SetProfileActin = ReturnType<typeof baseCreators.setProfile>;
 
 export interface BaseState {
     userMenu: boolean;
     header: boolean;
     fullscreenLoader: boolean;
     search: boolean;
-    box: {
-        pinId: string,
-        theme: any,
-        like: boolean,
-        comment: boolean,
-        save: boolean
-    },
     size: number;
     pin: {
         visible: boolean
@@ -60,9 +51,12 @@ export interface BaseState {
         visible: boolean
     },
     main: {
-        visible: boolean,
+        visible: boolean
     },
     image: {
+        visible: boolean
+    },
+    profile: {
         visible: boolean
     }
 }
@@ -72,13 +66,6 @@ const initialState: BaseState = {
     header: true,
     fullscreenLoader: false,
     search: false,
-    box: {
-        pinId: '',
-        theme: '',
-        like: false,
-        comment: false,
-        save: false
-    },
     size: 0,
     pin: {
         visible: false
@@ -91,6 +78,9 @@ const initialState: BaseState = {
     },
     image: {
         visible: false,
+    },
+    profile: {
+        visible: false
     }
 };
 
@@ -123,14 +113,6 @@ export default handleActions<BaseState, any>({
             draft.search = action.payload;
         })
     },
-    [SET_BOX]: (state, action: SetBoxAction) => {
-        return produce(state, (draft) => {
-            if (action.payload === undefined) return;
-            draft.box[action.payload.name] = action.payload.visible;
-            draft.box.pinId = action.payload.id;
-            draft.box.theme = action.payload.theme;
-        })
-    },
     [GET_BOWSER_SIZE]: (state, action: GetBowserSizeAction) => {
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
@@ -159,6 +141,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (darft) => {
             if (action.payload === undefined) return;
             darft.image.visible = action.payload;
+        })
+    },
+    [SET_PROFILE]: (state, action: SetProfileActin) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.profile.visible = action.payload;
         })
     }
 }, initialState);

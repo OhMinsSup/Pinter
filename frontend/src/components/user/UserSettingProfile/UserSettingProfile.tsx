@@ -9,10 +9,18 @@ const cx = classNames.bind(styles);
 type Props = {
     thumbnail: string,
     displayName: string,
-    onCancel(): void
+    onCancel(): void,
+    onUploadClick(): void,
+    onChange(e: any): void,
 }
 
-const UserSettingProfile: React.SFC<Props> = ({ onCancel, thumbnail, displayName }) => {
+const UserSettingProfile: React.SFC<Props> = ({ 
+    onCancel, 
+    thumbnail, 
+    displayName,
+    onUploadClick,
+    onChange, 
+}) => {
     return (
         <div className={cx('setting-profile-wrapper')}>
             <div className={cx('setting-profile')}>
@@ -20,13 +28,13 @@ const UserSettingProfile: React.SFC<Props> = ({ onCancel, thumbnail, displayName
                 <div className={cx('card-background')}>
                     <img className={cx('thumbnail')} src={thumbnail} alt="thumbnail" />
                     <div className={cx('menu-anchor')}>
-                    <span className={cx('circle')} >
+                    <span className={cx('circle')} onClick={onUploadClick}>
                         <ThumbnailIcon />
                     </span>
                     </div>
                 </div>
                 <section className={cx('card-primary')}>
-                    <UserSettingInput label="이름" value={displayName} name="displayName" onChange={() => console.log()}/>
+                    <UserSettingInput label="이름" value={displayName} name="displayName" onChange={onChange}/>
                 </section>
                 <div className={cx('card-action')}>
                     <div className={cx('separator')} />

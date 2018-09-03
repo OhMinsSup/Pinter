@@ -7,38 +7,45 @@ const cx = classNames.bind(styles);
 
 type Props = {
     profile: any,
-    following: boolean,
+    follow: boolean,
     onClick(): void,
+    onSetting(): void,
+    onFollow(): Promise<void>
 }
 
-const UserHeader: React.SFC<Props> = ({ following, onClick, profile }) => {    
+const UserHeader: React.SFC<Props> = ({ 
+    follow, 
+    onClick, 
+    profile, 
+    onSetting, 
+    onFollow 
+}) => {    
     return (
         <div className={cx('user-header')}>
             <img src={profile.thumbnail} alt="thumbnail" />
             <div className={cx('user-info')}>
                 <section className={cx('top')}>
                     {
-                        following !== undefined && (
-                            <div className={cx('subscribe-wrapper')}>
-                                <Button className={cx('setting')} theme="default" onClick={onClick}>
-                                    글쓰기
-                                </Button>
-                                <Button className={cx('setting')} theme="default">
-                                    프로필
-                                </Button>                            
-                                {
-                                    following ? (
-                                        <Button className={cx('subscribe')} theme="default">
-                                            구독중
-                                        </Button>
-                                    ) : (
-                                        <Button className={cx('subscribe')} theme="default">
-                                            구독하기
-                                        </Button>
-                                    )
-                                }
-                            </div>
-                        )
+                        <div className={cx('subscribe-wrapper')}>
+                            <Button className={cx('setting')} theme="outline" onClick={onClick}>
+                                글쓰기
+                            </Button>
+                            <Button className={cx('setting')} theme="outline" onClick={onSetting}>
+                                프로필
+                            </Button>                            
+                            {
+                                follow ? (
+                                    <Button className={cx('subscribe')} theme="default" onClick={onFollow}>
+                                        구독중
+                                    </Button>
+                                ) : (
+                                    <Button className={cx('subscribe')} theme="outline" onClick={onFollow}>
+                                        구독하기
+                                    </Button>
+                                )
+                            }
+                        </div>
+                        
                     }
                     <div className={cx('username')}>@{profile.username}</div>
                 </section>

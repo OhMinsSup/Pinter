@@ -7,12 +7,15 @@ const INITIALIZE_PROFILE = 'common/INITIALIZE_PROFILE';
 const GET_PROFILE = 'common/GET_PROFILE';
 const GET_PROFILE_SUCCESS = 'common/GET_PROFILE_SUCCESS';
 const GET_PROFILE_PENDING = 'common/GET_PROFILE_PENDING';
+const CHANGE_INPUT_PROFILE = 'common/CHANGE_INPUT_PROFILE';
+
+type ChangeInputProfilePayload = { value: string, name: string };
 
 export const commonCreators = {
     initializeProfile: createAction(INITIALIZE_PROFILE),
+    changeInputProfile: createAction(CHANGE_INPUT_PROFILE, (payload: ChangeInputProfilePayload) => payload),
     getProfile: createPromiseThunk(GET_PROFILE, commonAPI.getProfileAPI),
 }
-
 
 type GetProfileAction = GenericResponseAction<{
     username: string,
@@ -23,6 +26,7 @@ type GetProfileAction = GenericResponseAction<{
     following: number,
     pin: number,
  }, string>;
+type ChangeInputProfileAction = ReturnType<typeof commonCreators.changeInputProfile>;
 
 export interface UserProfileSubState {
     username: string;
@@ -37,6 +41,10 @@ export interface UserProfileSubState {
 
 export interface CommonState {
     profile: UserProfileSubState
+    setting: {
+        displayName: string,
+        thumbnail: string,
+    }
 }
 
 const initialState: CommonState = {
@@ -49,6 +57,10 @@ const initialState: CommonState = {
         following: 0,
         pin: 0,
         loading: false,
+    },
+    setting : {
+        displayName: '',
+        thumbnail: '',
     }
 }
 
@@ -64,6 +76,10 @@ export default handleActions<CommonState, any>({
                 following: 0,
                 pin: 0,
                 loading: false,
+            },
+            draft.setting = {
+                displayName: '',
+                thumbnail: '',
             }
         })
     },
@@ -85,7 +101,17 @@ export default handleActions<CommonState, any>({
                 following: data.following,
                 pin: data.pin,
                 loading: false
-            }
+            };
+            draft.setting = {
+                displayName: data.displayName,
+                thumbnail: data.thumbnail,
+            };
+        })
+    },
+    [CHANGE_INPUT_PROFILE]: (state, action: ChangeInputProfileAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.setting[action.payload.name] = action.payload.value;
         })
     }
 }, initialState);

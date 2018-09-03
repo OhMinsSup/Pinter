@@ -37,9 +37,15 @@
                     position: relative;
                     width: 100px;
                     height: 100px;
-                    left: 40%;
+                    left: 42.5%;
                     top: 3rem;
                     border-radius: 50%;
+                    @include media ("<=420px") {
+                        left: 38%;
+                    }
+                    @include media("<=small") {
+                        left: 35%;
+                    }
                 }
                 .menu-anchor {
                     position: absolute;

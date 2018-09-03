@@ -5,6 +5,8 @@ import { Dispatch, compose } from 'redux';
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter, match } from 'react-router-dom';
 import UserPinList from '../list/UserPinList';
+import FollowerUserList from '../list/FollowerUserList';
+import FollowingUserList from '../list/FollowingUserList';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -22,7 +24,10 @@ class UserContentContainer extends React.Component<UserContentContainerProps> {
         return (
             <UserContent>
                 <Switch>
-                    <Route path="/@:displayName/pin" component={UserPinList} />
+                    <Route exact path="/@:displayName/" component={UserPinList} />
+                    <Route exact path="/@:displayName/pin" component={UserPinList} />
+                    <Route exact path="/@:displayName/follower" component={FollowerUserList} />                    <Route exact path="/@:displayName/follower" component={FollowerUserList} />
+                    <Route exact path="/@:displayName/following" component={FollowingUserList} />
                 </Switch>
             </UserContent>
         )
@@ -35,7 +40,7 @@ const mapStateToProps = ({}: StoreState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
 
-})
+});
 
 export default compose(
     withRouter, 

@@ -5,12 +5,10 @@ const styles = require('./UserSettingInput.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    label?: string,
-    value?: string,
-    name?: string,
-    username?: string,
-    email?: string,
-    onChange?(): void,
+    label: string,
+    value: string,
+    name: string,
+    onChange(e: any): void,
 }
 
 const UserSettingInput: React.SFC<Props> = ({ label, name, value, onChange }) => {

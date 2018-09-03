@@ -5,7 +5,7 @@ export const createSignedUrl  = (file: any): Promise<any> => {
     
     const data = new FormData();
     data.append('file', file);
-    return axios.post('/pin/create-signed-url', data, {
+    return axios.post('/file/create-signed-url', data, {
         headers: {
             'Content-Type': file.type
         },
