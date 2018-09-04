@@ -19,7 +19,7 @@ function initSocket(server: Server) {
 
     io.on('connection', (socket) => {
         count++;
-        console.log(`conneted websocket ✅  ${socket.id} 현재 접속자수: ${count}`);
+        console.log(`conneted websocket  ${socket.id} 현재 접속자수: ${count}`);
         socket.on(`disconnect`, () => {
             count--;
             console.log(`disconneted websocket ${socket.id}`);

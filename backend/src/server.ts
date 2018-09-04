@@ -14,6 +14,7 @@ import Follow from "./routes/FollowRouter";
 import Locker from "./routes/LockerRouter";
 import File from './routes/FileRouter';
 import Tag from './routes/TagRouter';
+import Group from './routes/GroupRouter';
 
 class Server {
     public app: express.Application;
@@ -64,13 +65,10 @@ class Server {
         app.use("/locker", Locker);
         app.use("/file", File);
         app.use("/tag", Tag);
+        app.use('/group', Group);
         app.use("/pin", Pin);
         app.use("/pin/likes", Like);
         app.use("/pin/comments", Comment);
-
-        app.get("/test", (req, res) => {
-            res.status(200).json('test');
-        });
     }   
 }
 
