@@ -3,12 +3,14 @@ import recent, { RecentState } from './recent';
 import follows, { FollowsState } from './follows';
 import lockers, { LockersState } from './lockers';
 import tags, { TagsState } from './tags';
+import users, { UsersState } from './users';
 
 export interface ListState {
     recent: RecentState;
     follows: FollowsState;
     lockers: LockersState;
     tags: TagsState;
+    users: UsersState;
 }
 
 const list = combineReducers({
@@ -16,6 +18,7 @@ const list = combineReducers({
     follows: follows,
     lockers: lockers,
     tags: tags,
+    users: users,
 })
 
 export default list;

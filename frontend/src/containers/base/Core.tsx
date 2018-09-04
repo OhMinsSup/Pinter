@@ -6,6 +6,7 @@ import { baseCreators } from '../../store/modules/base';
 import { StoreState } from '../../store/modules';
 import FullscreenLoader from '../../components/base/FullscreenLoader';
 import Storage from '../../lib/storage';
+import { socketCreators } from '../../store/modules/socket';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -27,8 +28,19 @@ class Core extends React.Component<CoreProps>{
     }
   }
 
+  public socketConnect = async () => {
+    const { SocketActions } = this.props;
+
+    try {
+      await SocketActions.socketsConnect();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   public initialize = () => {
     this.checkUser();
+    this.socketConnect();
   }
 
   public componentDidMount() {
@@ -45,14 +57,16 @@ class Core extends React.Component<CoreProps>{
   }
 }
 
-const mapStateToProps = ({ base, user }: StoreState) => ({
+const mapStateToProps = ({ base, user, socket }: StoreState) => ({
     visible: base.fullscreenLoader,
-    user: user.user
+    user: user.user,
+    isConnected: socket.isConnected,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     UserActions: bindActionCreators(userCreators, dispatch),
-    BaseActions: bindActionCreators(baseCreators, dispatch)
+    BaseActions: bindActionCreators(baseCreators, dispatch),
+    SocketActions: bindActionCreators(socketCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps>(

@@ -12,9 +12,11 @@ type Props = {
     username: string,
     displayName: string,
     thumbnail: string,
+    follow: boolean,
+    onFollow(displayName: string): Promise<void>
 }
 
-const PinHeader:React.SFC<Props> = ({ username, displayName, thumbnail, id }) => {
+const PinHeader:React.SFC<Props> = ({ username, displayName, thumbnail, id, follow, onFollow }) => {
     return (
         <div className={cx('pin-header')}>
             <div className={cx('premalink-header')}>
@@ -27,7 +29,13 @@ const PinHeader:React.SFC<Props> = ({ username, displayName, thumbnail, id }) =>
                     <span className={cx('username')}>@<b>{username}</b></span>
                 </Link>
                 <div className={cx('follow-bar')}>
-                    <Button theme="default">팔로우</Button>
+                    {
+                        follow ? (
+                            <Button theme="default" onClick={() => onFollow(displayName)}>구독중</Button>
+                        ) : (
+                            <Button theme="default" onClick={() => onFollow(displayName)}>구독하기</Button>
+                        )
+                    }
                 </div>
                 <div className={cx('action-menu')}>
                     <div className={cx('dropdown')}>

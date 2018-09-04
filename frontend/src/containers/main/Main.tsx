@@ -6,12 +6,11 @@ import { Dispatch, bindActionCreators, compose } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { Recent, Tag } from '../../page';
+import { Recent, Tags, Users } from '../../page';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = {  location: Location };
-
 
 type MainProps = OwnProps & StateProps & DispatchProps; 
 
@@ -36,7 +35,8 @@ class Main extends React.Component<MainProps> {
             >
                 <Switch>
                     <Route exact path="/" component={Recent} />
-                    <Route exact path='/tags/:tag?' component={Tag}/>
+                    <Route exact path='/tags/:tag?' component={Tags}/>
+                    <Route exact path='/users' component={Users} />
                 </Switch>
             </MainTemplate>
         )

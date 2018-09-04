@@ -12,7 +12,7 @@ type Props = {
     match: match<{ tag: string }> 
 }
 
-const Tag: React.SFC<Props> = ({ location, match }) => {
+const Tags: React.SFC<Props> = ({ location, match }) => {
     const { sort } = queryString.parse(location.search);
     const { tag } = match.params;
     
@@ -33,4 +33,4 @@ const Tag: React.SFC<Props> = ({ location, match }) => {
     )
 }
 
-export default Tag;
+export default Tags;

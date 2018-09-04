@@ -7,7 +7,7 @@ import SearchInput from '../SearchInput';
 import Button from '../../common/Button';
 
 const styles = require('./Header.scss');
-const ChatIcon = require('react-icons/lib/fa/commenting-o');
+const NoticeIcon = require('react-icons/lib/io/android-notifications');
 const LogoutIcon = require('react-icons/lib/fa/sign-out');
 const TagIcon = require('react-icons/lib/fa/tags');
 const cx = classNames.bind(styles);
@@ -33,6 +33,9 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                                 <Button theme='noline' onClick={onSidebar}>
                                     <FaBars/>
                                 </Button>
+                                <Button theme='noline'>
+                                    <NoticeIcon className={cx('notice')}/>
+                                </Button>
                             </div>
                         )  : (
                             <div className={cx('button-group')}>
@@ -47,7 +50,7 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                                     <span className={cx('username')}>{displayName}</span>
                                 </Button>
                                 <Button theme='noline'>
-                                    <ChatIcon className={cx('chat')}/>
+                                    <NoticeIcon className={cx('notice')}/>
                                 </Button>
                                 <Button theme='noline' onClick={onLogout}>
                                     <LogoutIcon />

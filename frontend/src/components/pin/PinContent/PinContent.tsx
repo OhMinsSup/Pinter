@@ -31,7 +31,7 @@ const PinContent:React.SFC<Props> = ({ pin, onToggleLike, onToggleLocker }) => {
 
     const tagList = pin.tags.map((tag: string) => {
         return (
-            <Link to={`/tags/${escapeForUrl(tag)}}`} key={tag}>
+            <Link to={`/tags/${escapeForUrl(tag)}`} key={tag}>
                 {tag}
             </Link>
         )

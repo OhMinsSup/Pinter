@@ -25,6 +25,10 @@
             min-width: 0;
             height: 52px;
             width: 100%;
+
+            @include media ("<=medium") {
+                height: 100%;
+            }
             .button-group{
                 svg {
                     font-size: 1.5rem;
@@ -37,6 +41,11 @@
                 .username {
                     padding-left: 0.2rem;
                     padding-top: 0.25rem;
+                }
+                @include media ("<=545px") {
+                    position: relative;
+                    display: flex;
+                    top: 0.1rem;
                 }
             }
         }

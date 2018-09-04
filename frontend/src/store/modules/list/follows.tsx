@@ -121,7 +121,7 @@ export default handleActions<FollowsState, any>({
             }
         })
     },
-        [GET_FOLLOWER_LIST_PENDING]: (state) => {
+    [GET_FOLLOWER_LIST_PENDING]: (state) => {
         return produce(state, (draft) => {
             draft.follower.loading = true;
         });

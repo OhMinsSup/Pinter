@@ -46,11 +46,11 @@ const CommonCard: React.SFC<Props>= ({
           ) : null
         }
         <div className={cx('card-content')}>
-          <div className={cx('user-thumbnail-wrapper')}>
+          <Link to={`/@${displayName}`} className={cx('user-thumbnail-wrapper')}>
             <img src={thumbnail} alt={displayName} />
-          </div>
+          </Link>
           <div className={cx('content-head')}>
-            <div className={cx('displayName')}>{displayName}</div>
+            <Link to={`/@${displayName}`} className={cx('displayName')}>{displayName}</Link>
             <div className={cx('subinfo')}>
               <span>{moment(createdAt).format('ll')}</span>
               <span>{comments} 개의 댓글</span>
