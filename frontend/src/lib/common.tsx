@@ -23,6 +23,9 @@ export function createPromiseThunk(actionType: string, promiseCreator: any) {
     }
 }
 
+export const createArray = (length: number) => Array.from(Array(length).keys());
+
+
 export const escapeForUrl = (text: string): string => {
     return text
     .replace(
