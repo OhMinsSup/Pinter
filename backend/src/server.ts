@@ -6,6 +6,7 @@ import * as mongoose from "mongoose";
 import * as path from 'path';
 import * as config from "./config/config";
 import { jwtMiddleware } from "./lib/middleware/jwtMiddleware";
+import redisClient from './lib/redisClient';
 import Auth from "./routes/AuthRouter";
 import Pin from "./routes/PinRouter";
 import Like from "./routes/LikeRouter";
@@ -45,6 +46,14 @@ class Server {
         });
 
         app.use(express.static(path.join(__dirname, "../../frontend/build/")));
+    }
+
+    private initializeRedis(): void {
+        if (!redisClient.connected) {
+            redisClient.connect();
+        } else {
+            console.log('redis connection...');
+        }
     }
 
     private initializeDb(): void {

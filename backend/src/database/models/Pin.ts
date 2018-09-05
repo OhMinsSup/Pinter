@@ -47,6 +47,7 @@ const Pin = new Schema({
     },
 }, { 
     timestamps: true, 
+    autoIndex: true,
 });
 
 Pin.statics.readPinById = function(pinId: string): Promise<any> {    
@@ -76,7 +77,9 @@ Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<an
         }],
     })
     .sort({ _id: -1 })
-    .limit(15);
+    .lean()
+    .limit(15)
+    .exec();
 };
 
 Pin.statics.like = function(pinId: string): Promise<any> {

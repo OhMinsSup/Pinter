@@ -49,6 +49,8 @@ const User = new Schema({
             accessToken: String,
         },
     },
+}, {
+    autoIndex: true,
 });
 
 User.statics.findByEmailOrUsername = function(type: "email" | "username", value: string): Promise<any> {

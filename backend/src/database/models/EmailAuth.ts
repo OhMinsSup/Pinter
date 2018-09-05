@@ -24,6 +24,8 @@ const EmailAuth = new Schema({
         type: Boolean,
         default: false,
     },
+}, {
+    autoIndex: true,
 });
 
 EmailAuth.statics.findCode = function(code: string): Promise<any> {

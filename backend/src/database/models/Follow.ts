@@ -17,11 +17,15 @@ const Follow = new Schema({
     following: {
         type: Schema.Types.ObjectId,
         ref: "User",
+        index: true,
     },
     follower: {
         type: Schema.Types.ObjectId,
         ref: "User",
+        index: true,
     },
+}, {
+    autoIndex: true,
 });
 
 Follow.statics.checkExists = function(userId: string, followId: string): Promise<any> {

@@ -35,6 +35,8 @@ const Count = new Schema({
         type: Number,
         default: 0,
     },
+}, {
+    autoIndex: true,
 });
 
 Count.statics.followerCount = function(userId: string): Promise<any> {

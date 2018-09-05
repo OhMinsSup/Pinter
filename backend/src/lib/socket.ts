@@ -1,7 +1,5 @@
 import * as socketIO from 'socket.io';
 import { Server } from 'http';
-import User from '../database/models/User';
-import Notice from '../database/models/Notice';
 
 type UserPayload = {
     to: string,

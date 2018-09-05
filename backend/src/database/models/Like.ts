@@ -22,6 +22,8 @@ const Like = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Pin",
     },
+}, {
+    autoIndex: true,
 });
 
 Like.statics.checkExists = function(userId: string, pinId: string): Promise<any> {

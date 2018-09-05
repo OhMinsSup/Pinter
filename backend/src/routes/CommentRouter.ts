@@ -8,7 +8,7 @@ import {
     checkPinExistancy,
 } from '../lib/common';
 import {
-    serializeComment, serializeUser,
+    serializeComment,
 } from '../lib/serialize';
 
 class CommentRouter {

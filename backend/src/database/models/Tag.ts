@@ -26,6 +26,8 @@ const Tag = new Schema({
         type: String,
         lowercase: true,
     },
+}, {
+    autoIndex: true,
 });
 
 Tag.statics.findByTagName = function(name: string): Promise<any> {

@@ -22,15 +22,19 @@ const PinLocker = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
+        index: true,
     },
     pin: {
         type: Schema.Types.ObjectId,
         ref: "Pin",
+        index: true,
     },
     count: {
         type: Number,
         default: 0,
     },
+}, {
+    autoIndex: true,
 });
 
 PinLocker.statics.lockerList = function(userId: string, cursor?: string): Promise<any> {

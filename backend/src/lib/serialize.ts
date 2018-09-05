@@ -174,6 +174,25 @@ const serializeUsers = (data: any) => {
     };
 };
 
+const serializeGroup = (data: any) => {
+    const {
+        title,
+        thumbnail,
+        description,
+        creator,
+    } = data;
+
+    return {
+        title,
+        thumbnail,
+        description,
+        user: {
+            ...pick(creator, ['_id', 'username']),
+            ...pick(creator.profile, ['displayName', 'thumbnail']),
+        },
+    };
+};
+
 export {
     serializeUser,
     serializePin,
@@ -184,4 +203,5 @@ export {
     serializeFollower,
     serializeFollowing,
     serializeUsers,
+    serializeGroup,
 };
