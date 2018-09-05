@@ -6,3 +6,4 @@ export { default as NotFound } from './NotFound';
 export { default as User } from './user/User';
 export { default as Tags } from './Tags';
 export { default as Users } from './Users';
+export { default as Group } from './Group';

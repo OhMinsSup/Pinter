@@ -3,6 +3,7 @@ import * as express from "express";
 import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import * as mongoose from "mongoose";
+import * as path from 'path';
 import * as config from "./config/config";
 import { jwtMiddleware } from "./lib/middleware/jwtMiddleware";
 import Auth from "./routes/AuthRouter";
@@ -42,6 +43,8 @@ class Server {
             res.header("Access-Control-Allow-Credentials", "true");
             next();
         });
+
+        app.use(express.static(path.join(__dirname, "../../frontend/build/")));
     }
 
     private initializeDb(): void {
@@ -69,6 +72,10 @@ class Server {
         app.use("/pin", Pin);
         app.use("/pin/likes", Like);
         app.use("/pin/comments", Comment);
+
+        app.get('*', (req, res) => {
+            res.sendFile(path.resolve(__dirname, "../../frontend/build/index.html"));
+        });
     }   
 }
 

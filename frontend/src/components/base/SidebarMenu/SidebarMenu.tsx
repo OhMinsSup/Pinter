@@ -7,18 +7,29 @@ const cx = classNames.bind(styles);
 
 type Props = {
     to?: string,
+    icon?: React.ReactNode,
     name :string,
     onClick(): void,
 }
 
-const SidebarMenu: React.SFC<Props> = ({ to, name, onClick }) => {
+const SidebarMenu: React.SFC<Props> = ({ to, name, onClick, icon }) => {
     return (
         <div className={cx('sidebar-menu')} onClick={onClick}>
         {
             to ? (
-                <Link to={to} className={cx('sidebar-menu-item')}>{name}</Link>
+                <React.Fragment>
+                    <Link to={to} className={cx('sidebar-menu-item')}>
+                        <span>{icon}</span>
+                        <span>{name}</span>
+                    </Link>
+                </React.Fragment>
             ) : (
-                <div className={cx('sidebar-menu-item')}>{name}</div>
+                <React.Fragment>
+                    <div className={cx('sidebar-menu-item')}>
+                        <span>{icon}</span>
+                        <span>{name}</span>
+                    </div>
+                </React.Fragment>
             )
         }
         </div>

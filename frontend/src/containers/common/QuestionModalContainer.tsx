@@ -12,12 +12,12 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type QuestionModalContainerProps = StateProps & DispatchProps;
 
 class QuestionModalContainer extends React.Component<QuestionModalContainerProps> {
-    public onConfirm = () => {
+    public onCancel = () => {
         const { BaseActions } = this.props;
         BaseActions.setModal(false);
     }
 
-    public onCancel = async () => {
+    public onConfirm = async () => {
         const { WriteActions, pinId } = this.props;
     
         try {
@@ -29,15 +29,15 @@ class QuestionModalContainer extends React.Component<QuestionModalContainerProps
 
     public render() {
         const { modalVisible } = this.props;
-        const { onConfirm } = this;
+        const { onConfirm, onCancel } = this;
         return (
             <QuestionModal
                 open={modalVisible}
                 title="포스트 삭제"
                 description="이 포스트를 정말로 삭제하시겠습니까?"
                 confirmText="삭제"
-                onConfirm={() => console.log('삭제')}
-                onCancel={onConfirm}
+                onConfirm={onConfirm}
+                onCancel={onCancel}
             />
         )
     }

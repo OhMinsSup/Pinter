@@ -129,16 +129,13 @@ class PinRouter {
 
     private async deletePin(req: Request, res: Response): Promise<any> {
         const pinId: string = req['pin']._id;
-        const tags: string[] = req['pin'].tags;
         const userId: string = req['user']._id;
        
         try {
-            // TODO 태그 삭제 작업을 아직 안함
             await Promise.all([
                 Comment.deleteMany({ pin: pinId }),
                 Like.deleteMany({ pin: pinId }),
-                Locker.deleteMany({ pin: pinId }),
-                tags.forEach(tag => Tag.findOneAndUpdate({ _id: tag }, { $pop: { pin: pinId } }, { new: true })),
+                Locker.deleteMany({ pin: pinId }),   
             ]);
 
             await Pin.deleteOne({
