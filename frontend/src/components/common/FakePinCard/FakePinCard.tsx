@@ -51,7 +51,7 @@ type Props = {
 const FakePinCard: React.SFC<Props> = ({ oneColumn }) => {
     return (
         <React.Fragment>
-            <div className={cx('PinCard FakePinCard', { 'one-column': (oneColumn as boolean) })}>
+            <div className={cx('FakePinCard', { 'one-column': (oneColumn as boolean) })}>
             <div className={cx('thumbnail-wrapper')}>
                 <img src="https://github.com/velopert/velog/blob/master/velog-frontend/src/static/images/post_placeholder.png?raw=true" alt="thumbnail" />
             </div>
@@ -70,7 +70,7 @@ const FakePinCard: React.SFC<Props> = ({ oneColumn }) => {
                 </div>
                 </div>
                 <div className={cx('description')}>
-                <GrayBoxes count={15} />
+                    <GrayBoxes count={7} />
                 </div>
             </div>
             </div>

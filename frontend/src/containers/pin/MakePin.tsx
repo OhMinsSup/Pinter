@@ -13,7 +13,7 @@ import { withRouter } from 'react-router';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = { history: History };
+type OwnProps = { history: History, location: Location };
 
 type MakePinProps = StateProps & DispatchProps & OwnProps;
 
@@ -25,10 +25,26 @@ class MakePin extends React.Component<MakePinProps> {
             relationUrl, 
             body, 
             urls, 
-            BaseActions 
+            BaseActions,
+            pinId,
+            form
         } = this.props;
 
         try {
+            if (pinId && form) {
+                await WriteActions.editPin({
+                    id: pinId,
+                    relationUrl,
+                    body,
+                    urls,
+                    tags,
+                })
+                BaseActions.openPinBox(false);
+                this.props.history.push(`/`);
+                WriteActions.initialState();
+                return;
+            };
+
             await WriteActions.writeSubmit({
                 tags,
                 body,
@@ -37,8 +53,8 @@ class MakePin extends React.Component<MakePinProps> {
             });
 
             BaseActions.openPinBox(false);
-            WriteActions.initialState();
             this.props.history.push(`/pin/${this.props.pinId}`);
+            WriteActions.initialState();
         } catch (e) {
             console.log(e);
         }
@@ -114,7 +130,16 @@ class MakePin extends React.Component<MakePinProps> {
     }
 
     public render() {
-        const { visible, size, body, relationUrl,tags, urls } = this.props;
+        const { 
+            visible, 
+            size, 
+            body, 
+            relationUrl,
+            tags, 
+            urls,
+            pinId
+        } = this.props;
+
         const { 
             onInsertTag, 
             onRemoveTag, 
@@ -126,14 +151,16 @@ class MakePin extends React.Component<MakePinProps> {
             onRemoveUrl,
             onSubmit, 
         } = this;
-
+        
         if (!visible) return null;
+
         return (
             <WriteTemplate
                 size={size}
                 onClick={onCloseBox}
             >
                 <WriteForm 
+                    id={pinId}
                     inputTags={<InputTags
                         tags={tags}
                         onInsert={onInsertTag} 
@@ -166,6 +193,7 @@ const mapStateToProps = ({ base, write }: StoreState) => ({
     tags: write.form.tags,
     urls: write.form.urls,
     pinId: write.pinId,
+    form: write.form,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

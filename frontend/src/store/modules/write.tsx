@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 import * as WriteAPI from '../../lib/API/write';
+import * as PinAPI from '../../lib/API/pin';
 import { createPromiseThunk, GenericResponseAction } from '../../lib/common';
 
 const INITIAL_STATE = 'write/INITIAL_STATE';
@@ -9,6 +10,10 @@ const INSERT_TAG = 'write/INSERT_TAG';
 const REMOVE_TAG = 'write/REMOVE_TAG';
 const SET_UPLOAD_STATUS = 'write/SET_UPLOAD_STATUS';
 const REMOVE_UPLOAD_URL = 'write/REMOVE_UPLOAD_URL';
+const SET_PIN_ID = 'write/SET_PIN_ID';
+
+const GET_PIN_DATA = 'write/GET_PIN_DATA';
+const GET_PIN_DATA_SUCCESS = 'write/GET_PIN_DATA_SUCCESS';
 
 const CREATE_UPLOAD_URL = 'write/CREATE_UPLOAD_URL';
 const CREATE_UPLOAD_URL_SUCCESS = 'write/CREATE_UPLOAD_URL_SUCCESS';
@@ -17,6 +22,8 @@ const CREATE_UPLOAD_URL_ERROR = 'write/CREATE_UPLOAD_URL_ERROR';
 const WRITE_SUBMIT = 'write/WRITE_SUBMIT';
 const WRITE_SUBMIT_SUCCESS = 'write/WRITE_SUBMIT_SUCCESS';
 const WRITE_SUBMIT_ERROR = 'write/WRITE_SUBMIT_ERROR';
+
+const EDIT_PIN = 'write/EDIT_POST';
 
 type ChangeInputPayload = { name: string, value: string };
 
@@ -29,6 +36,9 @@ export const writeCreators = {
     createUploadUrl: createPromiseThunk(CREATE_UPLOAD_URL, WriteAPI.createSignedUrl),
     removeUploadUrl: createAction(REMOVE_UPLOAD_URL, (url: string) => url),
     writeSubmit: createPromiseThunk(WRITE_SUBMIT, WriteAPI.writePinAPI),
+    getPinData: createPromiseThunk(GET_PIN_DATA, PinAPI.readPinAPI),
+    setpinId: createAction(SET_PIN_ID, (id: string) => id),
+    editPin: createPromiseThunk(EDIT_PIN, WriteAPI.updatePinAPI),
 }
 
 type ChangeInputAction = ReturnType<typeof writeCreators.changeInput>;
@@ -38,6 +48,23 @@ type SetUploadStatusAction = ReturnType<typeof writeCreators.setUploadStatus>;
 type CreateSignedUrlAction = GenericResponseAction<{ url: string, path: string }, string>;
 type RemoveUploadUrlAction = ReturnType<typeof writeCreators.removeUploadUrl>;
 type WriteSubmitAction = GenericResponseAction<{ pinId: string } ,string>;
+type SetPinIdAction = ReturnType<typeof writeCreators.setpinId>;
+type GetPinDataAction = GenericResponseAction<{
+    pinId: string,
+    relationUrl: string,
+    body: string,
+    urls: string[],
+    createdAt: string,
+    tags: string[],
+    user: {
+        _id: string,
+        username: string,
+        displayName: string,
+        thumbnail: string
+    },
+    comments: number,
+    likes: number,
+}, string>;
 
 export interface WriteState {
     form: {
@@ -85,6 +112,12 @@ export default handleActions<WriteState, any>({
             };
             draft.pinId = '';
         });
+    },
+    [SET_PIN_ID]: (state, action: SetPinIdAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.pinId = action.payload;
+        })
     },
     [CHANGE_INPUT]: (state, action: ChangeInputAction) => {
         const { payload } = action;
@@ -148,5 +181,17 @@ export default handleActions<WriteState, any>({
         return produce(state, (draft) => {
             draft.pinId = '';
         })
+    },
+    [GET_PIN_DATA_SUCCESS]: (state, action: GetPinDataAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            if (data === undefined) return;
+            draft.form = {
+                relation_url: data.relationUrl,
+                urls: data.urls,
+                tags: data.tags,
+                body: data.body,
+            };
+        });
     }
 }, initialState)

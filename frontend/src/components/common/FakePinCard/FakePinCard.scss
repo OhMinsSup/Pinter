@@ -9,6 +9,9 @@
   }
   .thumbnail-wrapper {
     opacity: 0.3;
+    .thumbnail {
+      background: $oc-gray-3;
+    }
   }
   .card-content .user-thumbnail-wrapper {
     background: $oc-gray-2;

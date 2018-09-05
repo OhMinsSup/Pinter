@@ -12,7 +12,8 @@ const OPEN_PIN_BOX = 'base/OPEN_PIN_BOX';
 const SET_SIDE_BAR = 'base/SET_SIDE_BAR';
 const SET_MAIN = 'base/SET_MAIN';
 const SET_PIN_IMAGE = 'base/SET_PIN_IMAGE';
-const SET_PROFILE = 'base/SET_PROFILET;'
+const SET_PROFILE = 'base/SET_PROFILET';
+const SET_MENU = 'base/SET_MENU';
 
 export const baseCreators = {
     setHeaderVisibility: createAction(SET_HEADER_VISIBILITY, (visible: boolean) => visible),
@@ -26,6 +27,7 @@ export const baseCreators = {
     setMain: createAction(SET_MAIN, (visible: boolean) => visible),
     setPinImage: createAction(SET_PIN_IMAGE, (visible: boolean) => visible),
     setProfile: createAction(SET_PROFILE, (visible: boolean) => visible),
+    setMenu: createAction(SET_MENU, (visible: boolean) => visible),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
@@ -37,6 +39,7 @@ type SetSidebarAction = ReturnType<typeof baseCreators.setSidebar>;
 type SetMainAction = ReturnType<typeof baseCreators.setMain>;
 type SetPinImageAction = ReturnType<typeof baseCreators.setPinImage>;
 type SetProfileActin = ReturnType<typeof baseCreators.setProfile>;
+type SetMenuAction = ReturnType<typeof baseCreators.setMenu>;
 
 export interface BaseState {
     userMenu: boolean;
@@ -57,6 +60,9 @@ export interface BaseState {
         visible: boolean
     },
     profile: {
+        visible: boolean
+    },
+    menu: {
         visible: boolean
     }
 }
@@ -80,6 +86,9 @@ const initialState: BaseState = {
         visible: false,
     },
     profile: {
+        visible: false
+    },
+    menu: {
         visible: false
     }
 };
@@ -147,6 +156,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.profile.visible = action.payload;
+        })
+    },
+    [SET_MENU]: (state, action:SetMenuAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.menu.visible = action.payload;
         })
     }
 }, initialState);

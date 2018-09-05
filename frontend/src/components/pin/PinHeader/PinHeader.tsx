@@ -13,10 +13,19 @@ type Props = {
     displayName: string,
     thumbnail: string,
     follow: boolean,
-    onFollow(displayName: string): Promise<void>
+    onFollow(displayName: string): Promise<void>,
+    onClick(): void,
 }
 
-const PinHeader:React.SFC<Props> = ({ username, displayName, thumbnail, id, follow, onFollow }) => {
+const PinHeader:React.SFC<Props> = ({ 
+    username, 
+    displayName, 
+    thumbnail, 
+    id, 
+    follow, 
+    onFollow, 
+    onClick 
+}) => {
     return (
         <div className={cx('pin-header')}>
             <div className={cx('premalink-header')}>
@@ -39,7 +48,7 @@ const PinHeader:React.SFC<Props> = ({ username, displayName, thumbnail, id, foll
                 </div>
                 <div className={cx('action-menu')}>
                     <div className={cx('dropdown')}>
-                        <button className={cx('action-button')}>
+                        <button className={cx('action-button')} onClick={onClick}>
                             <Dropdown />
                         </button>
                     </div>

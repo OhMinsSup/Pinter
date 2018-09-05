@@ -3,6 +3,8 @@ import produce from 'immer';
 import { createPromiseThunk, GenericResponseAction } from '../../lib/common';
 import * as PinAPI from '../../lib/API/pin';
 
+const INITIALLIZE = 'pin/INITIALLIZE';
+
 const GET_PIN = 'pin/GET_PIN';
 const GET_PIN_SUCCESS = 'pin/GET_PIN_SUCCESS';
 const GET_PIN_PENDING = 'pin/GET_PIN_PENDING';
@@ -146,6 +148,32 @@ const initialState: PinState = {
 }
 
 export default handleActions<PinState, any>({
+    [INITIALLIZE]: (state) => {
+        return produce(state, (draft) => {
+            draft.pin = {
+                pinId: '', 
+                relationUrl: '', 
+                body: '', 
+                urls: [], 
+                createdAt: '',
+                tags: [],
+                user: {
+                    _id: '',
+                    username: '',
+                    displayName: '',
+                    thumbnail: ''
+                },
+                comments: 0,
+                likes: 0,
+            },
+            draft.comment = {
+                value: '',
+                tags: []
+            },
+            draft.comments = [];
+            draft.liked = false;
+        })
+    },
     [GET_PIN_PENDING]:(state) => {
         return produce(state, (draft) => {
             draft.loading.pin = true;

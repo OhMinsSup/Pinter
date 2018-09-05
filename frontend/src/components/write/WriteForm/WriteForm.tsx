@@ -9,6 +9,7 @@ const styles = require('./WriteForm.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
+    id: string,
     size: number,
     inputTags: React.ReactNode,
     dropImage: React.ReactNode,
@@ -21,7 +22,7 @@ type Props = {
     onSubmit(): void,
 }
 
-const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, size, onCloseBox, onChange, relationUrl, body, urls, onRemoveUrl }) => {
+const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, size, onCloseBox, onChange, relationUrl, body, urls, onRemoveUrl, id }) => {
     return (
         <div className={cx('write-form')}>
             <div className={cx('form-header')}>
@@ -32,9 +33,17 @@ const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, size, onC
                         </Button>
                     ) : null
                 }
-                <div className={cx('submit-btn')}>
-                    <Button theme='submit' onClick={onSubmit}>작성하기</Button>
-                </div>
+                {
+                    id ? (
+                        <div className={cx('submit-btn')}>
+                            <Button theme='submit' onClick={onSubmit}>수정하기</Button>
+                        </div>
+                    ) : (
+                        <div className={cx('submit-btn')}>
+                            <Button theme='submit' onClick={onSubmit}>작성하기</Button>
+                        </div>
+                    )
+                }
             </div>
             <div className={cx('form-widget')}>
                 <WriteItem

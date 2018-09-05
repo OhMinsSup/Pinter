@@ -8,6 +8,9 @@ import { pinCreators } from '../../store/modules/pin';
 import FakePin from '../../components/pin/FakePin';
 import { lockerCreators } from '../../store/modules/locker';
 import { followCreators } from '../../store/modules/follow';
+import PinMenu from '../../components/pin/PinMenu';
+import { baseCreators } from '../../store/modules/base';
+import { writeCreators } from '../../store/modules/write';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -25,6 +28,23 @@ class PinViewer extends React.Component<PinViewerProps> {
         } catch (e) {
             console.log(e);
         }
+    }
+
+    public onClickUpdate = async (id: string) => {
+        const { BaseActions, WriteActions } = this.props;
+        BaseActions.openPinBox(true);
+        WriteActions.setpinId(id);
+
+        try {
+            await WriteActions.getPinData(id);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    public onClick = () => {
+        const { BaseActions, menuVisible } = this.props;
+        menuVisible ? BaseActions.setMenu(false) : BaseActions.setMenu(true);
     }
     
     public onToggleLike = async () => {
@@ -74,9 +94,9 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 
     public render() {    
-        const { pin, loading, follow } = this.props;
-        const { onToggleLike, onToggleLocker, onToggleFollow } = this;
-        if (loading) return <FakePin />
+        const { pin, loading, follow, username, displayName, menuVisible } = this.props;
+        const { onToggleLike, onToggleLocker, onToggleFollow, onClick, onClickUpdate } = this;
+        if (loading) return <FakePin />;
 
         return(
             <React.Fragment>
@@ -87,6 +107,17 @@ class PinViewer extends React.Component<PinViewerProps> {
                     id={pin.user._id}
                     follow={follow}
                     onFollow={onToggleFollow}
+                    onClick={onClick}
+                />
+                <PinMenu
+                    ownDisplayName={displayName}
+                    ownUsername={username}
+                    username={pin.user.username}
+                    displayName={pin.user.displayName}
+                    visible={menuVisible}
+                    onClick={onClick}
+                    id={pin.pinId}
+                    onClickUpdate={onClickUpdate}
                 />
                 <PinContent
                     pin={pin}
@@ -98,18 +129,23 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 }
 
-const mapStateToProps = ({ pin, locker, follow }: StoreState) => ({
+const mapStateToProps = ({ pin, locker, follow, user, base }: StoreState) => ({
     pin: pin.pin && pin.pin,
     loading: pin.loading.pin,
     liked: pin.liked,
     locker: locker.locker,
-    follow: follow.user.follow
+    follow: follow.user.follow,
+    username: user.user && user.user.username,
+    displayName: user.user && user.user.displayName,
+    menuVisible: base.menu.visible,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     PinActions: bindActionCreators(pinCreators, dispatch),
     LockerActions: bindActionCreators(lockerCreators, dispatch),
     FollowActions: bindActionCreators(followCreators, dispatch),
+    BaseActions: bindActionCreators(baseCreators, dispatch),
+    WriteActions: bindActionCreators(writeCreators, dispatch),
 })
 
 export default connect<StateProps, DispatchProps, OwnProps>(

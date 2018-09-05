@@ -85,9 +85,9 @@ class Gallery extends React.Component<Props, State> {
                         urls.map((url: string, index: number) => {
                             return (
                                 this.state.currentNumber === index ? (
-                                    <div className={cx('location')} style={{ backgroundColor: "#3897f0" }}/>
+                                    <div key={index} className={cx('location')} style={{ backgroundColor: "#3897f0" }}/>
                                 ) : (
-                                    <div className={cx('location')} style={{ backgroundColor: "#dbdbdb" }}/>
+                                    <div key={index} className={cx('location')} style={{ backgroundColor: "#dbdbdb" }}/>
                                 )
                             )
                         })
