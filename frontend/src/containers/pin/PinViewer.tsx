@@ -30,6 +30,12 @@ class PinViewer extends React.Component<PinViewerProps> {
         }
     }
 
+    public onAskRemove = (id: string) => {
+        const { BaseActions, WriteActions } = this.props;
+        BaseActions.setModal(true);
+        WriteActions.setpinId(id);
+    }
+
     public onClickUpdate = async (id: string) => {
         const { BaseActions, WriteActions } = this.props;
         BaseActions.openPinBox(true);
@@ -95,7 +101,7 @@ class PinViewer extends React.Component<PinViewerProps> {
 
     public render() {    
         const { pin, loading, follow, username, displayName, menuVisible } = this.props;
-        const { onToggleLike, onToggleLocker, onToggleFollow, onClick, onClickUpdate } = this;
+        const { onToggleLike, onToggleLocker, onToggleFollow, onClick, onClickUpdate, onAskRemove } = this;
         if (loading) return <FakePin />;
 
         return(
@@ -117,6 +123,7 @@ class PinViewer extends React.Component<PinViewerProps> {
                     visible={menuVisible}
                     onClick={onClick}
                     id={pin.pinId}
+                    onAskRemove={onAskRemove}
                     onClickUpdate={onClickUpdate}
                 />
                 <PinContent
@@ -138,6 +145,7 @@ const mapStateToProps = ({ pin, locker, follow, user, base }: StoreState) => ({
     username: user.user && user.user.username,
     displayName: user.user && user.user.displayName,
     menuVisible: base.menu.visible,
+    modalVisible: base.modal.visible,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

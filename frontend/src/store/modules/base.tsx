@@ -14,6 +14,7 @@ const SET_MAIN = 'base/SET_MAIN';
 const SET_PIN_IMAGE = 'base/SET_PIN_IMAGE';
 const SET_PROFILE = 'base/SET_PROFILET';
 const SET_MENU = 'base/SET_MENU';
+const SET_MODAL = 'base/SET_MODAL';
 
 export const baseCreators = {
     setHeaderVisibility: createAction(SET_HEADER_VISIBILITY, (visible: boolean) => visible),
@@ -28,6 +29,7 @@ export const baseCreators = {
     setPinImage: createAction(SET_PIN_IMAGE, (visible: boolean) => visible),
     setProfile: createAction(SET_PROFILE, (visible: boolean) => visible),
     setMenu: createAction(SET_MENU, (visible: boolean) => visible),
+    setModal: createAction(SET_MODAL, (visible: boolean) => visible),
 };
 
 type SearchFullscreenLoaderAction = ReturnType<typeof baseCreators.searchFullscreenLoader>;
@@ -40,6 +42,7 @@ type SetMainAction = ReturnType<typeof baseCreators.setMain>;
 type SetPinImageAction = ReturnType<typeof baseCreators.setPinImage>;
 type SetProfileActin = ReturnType<typeof baseCreators.setProfile>;
 type SetMenuAction = ReturnType<typeof baseCreators.setMenu>;
+type SetModalAction = ReturnType<typeof baseCreators.setModal>;
 
 export interface BaseState {
     userMenu: boolean;
@@ -63,6 +66,9 @@ export interface BaseState {
         visible: boolean
     },
     menu: {
+        visible: boolean
+    },
+    modal: {
         visible: boolean
     }
 }
@@ -89,6 +95,9 @@ const initialState: BaseState = {
         visible: false
     },
     menu: {
+        visible: false
+    },
+    modal: {
         visible: false
     }
 };
@@ -162,6 +171,12 @@ export default handleActions<BaseState, any>({
         return produce(state, (draft) => {
             if (action.payload === undefined) return;
             draft.menu.visible = action.payload;
+        })
+    },
+    [SET_MODAL]: (state, action: SetModalAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.modal.visible = action.payload;
         })
     }
 }, initialState);

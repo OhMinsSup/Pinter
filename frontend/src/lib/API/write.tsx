@@ -35,3 +35,5 @@ export const writePinAPI = ({ relationUrl, body, urls, tags }: WritePinPayload):
 export const updatePinAPI = ({ id, relationUrl, body, urls, tags }: UpdatePinPayload): Promise<any> => axios.patch(`/pin/${id}`, {
     relationUrl, body, urls, tags
 });
+
+export const removePinAPI = (id: string) => axios.delete(`/pin/${id}`);

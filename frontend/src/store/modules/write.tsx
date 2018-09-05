@@ -24,6 +24,7 @@ const WRITE_SUBMIT_SUCCESS = 'write/WRITE_SUBMIT_SUCCESS';
 const WRITE_SUBMIT_ERROR = 'write/WRITE_SUBMIT_ERROR';
 
 const EDIT_PIN = 'write/EDIT_POST';
+const REMOVE_PIN = 'write/REMOVE_PIN';
 
 type ChangeInputPayload = { name: string, value: string };
 
@@ -39,6 +40,7 @@ export const writeCreators = {
     getPinData: createPromiseThunk(GET_PIN_DATA, PinAPI.readPinAPI),
     setpinId: createAction(SET_PIN_ID, (id: string) => id),
     editPin: createPromiseThunk(EDIT_PIN, WriteAPI.updatePinAPI),
+    removePin: createPromiseThunk(REMOVE_PIN, WriteAPI.removePinAPI)
 }
 
 type ChangeInputAction = ReturnType<typeof writeCreators.changeInput>;

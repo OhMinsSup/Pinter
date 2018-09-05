@@ -14,9 +14,10 @@ type Props = {
     visible: boolean,
     onClick(): void,
     onClickUpdate(id: string): Promise<void>,
+    onAskRemove(id: string): void
 }
 
-const PinMenu: React.SFC<Props> = ({ visible, onClick, ownUsername, ownDisplayName, username, displayName, onClickUpdate, id }) => {
+const PinMenu: React.SFC<Props> = ({ visible, onClick, ownUsername, ownDisplayName, username, displayName, onClickUpdate, id, onAskRemove }) => {
     if (!visible) return null;
     return (
         <div className={cx('pin-menu-wrapper')}>
@@ -29,7 +30,7 @@ const PinMenu: React.SFC<Props> = ({ visible, onClick, ownUsername, ownDisplayNa
                                     <PinMenuItem onClick={() => onClickUpdate(id)}>
                                         수정
                                     </PinMenuItem>
-                                    <PinMenuItem>
+                                    <PinMenuItem onClick={() => onAskRemove(id)}>
                                         삭제
                                     </PinMenuItem>
                                     <PinMenuItem>
