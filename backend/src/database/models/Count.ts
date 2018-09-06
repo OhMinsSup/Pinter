@@ -47,7 +47,8 @@ Count.statics.followerCount = function(userId: string): Promise<any> {
     }, {
         new: true,
         select: "follower",
-    });
+    })
+    .lean();
 };
 
 Count.statics.unfollowerCount = function(userId: string): Promise<any> {
@@ -58,7 +59,8 @@ Count.statics.unfollowerCount = function(userId: string): Promise<any> {
     }, {
         new: true,
         select: "follower",
-    });
+    })
+    .lean();
 };
 
 Count.statics.followingCount = function(userId: string): Promise<any> {
@@ -69,7 +71,8 @@ Count.statics.followingCount = function(userId: string): Promise<any> {
     }, {
         new: true,
         select: "following",
-    });
+    })
+    .lean();
 };
 
 Count.statics.unfollowingCount = function(userId: string): Promise<any> {
@@ -80,7 +83,8 @@ Count.statics.unfollowingCount = function(userId: string): Promise<any> {
     }, {
         new: true,
         select: "following",
-    });
+    })
+    .lean();
 };
 
 Count.statics.pinCount = function(userId: string): Promise<any> {
@@ -91,7 +95,8 @@ Count.statics.pinCount = function(userId: string): Promise<any> {
     }, {
         new: true,
         select: "pin",
-    });
+    })
+    .lean();
 },
 
 Count.statics.unpinCount = function(userId: string): Promise<any> {
@@ -102,7 +107,8 @@ Count.statics.unpinCount = function(userId: string): Promise<any> {
     }, {
         new: true,
         select: "pin",
-    });
+    })
+    .lean();
 };
 
 const CountModel = model<ICount>("Count", Count) as ICountModel;

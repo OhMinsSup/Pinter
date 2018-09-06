@@ -27,7 +27,7 @@ class TagRouter {
         );
 
         try {
-            const tagData = await Tag.find().sort(sortBy);
+            const tagData = await Tag.find().sort(sortBy).lean().exec();
             res.json(tagData.map(serializeTag));
         } catch (e) {
             res.status(500).json(e);

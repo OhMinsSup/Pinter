@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express';
 import * as joi from 'joi';
-import * as filesize from 'filesize';
 import { diff } from 'json-diff';
 import needAuth from '../lib/middleware/needAuth';
 import User, { IUser } from '../database/models/User';
@@ -108,6 +107,7 @@ class PinRouter {
             const tagDiff: string[] = diff(tagNames.sort(), tags.sort()) || [];
             const tagsToRemove: string[] = tagDiff.filter(info => info[0] === '-').map(info => info[1]);
             const tagsToAdd: string[] = tagDiff.filter(info => info[0] === '+').map(info => info[1]);
+            
             try {
                 await Tag.removeTagsFromPin(pinId, tagsToRemove);
                 await Tag.addTagsToPin(pinId, tagsToAdd);
@@ -116,7 +116,8 @@ class PinRouter {
                     relation_url: relationUrl,
                     body,
                     urls,
-                }, { new: true });
+                }, { new: true })
+                .lean();
 
                 const pinData = await Pin.readPinById(pinId);
                 const serialized = serializePin(pinData);
@@ -133,14 +134,14 @@ class PinRouter {
        
         try {
             await Promise.all([
-                Comment.deleteMany({ pin: pinId }),
-                Like.deleteMany({ pin: pinId }),
-                Locker.deleteMany({ pin: pinId }),   
+                Comment.deleteMany({ pin: pinId }).lean().exec(),
+                Like.deleteMany({ pin: pinId }).lean().exec(),
+                Locker.deleteMany({ pin: pinId }).lean().exec(),   
             ]);
 
             await Pin.deleteOne({
                 _id: pinId,
-            });
+            }).lean();
             await Count.unpinCount(userId);
 
             res.json({

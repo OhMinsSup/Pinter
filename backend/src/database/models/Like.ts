@@ -10,20 +10,18 @@ export interface ILike extends Document {
 
 export interface ILikeModel extends Model<ILike> {
     checkExists(userId: string, pinId: string): Promise<any>;
-    getLikeUserList(pinId: string, userId: string): Promise<any>;
 }
 
 const Like = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
+        index: true,
     },
     pin: {
         type: Schema.Types.ObjectId,
         ref: "Pin",
     },
-}, {
-    autoIndex: true,
 });
 
 Like.statics.checkExists = function(userId: string, pinId: string): Promise<any> {
@@ -32,21 +30,8 @@ Like.statics.checkExists = function(userId: string, pinId: string): Promise<any>
             { user: userId },
             { pin: pinId },
         ],
-    });
-};
-
-Like.statics.getLikeUserList = function(pinId: string, userId: string): Promise<any> {
-    const query = Object.assign(
-        {},
-        {
-            pin: pinId, 
-            user: { $ne: userId }, 
-        },
-    );
-
-    return this.find(query)
-    .populate("user")
-    .sort({_id: -1}); 
+    })
+    .lean();
 };
 
 const LikeModel = model<ILike>("Like", Like) as ILikeModel;

@@ -29,14 +29,22 @@ const Pin = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
+        index: true,
     },
     tags: [{
         type: Schema.Types.ObjectId,
         ref: "Tag",
+        index: true,
     }],
-    body: String,
-    relationUrl: String,
-    urls: [String],
+    body: {
+        type: String,
+    },
+    relationUrl: {
+        type: String,
+    },
+    urls: {
+        type: [String],
+    },
     likes: {
         type: Number,
         default: 0,
@@ -47,7 +55,6 @@ const Pin = new Schema({
     },
 }, { 
     timestamps: true, 
-    autoIndex: true,
 });
 
 Pin.statics.readPinById = function(pinId: string): Promise<any> {    
@@ -58,7 +65,8 @@ Pin.statics.readPinById = function(pinId: string): Promise<any> {
         populate: [{
             path: "tags",
         }],
-    });
+    })
+    .lean();
 };
 
 Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<any> {
@@ -85,25 +93,29 @@ Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<an
 Pin.statics.like = function(pinId: string): Promise<any> {
     return this.findByIdAndUpdate(pinId, {
         $inc: { likes: 1 },
-    }, { new: true });
+    }, { new: true })
+    .lean();
 };
 
 Pin.statics.unlike = function(pinId: string): Promise<any> {
     return this.findByIdAndUpdate(pinId, {
         $inc: { likes: -1 },
-    }, { new: true });
+    }, { new: true })
+    .lean();
 };
 
 Pin.statics.comment = function(pinId: string): Promise<any> {
     return this.findByIdAndUpdate(pinId, {
         $inc: { comments: 1 },
-    }, { new: true });
+    }, { new: true })
+    .lean();
 };
 
 Pin.statics.uncomment = function(pinId: string): Promise<any> {
     return this.findByIdAndUpdate(pinId, {
         $inc: { comments: -1 },
-    }, { new: true });
+    }, { new: true })
+    .lean();
 };
 
 const PinModel = model<IPin>("Pin", Pin) as IPinModel;

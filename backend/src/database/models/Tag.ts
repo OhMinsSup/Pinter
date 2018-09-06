@@ -26,8 +26,6 @@ const Tag = new Schema({
         type: String,
         lowercase: true,
     },
-}, {
-    autoIndex: true,
 });
 
 Tag.statics.findByTagName = function(name: string): Promise<any> {
@@ -46,7 +44,8 @@ Tag.statics.findByTagName = function(name: string): Promise<any> {
                 ],
             },
         ],
-    });
+    })
+    .lean();
 };
 
 Tag.statics.getTagId = async function(name: string, pinId: string): Promise<any> {
@@ -66,7 +65,8 @@ Tag.statics.getTagId = async function(name: string, pinId: string): Promise<any>
                     ],
                 },
             ],
-        });
+        })
+        .lean();
         
         if (!tag) {
             tag = await this.create({
@@ -81,7 +81,8 @@ Tag.statics.getTagId = async function(name: string, pinId: string): Promise<any>
             $push: { 
                 pin: pinId,
             },
-        }, { new: true });
+        }, { new: true })
+        .lean();
         
         return tag._id;
     } catch (e) {
@@ -92,7 +93,9 @@ Tag.statics.getTagId = async function(name: string, pinId: string): Promise<any>
 Tag.statics.getTagNames = function(pinId: string): Promise<any> {
     return this.find({
         pin: pinId,
-    });
+    })
+    .lean()
+    .exec();
 };
 
 Tag.statics.bulkGetNewId = async function(names: string[], pinId: string): Promise<any> {
@@ -106,7 +109,8 @@ Tag.statics.bulkGetNewId = async function(names: string[], pinId: string): Promi
                     pin: pinId,
                 },
             ],
-        });
+        })
+        .lean();
 
         const missingTags = names.filter((name) => tagData.findIndex((tag) => tag.name === name) === -1);
         const newTagIds: string[] = (await this.create(missingTags.map((name) => ({ name })))).map((tag: ITag) => tag._id);
@@ -128,7 +132,9 @@ Tag.statics.bulkGetMissingId = async function(names: string[], pinId: string): P
                     pin: pinId,
                 },
             ],
-        });
+        })
+        .lean()
+        .exec();
 
         const tagIds = tagData.map((tag) => tag._id);
         return tagIds;
@@ -144,11 +150,11 @@ Tag.statics.addTagsToPin = async function(pinId: string, tags: string[]): Promis
         const tagIds: string[] = await this.bulkGetNewId(tags, pinId);        
         await Promise.all(tagIds.map((tagId) => this.findByIdAndUpdate(tagId, {
             $push: { pin: pinId },
-        }, { new: true })));
+        }, { new: true }).lean()));
 
         await Promise.all(tagIds.map((tagId) => Pin.findByIdAndUpdate(pinId, {
             $push: { tags: tagId },
-        }, { new: true })));
+        }, { new: true }).lean()));
     } catch (e) {
         throw e;
     }
@@ -162,11 +168,11 @@ Tag.statics.removeTagsFromPin = async function(pinId: string, tags: string[]): P
         
         await Promise.all(tagIds.map((tagId) => this.findByIdAndUpdate(tagId, {
             $pop: { pin: pinId },
-        }, { new: true })));
+        }, { new: true }).lean()));
         
         await Promise.all(tagIds.map((tagId) => Pin.findByIdAndUpdate(pinId, {
             $pop: { tags: tagId },
-        }, { new: true })));
+        }, { new: true }).lean()));
     } catch (e) {
         throw e;
     }

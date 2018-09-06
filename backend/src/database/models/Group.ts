@@ -21,8 +21,6 @@ const Group = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
-}, {
-    autoIndex: true,
 });
 
 Group.statics.readGroupId = function(groupId: string): Promise<any> {

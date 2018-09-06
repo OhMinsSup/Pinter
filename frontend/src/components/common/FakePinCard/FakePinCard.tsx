@@ -53,7 +53,7 @@ const FakePinCard: React.SFC<Props> = ({ oneColumn }) => {
         <React.Fragment>
             <div className={cx('FakePinCard', { 'one-column': (oneColumn as boolean) })}>
             <div className={cx('thumbnail-wrapper')}>
-                <img src="https://github.com/velopert/velog/blob/master/velog-frontend/src/static/images/post_placeholder.png?raw=true" alt="thumbnail" />
+                <div className={cx('thumbnail')}/>
             </div>
             <div className={cx('card-content')}>
                 {!oneColumn && <div className={cx('user-thumbnail-wrapper')} />}

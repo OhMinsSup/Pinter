@@ -56,7 +56,7 @@ class FollowRouter {
         const username: string = req['user'].username;
         const userId: string = req['user']._id;
         const { followName } = req.params;
-
+        
         if (followName === username) {
             return res.status(400).json({
                 name: '자기 자신을 언팔로우 할 수 없습니다.',

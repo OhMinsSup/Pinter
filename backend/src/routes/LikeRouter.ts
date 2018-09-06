@@ -26,7 +26,7 @@ class LikeRouter {
             liked = !!exists;
         }
         try {
-            const pin = await Pin.findById(pinId);
+            const pin = await Pin.findById(pinId).lean();
 
             res.json({
                 liked,
@@ -55,7 +55,7 @@ class LikeRouter {
                 pin: pinId,
             });
             await Pin.like(pinId);
-            const pin = await Pin.findById(pinId);
+            const pin = await Pin.findById(pinId).lean();
             res.json({
                 liked: true,
                 likes: pin.likes,
@@ -79,7 +79,7 @@ class LikeRouter {
 
         await exists.remove();
         await Pin.unlike(pinId);
-        const pin = await Pin.findById(pinId);
+        const pin = await Pin.findById(pinId).lean();
         res.json({
             liked: false,
             likes: pin.likes,

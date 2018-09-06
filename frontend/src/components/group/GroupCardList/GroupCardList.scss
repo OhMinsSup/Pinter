@@ -1,0 +1,10 @@
+@import 'utils';
+
+.group-card-list {
+    display: flex;
+    justify-content: left;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: -0.875rem;
+    margin-right: -0.875rem;
+}

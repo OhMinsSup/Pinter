@@ -171,7 +171,7 @@ class AuthRouter {
             }
 
             const token: string = await user.generate(user);
-
+            
             res.cookie('access_token', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7,

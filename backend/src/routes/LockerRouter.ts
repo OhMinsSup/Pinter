@@ -74,7 +74,7 @@ class LockerRouter {
         }
 
         try {
-            const locker = await PinLocker.findById(pinId);
+            const locker = await PinLocker.findById(pinId).lean();
 
             res.json({
                 locker,

@@ -13,7 +13,6 @@ export interface IComment extends Document {
 export interface ICommentModel extends Model<IComment> {
     readComment(commentId: string): Promise<any>;
     getCommentList(pinId: string): Promise<any>;
-    getCommentUserList(pinId: string, userId: string): Promise<any>;
 }
 
 const Comment = new Schema({
@@ -25,7 +24,6 @@ const Comment = new Schema({
     pin: {
         type: Schema.Types.ObjectId,
         ref: "Pin",
-        index: true,
     },
     has_tags: [{
         type: Schema.Types.ObjectId,
@@ -35,7 +33,6 @@ const Comment = new Schema({
     text: String,
 }, {
     timestamps: true,
-    autoIndex: true,
 });
 
 Comment.statics.readComment = function(commentId: string): Promise<any> {
@@ -46,7 +43,8 @@ Comment.statics.readComment = function(commentId: string): Promise<any> {
         populate: [{
             path: "has_tags",
         }],
-    });
+    })
+    .lean();
 };
 
 Comment.statics.getCommentList = function(pinId: string): Promise<any> {
@@ -63,21 +61,9 @@ Comment.statics.getCommentList = function(pinId: string): Promise<any> {
             path: "has_tags",
         }],
     })
-    .sort({_id: -1}); 
-};
-
-Comment.statics.getCommentUserList = function(pinId: string, userId: string): Promise<any> {
-    const query = Object.assign(
-        {},
-        { 
-            pin: pinId, 
-            user: { $ne: userId }, 
-        },
-    );
-
-    return this.find(query)
-    .populate("user")
-    .sort({_id: -1});
+    .sort({_id: -1})
+    .lean()
+    .exec();
 };
 
 const CommentModel = model<IComment>("Comment", Comment) as ICommentModel;

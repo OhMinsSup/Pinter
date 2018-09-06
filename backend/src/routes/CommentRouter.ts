@@ -44,7 +44,7 @@ class CommentRouter {
         const userId: string = req['user']._id;
 
         try {
-            const tagUserNames = await Promise.all(tags.map(tag => User.findOne({ 'profile.displayName': tag }).select('_id')));
+            const tagUserNames = await Promise.all(tags.map(tag => User.findOne({ 'profile.displayName': tag }).select('_id').lean()));
             const tagIds = tagUserNames.map(id => id).filter(e => e);
             
             const comment = await Comment.create({ 
@@ -72,7 +72,7 @@ class CommentRouter {
         const pinId: string = req['pin']._id;
 
         try {
-            const comment = await Comment.findById(commentId);
+            const comment = await Comment.findById(commentId).lean();
 
             if (!comment) {
                 return res.status(404).json({

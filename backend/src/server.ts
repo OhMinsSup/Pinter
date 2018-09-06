@@ -24,6 +24,7 @@ class Server {
     constructor() {
         this.app = express();
         this.initializeDb();
+        // this.initializeRedis();
         this.middleware();
         this.routes();
     }

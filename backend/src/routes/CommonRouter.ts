@@ -31,7 +31,7 @@ class CommonRouter {
         const { displayName } = req.params;
         try {
             const user: IUser = await User.findByDisplayName(displayName);
-            const count: ICount = await Count.findOne({ user: user._id });
+            const count: ICount = await Count.findOne({ user: user._id }).lean();
             res.json({
                 username: user.username,
                 displayName: user.profile.displayName,

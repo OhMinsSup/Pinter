@@ -1,4 +1,5 @@
 import * as redis from 'redis';
+import * as config from '../config/config';
 
 class RedisClient {
     public client: redis.RedisClient | null = null;
@@ -13,8 +14,7 @@ class RedisClient {
         const p = new Promise(
             (resolve, reject) => {
                 const client = redis.createClient({
-                    // host,
-                    // password
+                    host: config.REDIST_HOST || '',
                 });
 
                 client.on('error', (err) => {

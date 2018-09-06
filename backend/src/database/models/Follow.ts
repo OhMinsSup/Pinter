@@ -24,8 +24,6 @@ const Follow = new Schema({
         ref: "User",
         index: true,
     },
-}, {
-    autoIndex: true,
 });
 
 Follow.statics.checkExists = function(userId: string, followId: string): Promise<any> {
@@ -34,7 +32,8 @@ Follow.statics.checkExists = function(userId: string, followId: string): Promise
             { following : followId },
             { follower : userId },
         ],
-    });
+    })
+    .lean();
 };
 
 Follow.statics.followingList = function(followerId: string, cursor?: string): Promise<any> {
@@ -45,7 +44,9 @@ Follow.statics.followingList = function(followerId: string, cursor?: string): Pr
     return this.find(query)
     .populate("following")
     .sort({ _id: -1 })
-    .limit(10);
+    .limit(10)
+    .lean()
+    .exec();
 };
 
 Follow.statics.followerList = function(followingId: string, cursor?: string): Promise<any> {
@@ -56,7 +57,9 @@ Follow.statics.followerList = function(followingId: string, cursor?: string): Pr
     return this.find(query)
     .populate("follower")
     .sort({ _id: -1 })
-    .limit(10);
+    .limit(10)
+    .lean()
+    .exec();
 };
 
 const FollowModel = model<IFollow>("Follow", Follow) as IFollowModel;

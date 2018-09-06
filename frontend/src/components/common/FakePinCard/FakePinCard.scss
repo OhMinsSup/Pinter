@@ -11,7 +11,11 @@
     opacity: 0.3;
     .thumbnail {
       background: $oc-gray-3;
+      background: #dee2e6;
+      width: 550px;
+      height: 300px;  
     }
+    margin-bottom: 1rem;
   }
   .card-content .user-thumbnail-wrapper {
     background: $oc-gray-2;

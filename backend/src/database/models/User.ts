@@ -30,10 +30,16 @@ export interface IUserModel extends Model<IUser> {
 }
 
 const User = new Schema({
-    username: String,
-    email: String,
+    username: {
+        type: String,
+    },
+    email: {
+        type: String,
+    },
     profile: {
-        displayName: String,
+        displayName: {
+            type: String,
+        },
         thumbnail: {
             type: String,
             default: "https://avatars.io/platform/userId",
@@ -49,20 +55,20 @@ const User = new Schema({
             accessToken: String,
         },
     },
-}, {
-    autoIndex: true,
 });
 
 User.statics.findByEmailOrUsername = function(type: "email" | "username", value: string): Promise<any> {
     return this.findOne({
         [type]: value,
-    });
+    })
+    .lean();
 };
 
 User.statics.findByDisplayName = function(value?: string): Promise<any> {  
     return this.findOne({
         "profile.displayName": value,
-    });
+    })
+    .lean();
 };
 
 User.statics.findBySocial = function(provider: string, socialId: string | number): Promise<any> {
@@ -70,7 +76,8 @@ User.statics.findBySocial = function(provider: string, socialId: string | number
 
     return this.findOne({
         [key]: socialId,
-    });
+    })
+    .lean();
 };
 
 User.statics.usersList = function(cursor?: string): Promise<any> {
@@ -81,7 +88,9 @@ User.statics.usersList = function(cursor?: string): Promise<any> {
 
     return this.find(query)
     .sort({ _id: -1 })
-    .limit(15);
+    .limit(15)
+    .lean()
+    .exec();
 };
 
 User.methods.generate = async function(profile: IUser): Promise<any> {
