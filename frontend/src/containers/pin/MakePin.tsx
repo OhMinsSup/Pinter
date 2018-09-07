@@ -83,10 +83,6 @@ class MakePin extends React.Component<MakePinProps> {
         WriteActions.removeUploadUrl(url);
     }
 
-    public uploadRemove = () => {
-        console.log('gkgk');
-    }
-
     public onDrop = (e: any) => {
         e.preventDefault();
         const { files } = e.dataTransfer;

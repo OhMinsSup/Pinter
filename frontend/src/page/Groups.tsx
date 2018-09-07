@@ -3,7 +3,7 @@ import GroupTemplate from '../components/group/GroupTemplate';
 import CreateBoxContainer from '../containers/group/CreateBoxContainer';
 import GroupList from '../containers/list/GroupList';
 
-const Group = () => {
+const Groups = () => {
     return (
         <GroupTemplate
             box={<CreateBoxContainer/>}
@@ -13,4 +13,4 @@ const Group = () => {
     )
 }
 
-export default Group;
+export default Groups;
