@@ -88,7 +88,6 @@ class AuthRouter {
                 payload: result.error,
             });
         }
-
         const { registerToken, username, displayName }: BodySchema = req.body;
 
         try {
@@ -165,13 +164,13 @@ class AuthRouter {
 
             const { email } = auth;
             const user: IUser = await User.findByEmailOrUsername('email', email);
-            
+
             if (!user) {
                 return res.status(401);
             }
 
-            const token: string = await user.generate(user);
-            
+            const token: string = await User.generate(user);
+
             res.cookie('access_token', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -307,7 +306,7 @@ class AuthRouter {
                 },
             });
 
-            const token: string = await auth.generate(auth);
+            const token: string = await User.generate(auth);
             await Count.create({ user: auth._id });
 
             res.cookie('access_token', token, {
@@ -373,7 +372,7 @@ class AuthRouter {
                 });
             }
 
-            const token: string = await user.generate(user);
+            const token: string = await User.generate(user);
 
             res.cookie('access_token', token, {
                 httpOnly: true,

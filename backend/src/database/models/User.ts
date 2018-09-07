@@ -27,6 +27,7 @@ export interface IUserModel extends Model<IUser> {
     findBySocial(provider: string, socialId: string | number): Promise<any>;
     findByDisplayName(value?: string): Promise<any>;
     usersList(cursor?: string): Promise<any>;
+    generate(profile: IUser): Promise<any>;
 }
 
 const User = new Schema({
@@ -93,14 +94,12 @@ User.statics.usersList = function(cursor?: string): Promise<any> {
     .exec();
 };
 
-User.methods.generate = async function(profile: IUser): Promise<any> {
-    const { _id, username } = this;
-
+User.statics.generate = function(profile: IUser): Promise<any> {
     if (!profile) {
         throw new Error("user profile not found");
     }
 
-    const { profile: { displayName, thumbnail } } = profile;
+    const { profile: { displayName, thumbnail }, _id, username } = profile;
     const auth = {
         _id,
         username,

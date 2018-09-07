@@ -16,7 +16,10 @@ export interface GroupWriteState {
         title: string,
         description: string,
         thumbnail: string,
-        type: boolean,
+        type: {
+            public: boolean,
+            private: boolean
+        },
     }
 }
 
@@ -25,7 +28,10 @@ const initialState: GroupWriteState = {
         title: '',
         description: '',
         thumbnail: '',
-        type: true
+        type: {
+            public: true,
+            private: false,
+        },
     }
 }
 
