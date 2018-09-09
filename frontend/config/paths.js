@@ -55,5 +55,7 @@ module.exports = {
   appTsLint: resolveApp('tslint.json'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
-  styles: resolveApp('src/styles')
+  styles: resolveApp('src/styles'),
+  ssrEntry: resolveApp('build-ssr/ssr.js'),
+  ssrBuild: resolveApp('../backend/src/ssr/'),
 };

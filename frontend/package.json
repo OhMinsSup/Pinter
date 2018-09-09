@@ -36,6 +36,7 @@
     "react": "^16.4.0",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.0",
+    "react-helmet": "^5.2.0",
     "react-icon-base": "^2.1.2",
     "react-icons": "^2.2.7",
     "react-masonry-component": "^6.2.1",
@@ -70,6 +71,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "build:ssr": "tsc -p tsconfig.server.json && node scripts/build.server.js",
     "test": "node scripts/test.js --env=jsdom"
   },
   "devDependencies": {
@@ -81,6 +83,7 @@
     "@types/query-string": "^5.1.0",
     "@types/react": "^16.3.14",
     "@types/react-dom": "^16.0.5",
+    "@types/react-helmet": "^5.0.7",
     "@types/react-icon-base": "^2.1.1",
     "@types/react-icons": "^2.2.5",
     "@types/react-redux": "^6.0.0",

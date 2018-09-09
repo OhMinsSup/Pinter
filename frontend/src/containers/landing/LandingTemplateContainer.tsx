@@ -9,7 +9,7 @@ type OwnProps = {
     form: React.ReactNode
 }
 
-type LandingTemplateContainerProps = StateProps & OwnProps
+type LandingTemplateContainerProps = StateProps & OwnProps;
 
 class LandingTemplateContainer extends React.Component<LandingTemplateContainerProps> {
     public render() {
@@ -24,7 +24,6 @@ const mapStateToProps = ({ user }: StoreState) => ({
      user: user.user && user.user
 });
 
-export default connect(
+export default connect<StateProps, OwnProps>(
     mapStateToProps,
-    null
 )(LandingTemplateContainer);

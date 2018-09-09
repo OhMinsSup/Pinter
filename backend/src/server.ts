@@ -64,9 +64,9 @@ class Server {
         const { app } = this;
 
         app.use(router);
+        app.get('/*', (req, res) => {
+            res.sendFile(path.join(__dirname, '../../frontend/build/', 'index.html'));
 
-        app.get('*', (req, res) => {
-            res.sendFile(path.resolve(__dirname, "../../frontend/build/index.html"));
         });
     }   
 }

@@ -12,7 +12,7 @@ const s3 = new AWS.S3({
 
 export const createSignedUrl = async (req: Request, res: Response): Promise<any> => {
     const { file } = req;
-
+    
     if (!file) {
         return res.status(400).json({
             name: '파일이 존재하지 않습니다.',
