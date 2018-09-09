@@ -19,16 +19,15 @@ const Comment = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        index: true,
     },
     pin: {
         type: Schema.Types.ObjectId,
         ref: "Pin",
+        index: true,
     },
     has_tags: [{
         type: Schema.Types.ObjectId,
         ref: "User",
-        index: true,
     }],
     text: String,
 }, {

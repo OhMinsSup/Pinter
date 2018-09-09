@@ -29,15 +29,14 @@ class WriteGroupContainer extends React.Component<WriteGroupContainerProps> {
     }
 
     public render() {
-        const { title, description, thumbnail, typePrivate, typePublic } = this.props;
+        const { title, description, thumbnail, name } = this.props;
         const { onChangeInput, onUploadClick } = this;
         return (
             <WrtieGroupPane
                 title={title}
                 thumbnail={thumbnail}
                 description={description}
-                typePrivate={typePrivate}
-                typePublic={typePublic}
+                name={name}
                 onChangeInput={onChangeInput}
                 onUploadClick={onUploadClick}
             />
@@ -49,8 +48,7 @@ const mapStateToProps = ({ group }: StoreState) => ({
     title: group.groupWrite.form.title,
     description: group.groupWrite.form.description,
     thumbnail: group.groupWrite.form.thumbnail,
-    typePublic: group.groupWrite.form.type.public,
-    typePrivate: group.groupWrite.form.type.private,
+    name: group.groupWrite.form.type,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

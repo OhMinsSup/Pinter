@@ -27,13 +27,14 @@ const GroupInput: React.SFC<{
 
 const GroupType: React.SFC<{
     title: string,
-    value: boolean,
-    name: string
-}> = ({ title, value }) => {
+    value: string,
+    name: string,
+    onChange(e: any): void,
+}> = ({ title, value, onChange }) => {
     return (
         <li>
             <label className={cx('secret')}>
-                <input type='radio' checked={value} name={name}/>
+                <input type='radio' name={name} value={value} onChange={onChange}/>
                 <span className={cx('check-label')}>
                     {title}
                 </span>
@@ -47,8 +48,7 @@ type Props = {
     title: string,
     thumbnail: string,
     description: string,
-    typePublic: boolean,
-    typePrivate: boolean,
+    name: string,
     onChangeInput(e: any): void,
     onUploadClick(): void,
 }
@@ -58,11 +58,10 @@ class WrtieGroupPane extends React.Component<Props> {
         const { 
             onChangeInput, 
             title, 
-            typePrivate,
-            typePublic,
             description,
             thumbnail,
-            onUploadClick 
+            onUploadClick,
+            name,
         } = this.props;
         return (
             <div className={cx('write-group-pane')}>
@@ -100,13 +99,15 @@ class WrtieGroupPane extends React.Component<Props> {
                         <ul className={cx('type-list')}>
                             <GroupType
                                 title="공개"
-                                name='public'
-                                value={typePublic}
+                                name={name}
+                                value='public'
+                                onChange={onChangeInput}
                             />
                             <GroupType
                                 title="비공개"
-                                name='private'
-                                value={typePrivate}
+                                name={name}
+                                value='private'
+                                onChange={onChangeInput}
                             />
                         </ul>
                     </div>

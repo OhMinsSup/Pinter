@@ -7,16 +7,7 @@ import * as path from 'path';
 import * as config from "./config/config";
 import { jwtMiddleware } from "./lib/middleware/jwtMiddleware";
 import redisClient from './lib/redisClient';
-import Auth from "./routes/AuthRouter";
-import Pin from "./routes/PinRouter";
-import Like from "./routes/LikeRouter";
-import Comment from "./routes/CommentRouter";
-import Common from "./routes/CommonRouter";
-import Follow from "./routes/FollowRouter";
-import Locker from "./routes/LockerRouter";
-import File from './routes/FileRouter';
-import Tag from './routes/TagRouter';
-import Group from './routes/GroupRouter';
+import router from './routes';
 
 class Server {
     public app: express.Application;
@@ -72,16 +63,7 @@ class Server {
     private routes(): void {
         const { app } = this;
 
-        app.use("/auth", Auth);
-        app.use("/common", Common);
-        app.use("/follow", Follow);
-        app.use("/locker", Locker);
-        app.use("/file", File);
-        app.use("/tag", Tag);
-        app.use('/group', Group);
-        app.use("/pin", Pin);
-        app.use("/pin/likes", Like);
-        app.use("/pin/comments", Comment);
+        app.use(router);
 
         app.get('*', (req, res) => {
             res.sendFile(path.resolve(__dirname, "../../frontend/build/index.html"));

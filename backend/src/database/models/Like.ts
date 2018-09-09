@@ -21,6 +21,7 @@ const Like = new Schema({
     pin: {
         type: Schema.Types.ObjectId,
         ref: "Pin",
+        index: true,
     },
 });
 

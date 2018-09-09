@@ -18,28 +18,42 @@ export interface IUser extends Document {
             id?: string,
             accessToken?: string,
         },
-    };    
+    }; 
+    count: {
+        following: number,
+        follower: number,
+        pin: number,
+    }
     generate(profile: IUser): Promise<any>;
 }
 
 export interface IUserModel extends Model<IUser> {
     findByEmailOrUsername(type: "email" | "username", value: string): Promise<any>;
     findBySocial(provider: string, socialId: string | number): Promise<any>;
-    findByDisplayName(value?: string): Promise<any>;
+    findByDisplayName(value: string): Promise<any>;
     usersList(cursor?: string): Promise<any>;
     generate(profile: IUser): Promise<any>;
+    followerCount(userId: string): Promise<any>;
+    unfollowerCount(userId: string): Promise<any>;
+    followingCount(userId: string): Promise<any>;
+    unfollowingCount(userId: string): Promise<any>;
+    pinCount(userId: string): Promise<any>;
+    unpinCount(userId: string): Promise<any>;
 }
 
 const User = new Schema({
     username: {
         type: String,
+        index: true,
     },
     email: {
         type: String,
+        index: true,
     },
     profile: {
         displayName: {
             type: String,
+            index: true,
         },
         thumbnail: {
             type: String,
@@ -56,6 +70,20 @@ const User = new Schema({
             accessToken: String,
         },
     },
+    count: {
+        following: {
+            type: Number,
+            default: 0,
+        },
+        follower: {
+            type: Number,
+            default: 0,
+        },
+        pin: {
+            type: Number,
+            default: 0,
+        }
+    }
 });
 
 User.statics.findByEmailOrUsername = function(type: "email" | "username", value: string): Promise<any> {
@@ -65,9 +93,9 @@ User.statics.findByEmailOrUsername = function(type: "email" | "username", value:
     .lean();
 };
 
-User.statics.findByDisplayName = function(value?: string): Promise<any> {  
+User.statics.findByDisplayName = function(value: string): Promise<any> {      
     return this.findOne({
-        "profile.displayName": value,
+        'profile.displayName': value,
     })
     .lean();
 };
@@ -90,8 +118,7 @@ User.statics.usersList = function(cursor?: string): Promise<any> {
     return this.find(query)
     .sort({ _id: -1 })
     .limit(15)
-    .lean()
-    .exec();
+    .lean();
 };
 
 User.statics.generate = function(profile: IUser): Promise<any> {
@@ -107,6 +134,66 @@ User.statics.generate = function(profile: IUser): Promise<any> {
         thumbnail,
     };
     return generateToken(auth);
+};
+
+User.statics.followerCount = function(userId: string): Promise<any> {
+    return this.findByIdAndUpdate(userId, {
+        $inc: { follower: 1 },
+    }, {
+        new: true,
+        select: "follower",
+    })
+    .lean();
+};
+
+User.statics.unfollowerCount = function(userId: string): Promise<any> {
+    return this.findByIdAndUpdate(userId, {
+        $inc: { follower: -1 },
+    }, {
+        new: true,
+        select: "follower",
+    })
+    .lean();
+};
+
+User.statics.followingCount = function(userId: string): Promise<any> {
+    return this.findByIdAndUpdate(userId, {
+        $inc: { following: 1 },
+    }, {
+        new: true,
+        select: "following",
+    })
+    .lean();
+};
+
+User.statics.unfollowingCount = function(userId: string): Promise<any> {
+    return this.findByIdAndUpdate(userId, {
+        $inc: { following: -1 },
+    }, {
+        new: true,
+        select: "following",
+    })
+    .lean();
+};
+
+User.statics.pinCount = function(userId: string): Promise<any> {
+    return this.findByIdAndUpdate(userId, {
+        $inc: { pin: 1 },
+    }, {
+        new: true,
+        select: "pin",
+    })
+    .lean();
+},
+
+User.statics.unpinCount = function(userId: string): Promise<any> {
+    return this.findByIdAndUpdate(userId, {
+        $inc: { pin: -1 },
+    }, {
+        new: true,
+        select: "pin",
+    })
+    .lean();
 };
 
 const UserModel = model<IUser>("User", User) as IUserModel;

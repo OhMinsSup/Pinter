@@ -18,14 +18,13 @@ const EmailAuth = new Schema({
         type: String,
         unique: true,
         default: shortid.generate,
+        index: true,
     },
     email: String,
     logged: {
         type: Boolean,
         default: false,
     },
-}, {
-    autoIndex: true,
 });
 
 EmailAuth.statics.findCode = function(code: string): Promise<any> {

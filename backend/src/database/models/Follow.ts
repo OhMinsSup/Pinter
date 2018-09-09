@@ -45,8 +45,7 @@ Follow.statics.followingList = function(followerId: string, cursor?: string): Pr
     .populate("following")
     .sort({ _id: -1 })
     .limit(10)
-    .lean()
-    .exec();
+    .lean();
 };
 
 Follow.statics.followerList = function(followingId: string, cursor?: string): Promise<any> {
@@ -58,8 +57,7 @@ Follow.statics.followerList = function(followingId: string, cursor?: string): Pr
     .populate("follower")
     .sort({ _id: -1 })
     .limit(10)
-    .lean()
-    .exec();
+    .lean();
 };
 
 const FollowModel = model<IFollow>("Follow", Follow) as IFollowModel;

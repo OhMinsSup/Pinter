@@ -1,6 +1,7 @@
 import { pick } from "lodash";
+import TagLinkModel, { ITagLink } from "../database/models/TagLink";
 
-const serializePin = (data: any) => {
+const serializePin = (pinData: any, tagData: any) => {
     const {
         _id: pinId,
         relationUrl,
@@ -10,9 +11,10 @@ const serializePin = (data: any) => {
         comments,
         likes,
         user,
-    } = data;    
-    const tags = data.tags.map(tag => tag.name);
+    } = pinData;
     const url = urls.map(url => url);
+    const tags = tagData.map(tag => tag.tagId.name);
+    
     return {
         pinId,
         relationUrl,
@@ -29,14 +31,29 @@ const serializePin = (data: any) => {
     };
 };
 
-const serializeUser = (data: any) => {
+const serializePinList = (data: any) => {
     const {
+        _id: pinId,
+        relationUrl,
+        body,
+        createdAt,
+        urls,
+        comments,
+        likes,
         user,
-    } = data; 
+    } = data;    
+    const url = urls.map(url => url);
     return {
+        pinId,
+        relationUrl,
+        body,
+        urls: url,
+        createdAt,
+        likes,
+        comments,
         user: {
-            ...pick(user, ['_id', 'username']),
-            ...pick(user.profile, ['displayName', 'thumbnail']),
+            ...pick(user, ["_id", "username"]),
+            ...pick(user.profile, ["displayName", "thumbnail"]),
         },
     };
 };
@@ -65,43 +82,26 @@ const serializeComment = (data: any) => {
     };
 };
 
-const serializeTag = (data: any) => {
+const serializeFollower = (data: any) => {
     const {
-        _id: tagId,
-        name,
-        pin,
+        follower,
     } = data;
     return {
-        tagId,
-        name,
-        count: pin.length,
+        follower: {
+            ...pick(follower, ['_id', 'username']),
+            ...pick(follower.profile, ['displayName', 'thumbnail']),
+        },
     };
 };
 
-const serializeTagPin = (data: any) => {
+const serializeFollowing = (data: any) => {
     const {
-        _id: pinId,
-        likes,
-        comments,
-        relationUrl,
-        body,
-        user,
-        createdAt,
+        following,
     } = data;
-    const tags = data.tags.map(tag => tag.name);
-    const urls = data.urls.map(url => url);
     return {
-        pinId,
-        body,
-        relationUrl,
-        createdAt,
-        tags,
-        urls,
-        likes,
-        comments,
-        user: {
-            ...pick(user, ['_id', 'username']),
-            ...pick(user.profile, ['displayName', 'thumbnail']),
+        following: {
+            ...pick(following, ['_id', 'username']),
+            ...pick(following.profile, ['displayName', 'thumbnail']),
         },
     };
 };
@@ -110,7 +110,6 @@ const serializeLocker = (data: any) => {
     const {
         _id: lockerId,
         pin: {
-            tags,
             urls,
             likes,
             comments,
@@ -124,7 +123,6 @@ const serializeLocker = (data: any) => {
     return {
         lockerId,
         likes,
-        tags: tags.map(tag => tag.name),
         urls: urls.map(url => url),
         comments,
         pinId,
@@ -138,28 +136,45 @@ const serializeLocker = (data: any) => {
     };
 };
 
-const serializeFollower = (data: any) => {
+const serializeTag = (data: any) => {
     const {
-        _id: followId,
-        follower,
+        count,
+        tag_docs: {
+            _id: tagId,
+            name
+        },
     } = data;
     return {
-        follower: {
-            ...pick(follower, ['_id', 'username']),
-            ...pick(follower.profile, ['displayName', 'thumbnail']),
-        },
+        tagId,
+        name,
+        count
     };
 };
 
-const serializeFollowing = (data: any) => {
+const serializeTagPin = (data: any) => {
     const {
-        _id: followId,
-        following,
+        pinId: {
+            _id: pinId,
+            likes,
+            comments,
+            relationUrl,
+            body,
+            user,
+            urls,
+            createdAt,   
+        }
     } = data;
     return {
-        following: {
-            ...pick(following, ['_id', 'username']),
-            ...pick(following.profile, ['displayName', 'thumbnail']),
+        pinId,
+        body,
+        relationUrl,
+        createdAt,
+        urls: urls.map(url => url),
+        likes,
+        comments,
+        user: {
+            ...pick(user, ['_id', 'username']),
+            ...pick(user.profile, ['displayName', 'thumbnail']),
         },
     };
 };
@@ -174,34 +189,15 @@ const serializeUsers = (data: any) => {
     };
 };
 
-const serializeGroup = (data: any) => {
-    const {
-        title,
-        thumbnail,
-        description,
-        creator,
-    } = data;
-
-    return {
-        title,
-        thumbnail,
-        description,
-        user: {
-            ...pick(creator, ['_id', 'username']),
-            ...pick(creator.profile, ['displayName', 'thumbnail']),
-        },
-    };
-};
 
 export {
-    serializeUser,
     serializePin,
+    serializePinList,
     serializeComment,
-    serializeTag,
-    serializeTagPin,
-    serializeLocker,
     serializeFollower,
     serializeFollowing,
+    serializeLocker,
+    serializeTag,
+    serializeTagPin,
     serializeUsers,
-    serializeGroup,
 };

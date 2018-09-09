@@ -16,6 +16,7 @@
         "arrow-parens": false,
         "quotemark": false,
         "member-ordering": false,
-        "only-arrow-functions": false
+        "only-arrow-functions": false,
+        "perfer-for-of": false,
     }
 }
