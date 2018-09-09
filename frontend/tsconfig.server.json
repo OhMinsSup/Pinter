@@ -8,5 +8,8 @@
         "jsx": "react",
         "moduleResolution": "node",
         "baseUrl": "src",
-    }
+    },
+    "exclude": [
+        "node_modules"       
+    ]
 }

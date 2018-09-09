@@ -15,6 +15,7 @@ module.exports = {
       filename: 'render.js',
       libraryTarget: 'commonjs2',
     },
+    devtool: 'source-map',
     module: {
       rules: [
         {
@@ -58,7 +59,14 @@ module.exports = {
             {
               test: /\.scss$/,
               use: [
-                require.resolve('css-loader/locals'),
+                {
+                  loader: require.resolve('css-loader/locals'),
+                  options: {
+                    importLoaders: 1,
+                    modules: true,
+                    localIdentName: '[name]__[local]___[hash:base64:5]'
+                  },
+                },
                 {
                   loader: require.resolve('sass-loader'),
                   options: {
