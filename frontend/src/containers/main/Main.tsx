@@ -15,23 +15,18 @@ type OwnProps = {  location: Location };
 type MainProps = OwnProps & StateProps & DispatchProps; 
 
 class Main extends React.Component<MainProps> {
-    public onOpenBox = () => {
-        const { BaseActions } = this.props;
-        BaseActions.openPinBox(true)
-    }
-
     public render() {       
-        const { location, sidebar, user } = this.props; 
-        const { onOpenBox } = this;
+        const { location, sidebar, user, size } = this.props; 
 
         if (!user) return null;
 
         return(
             <MainTemplate
                 path={location.pathname}
-                onClick={onOpenBox}
                 header={<HeaderContainer />}
                 sidebar={sidebar}
+                size={size}
+                displayName={user.displayName}
             >
                 <Switch>
                     <Route exact path="/" component={Recent} />
@@ -46,9 +41,9 @@ class Main extends React.Component<MainProps> {
 }
 
 const mapStateToProps = ({ base, user }: StoreState) => ({
-    visible: base.pin.visible,
     sidebar: base.sidebar.visible,
-    user: user.user && user.user
+    user: user.user && user.user,
+    size: base.size,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

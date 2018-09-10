@@ -2,35 +2,14 @@
 
 .write-form {
     position: relative;
-    z-index: 900;
-    width: 750px;
+    width: 780px;
     height: 780px;
-    padding: 27px 0;
-    box-sizing: border-box;
-    background: white;
+    margin: 0 auto;
     display: block;
-    border-radius: 0.1rem;
-
-    @include media("<=1442px") {
-        width: 800px;
-    }
-
-    @include media("<=1345px") {
-        width: 720px;
-    }
-
-    @include media("<=1200px") {
-        width: 640px;
-    }
 
     @include media("<=medium") {
         width: 100%;
         max-width: 100%;
-        height: 100%;
-    }
-
-    @include media("<=425px") {
-        padding: 16px 0;
         height: 100%;
     }
 
@@ -59,7 +38,11 @@
         }
         .submit-btn {
             margin: 0 0 0 auto;
-            margin-right: 1rem;
+            margin-right: 6rem;
+
+            @include media("<=medium") {
+                margin-right: 0;
+            }
         }
     }
 

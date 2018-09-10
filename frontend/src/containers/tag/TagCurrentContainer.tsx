@@ -34,7 +34,6 @@ class TagCurrentContainer extends React.Component<TagCurrentContainerProps> {
     
     public render() {
         const { tag, selected, lastSort } = this.props;
-        
         return (
             <TagCurrent 
                 lastSort={lastSort}

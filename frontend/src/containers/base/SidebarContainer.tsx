@@ -16,13 +16,14 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
     }
 
     public render() {
-        const { visible,displayName } = this.props;
+        const { visible,displayName, size } = this.props;
         if (!visible) return null;
         
         return (
             <Sidebar
                 displayName={displayName}
                 onClose={this.onClose}
+                size={size}
             />
         );
     }
@@ -30,6 +31,7 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
 
 const mapStateToProps = ({ base, user }: StoreState) => ({
     visible: base.sidebar.visible,
+    size: base.size,
     displayName: user.user && user.user.displayName,
 })
 

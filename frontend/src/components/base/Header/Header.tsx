@@ -23,22 +23,27 @@ type Props = {
 
 const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSidebar }) => {
     return (
-        <div className={cx('header')}>
-            <div className={cx('header-wrapper')}>
-                <div className={cx('wrapper')}>
-                    <Logo />
-                    <SearchInput />
-                    {
-                        size <= 790  || size <= 796 ? (
-                            <div className={cx('button-group')}>
-                                <Button theme='noline' onClick={onSidebar}>
-                                    <FaBars/>
-                                </Button>
-                                <Button theme='noline'>
-                                    <NoticeIcon className={cx('notice')}/>
-                                </Button>
-                            </div>
-                        )  : (
+        <React.Fragment>
+        {   
+            size <= 790  || size <= 796 ? (
+                <div className={cx('mobile-head')}>
+                <div className={cx('button-area')}>
+                    <Button theme="outline">새 글쓰기</Button>
+                </div>
+                <div className={cx('spacer')} />
+                <Logo />
+                <div className={cx('right-area')}>
+                    <Button theme="noline" onClick={onSidebar}>
+                        <FaBars/>
+                    </Button>
+                </div>
+                </div>
+            ) : (
+                <div className={cx('header')}>
+                    <div className={cx('header-wrapper')}>
+                        <div className={cx('wrapper')}>
+                            <Logo />
+                            <SearchInput />
                             <div className={cx('button-group')}>
                                 <Button theme='noline' to='/tags'>
                                     <TagIcon className={cx('tag')}/>
@@ -60,11 +65,13 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                                     <LogoutIcon />
                                 </Button>
                             </div>
-                        )
-                    }
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            )
+        }
+        </ React.Fragment>
     )
 };
+
 export default Header;

@@ -1,15 +1,13 @@
 import * as React from 'react';
-import WriteTemplate from '../../components/write/WriteTemplate';
 import { StoreState } from '../../store/modules';
 import { Dispatch, connect } from 'react-redux';
-import { bindActionCreators, compose } from 'redux';
+import { bindActionCreators } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import WriteForm from '../../components/write/WriteForm';
 import InputTags from '../../components/write/InputTags';
 import DropImage from '../../components/write/DropImage';
 import { writeCreators } from '../../store/modules/write';
 import { History } from 'history';
-import { withRouter } from 'react-router';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -25,7 +23,6 @@ class MakePin extends React.Component<MakePinProps> {
             relationUrl, 
             body, 
             urls, 
-            BaseActions,
             pinId,
             form
         } = this.props;
@@ -39,8 +36,7 @@ class MakePin extends React.Component<MakePinProps> {
                     urls,
                     tags,
                 })
-                BaseActions.openPinBox(false);
-                this.props.history.push(`/`);
+                this.props.history.push(`/pin/${this.props.pinId}`);
                 WriteActions.initialState();
                 return;
             };
@@ -52,17 +48,11 @@ class MakePin extends React.Component<MakePinProps> {
                 relationUrl
             });
 
-            BaseActions.openPinBox(false);
             this.props.history.push(`/pin/${this.props.pinId}`);
             WriteActions.initialState();
         } catch (e) {
             console.log(e);
         }
-    }
-
-    public onCloseBox = () => {
-        const { BaseActions } = this.props;
-        BaseActions.openPinBox(false);
     }
 
     public OnUploadUrl = async (file: any) => {
@@ -127,7 +117,6 @@ class MakePin extends React.Component<MakePinProps> {
 
     public render() {
         const { 
-            visible, 
             size, 
             body, 
             relationUrl,
@@ -142,47 +131,37 @@ class MakePin extends React.Component<MakePinProps> {
             onDrop, 
             onPasteImage, 
             onUploadClick, 
-            onCloseBox, 
             onChangeInput,
             onRemoveUrl,
             onSubmit, 
         } = this;
         
-        if (!visible) return null;
-
         return (
-            <WriteTemplate
+            <WriteForm 
+                id={pinId}
+                inputTags={<InputTags
+                    tags={tags}
+                    onInsert={onInsertTag} 
+                    onRemove={onRemoveTag}
+                />}
+                dropImage={<DropImage
+                    onDrop={onDrop}
+                    onPaste={onPasteImage}
+                    onUploadClick={onUploadClick}
+                />}
                 size={size}
-                onClick={onCloseBox}
-            >
-                <WriteForm 
-                    id={pinId}
-                    inputTags={<InputTags
-                        tags={tags}
-                        onInsert={onInsertTag} 
-                        onRemove={onRemoveTag}
-                    />}
-                    dropImage={<DropImage
-                        onDrop={onDrop}
-                        onPaste={onPasteImage}
-                        onUploadClick={onUploadClick}
-                    />}
-                    size={size}
-                    onCloseBox={onCloseBox}
-                    onChange={onChangeInput}
-                    body={body}
-                    urls={urls}
-                    relationUrl={relationUrl}
-                    onRemoveUrl={onRemoveUrl}
-                    onSubmit={onSubmit}
-                />
-            </WriteTemplate>
+                onChange={onChangeInput}
+                body={body}
+                urls={urls}
+                relationUrl={relationUrl}
+                onRemoveUrl={onRemoveUrl}
+                onSubmit={onSubmit}
+            />
         )
     }
 }
 
 const mapStateToProps = ({ base, write }: StoreState) => ({
-    visible: base.pin.visible,
     size: base.size,
     body: write.form.body,
     relationUrl: write.form.relation_url,
@@ -197,10 +176,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     WriteActions: bindActionCreators(writeCreators, dispatch),
 })
 
-export default compose(
-    withRouter, 
-    connect<StateProps, DispatchProps, OwnProps>(
-        mapStateToProps,
-        mapDispatchToProps
-    )
+export default connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
 )(MakePin);

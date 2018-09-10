@@ -10,7 +10,6 @@ type Props = {
     displayName: any,
     profile: any,
     follow: boolean,
-    onClick(): void,
     onSetting(): void,
     onFollow(): Promise<void>
 }
@@ -19,7 +18,6 @@ const UserHeader: React.SFC<Props> = ({
     username,
     displayName,
     follow, 
-    onClick, 
     profile, 
     onSetting, 
     onFollow 
@@ -31,7 +29,7 @@ const UserHeader: React.SFC<Props> = ({
                 <section className={cx('top')}>
                     {
                         <div className={cx('subscribe-wrapper')}>
-                            <Button className={cx('setting')} theme="outline" onClick={onClick}>
+                            <Button to="/write" className={cx('setting')} theme="outline">
                                 글쓰기
                             </Button>
                             {

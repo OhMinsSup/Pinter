@@ -12,9 +12,7 @@ type Props = {
   lastSort?: string,
 };
 
-const TagCurrent: React.SFC<Props> = ({ name, count, lastSort }) => {
-  console.log(name, count, lastSort);
-  
+const TagCurrent: React.SFC<Props> = ({ name, count, lastSort }) => {  
   return (
     <div className={cx('tag-current')}>
       <Link className={cx('backwards-btn')} to={`/tags${lastSort === 'latest' ? '' : '?sort=name'}`}>

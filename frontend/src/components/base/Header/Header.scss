@@ -51,3 +51,18 @@
         }
     }
 }
+
+.mobile-head {
+    padding: 1.75rem;
+    display: flex;
+    align-items: center;
+    .button-area {
+    }
+    .spacer {
+      flex: 1;
+    }
+    .right-area {
+      display: flex;
+      align-items: center;
+    }
+  }

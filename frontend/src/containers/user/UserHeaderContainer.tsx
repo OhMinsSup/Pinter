@@ -21,11 +21,6 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
         BaseActions.setProfile(true);
     }
 
-    public onClick = () => {
-        const { BaseActions, pin } = this.props;
-        pin ? BaseActions.openPinBox(false) : BaseActions.openPinBox(true);
-    }
-
     public onToggleFollow = async () => {
         const { 
             FollowActions, 
@@ -74,7 +69,7 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
 
     public render() {
         const { match: { url }, profile, loading, follow, username, displayName } = this.props;
-        const { onClick, onSetting, onToggleFollow } = this;
+        const { onSetting, onToggleFollow } = this;
 
         if (loading) return <FullscreenLoader visible={loading}/>
         return (
@@ -84,7 +79,6 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
                     username={username}
                     profile={profile}
                     follow={follow}
-                    onClick={onClick}
                     onSetting={onSetting}
                     onFollow={onToggleFollow}
                 />
@@ -98,7 +92,6 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
 }
 
 const mapStateToProps = ({ base, common, follow, user }: StoreState) => ({
-    pin: base.pin.visible,
     profile: common.profile,
     loading: common.profile.loading,
     visible: base.profile.visible,

@@ -86,7 +86,7 @@ class RecentPinList extends React.Component<RecentPinListProps> {
         const { pins, loading } = this.props;
         const { onOpen } = this;
 
-        if (loading) return createArray(pins.length).map(num => <FakePinCard key={num} />);
+        if (loading) return createArray(pins.length === 0 ? 5 : pins.length).map(num => <FakePinCard key={num} />);
         
         return (
             <CommonCardList

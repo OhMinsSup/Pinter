@@ -2,20 +2,22 @@
 
 .common-card {
   margin: 0.875rem;
-  width: calc(100% / 1.04);
+  width: 100%;
   position: relative;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.05);
 
+  @include media("<=wide") {
+    width: calc(80% - 1.75rem);
+  }
   @include media("<=medium") {
-    width: calc(60% / 1.04);
+    width: calc(60% - 1.75rem);
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
   }
-
   @include media("<=477px") {
-    width: calc(40% / 1.04);
+    width: calc(50% / 1.04);
+    margin: 0;
   }
-
   &.user {
     margin: 0.875rem;
     width: calc((100% - 8.75rem) / 5);

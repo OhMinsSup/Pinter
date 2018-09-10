@@ -11,43 +11,50 @@ const cx = classNames.bind(styles);
 
 type Props = {
     displayName: string | null,
+    size: number,
     onClose(): void
 }
 
-const Sidebar: React.SFC<Props> = ({ onClose, displayName }) => {
+const Sidebar: React.SFC<Props> = ({ onClose, displayName, size }) => {
     return (
         <React.Fragment>
-            <div className={cx('dimmer')} onClick={onClose}/>
-            <div className={cx('sidebar')}>
-                <SidebarMenu
-                    to={`/@${displayName}`}
-                    name="내 블로그"
-                    onClick={onClose}
-                />
-                <SidebarMenu
-                    to="/tags"
-                    name="태그"
-                    icon={<TagIcon/>}
-                    onClick={onClose}
-                />
-                <SidebarMenu
-                    to="/users"
-                    name="유저"
-                    icon={<UserIcon/>}
-                    onClick={onClose}
-                />
-                <SidebarMenu
-                    to="/groups"
-                    name="그룹"
-                    icon={<GroupIcon/>}
-                    onClick={onClose}
-                />
-                <SidebarMenu
-                    name="로그아웃"
-                    onClick={onClose}
-                    icon={<LogoutIcon/>}
-                />
-            </div>
+            {
+                size > 790 ? null : (
+                    <React.Fragment>
+                        <div className={cx('dimmer')} onClick={onClose}/>
+                        <div className={cx('sidebar')}>
+                            <SidebarMenu
+                                to={`/@${displayName}`}
+                                name="내 블로그"
+                                onClick={onClose}
+                            />
+                            <SidebarMenu
+                                to="/tags"
+                                name="태그"
+                                icon={<TagIcon/>}
+                                onClick={onClose}
+                            />
+                            <SidebarMenu
+                                to="/users"
+                                name="유저"
+                                icon={<UserIcon/>}
+                                onClick={onClose}
+                            />
+                            <SidebarMenu
+                                to="/groups"
+                                name="그룹"
+                                icon={<GroupIcon/>}
+                                onClick={onClose}
+                            />
+                            <SidebarMenu
+                                name="로그아웃"
+                                onClick={onClose}
+                                icon={<LogoutIcon/>}
+                            />
+                        </div>
+                    </React.Fragment>
+                )
+            }
         </React.Fragment>
     );
 }

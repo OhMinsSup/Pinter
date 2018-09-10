@@ -4,7 +4,6 @@ import Button from '../../common/Button';
 import WriteItem from '../WriteItem';
 import PreviewImage from '../PreviewImage';
 
-const CancelIcon = require('react-icons/lib/md/close');
 const styles = require('./WriteForm.scss');
 const cx = classNames.bind(styles);
 
@@ -16,23 +15,15 @@ type Props = {
     body: string,
     urls: string[],
     relationUrl: string,
-    onCloseBox(): void,
     onChange(e: any): void,
     onRemoveUrl(url: string): void,
     onSubmit(): void,
 }
 
-const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, size, onCloseBox, onChange, relationUrl, body, urls, onRemoveUrl, id }) => {
+const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, size, onChange, relationUrl, body, urls, onRemoveUrl, id }) => {
     return (
         <div className={cx('write-form')}>
             <div className={cx('form-header')}>
-                {
-                    size <= 768 ? (
-                        <Button className={cx('cancel-btn')} theme='noline' onClick={onCloseBox}>
-                            <CancelIcon />
-                        </Button>
-                    ) : null
-                }
                 {
                     id ? (
                         <div className={cx('submit-btn')}>

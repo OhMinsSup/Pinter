@@ -45,18 +45,17 @@ const GrayBoxes: React.SFC<GrayBoxsProps> = ({ count, min, max }) => {
 };
 
 type Props = {
-    oneColumn?: boolean,
+    flex?: string,
 }
 
-const FakePinCard: React.SFC<Props> = ({ oneColumn }) => {
+const FakePinCard: React.SFC<Props> = ({ flex }) => {
     return (
         <React.Fragment>
-            <div className={cx('FakePinCard', { 'one-column': (oneColumn as boolean) })}>
+            <div className={cx('FakePinCard', flex )}>
             <div className={cx('thumbnail-wrapper')}>
                 <div className={cx('thumbnail')}/>
             </div>
             <div className={cx('card-content')}>
-                {!oneColumn && <div className={cx('user-thumbnail-wrapper')} />}
                 <div className={cx('content-head')}>
                 <div className={cx('username')}>
                     <GrayBox min={6} max={8} />

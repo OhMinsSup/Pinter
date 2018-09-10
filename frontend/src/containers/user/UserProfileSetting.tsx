@@ -6,6 +6,7 @@ import UserSettingProfile from '../../components/user/UserSettingProfile';
 import UserSettingTemplate from '../../components/user/UserSettingTemplate';
 import { baseCreators } from '../../store/modules/base';
 import { commonCreators } from '../../store/modules/common';
+import { writeCreators } from '../../store/modules/write';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -26,9 +27,19 @@ class UserProfileSetting extends React.Component<UserProfileSettingProps> {
             name, value
         });
     }
-    // TODO 썸네일 변경 및 submit 기능 구현
+
     public uploadImage = async (file: any) => {
-        console.log(file);
+        const { WriteActions } = this.props;
+
+        WriteActions.setUploadStatus(true);
+
+        try {
+            await WriteActions.createUploadUrl(file);
+        } catch (e) {
+            console.log(e);
+        }
+
+        WriteActions.setUploadStatus(false);
     }
 
     public onUploadClick = () => {
@@ -70,6 +81,7 @@ const mapStateToProps = ({ base, common }: StoreState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch),
     CommonActions: bindActionCreators(commonCreators, dispatch),
+    WriteActions: bindActionCreators(writeCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps>(

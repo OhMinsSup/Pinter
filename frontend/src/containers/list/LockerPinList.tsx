@@ -9,6 +9,8 @@ import CommonCardList from '../../components/common/CommonCardList';
 import { getScrollBottom } from '../../lib/common';
 import { pinCreators } from '../../store/modules/pin';
 import { lockersCreators } from '../../store/modules/list/lockers';
+import FakePinCard from '../../components/common/FakePinCard';
+import { createArray } from '../../lib/common';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -85,7 +87,7 @@ class LockerPinList extends React.Component<LockerPinListProps> {
         const { pins, loading } = this.props;
         const { onOpen } = this;
 
-        if (loading) return null;
+        if (loading) return createArray(pins.length === 0 ? 10 : pins.length).map(num => <FakePinCard key={num} />);
 
         return (
             <CommonCardList

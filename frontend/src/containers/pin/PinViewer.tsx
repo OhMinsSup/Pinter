@@ -11,10 +11,11 @@ import { followCreators } from '../../store/modules/follow';
 import PinMenu from '../../components/pin/PinMenu';
 import { baseCreators } from '../../store/modules/base';
 import { writeCreators } from '../../store/modules/write';
+import { History } from 'history';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = { id: string }
+type OwnProps = { id: string, history: History };
 
 type PinViewerProps = StateProps & DispatchProps & OwnProps;
 
@@ -37,12 +38,12 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 
     public onClickUpdate = async (id: string) => {
-        const { BaseActions, WriteActions } = this.props;
-        BaseActions.openPinBox(true);
+        const { WriteActions } = this.props;
         WriteActions.setpinId(id);
 
         try {
             await WriteActions.getPinData(id);
+            this.props.history.push('/write');
         } catch (e) {
             console.log(e);
         }
