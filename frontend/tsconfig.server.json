@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "outDir": "build-ssr",
-        "module": "commonjs",
+        "module": "esnext",
         "target": "es6",
         "noImplicitAny": false,
         "sourceMap": true,

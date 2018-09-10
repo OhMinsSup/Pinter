@@ -11,11 +11,11 @@ const serverRender = async (req: any,  res: any) => {
     const promises: any[] = [];
 
     routesConfig.every((route: any) => {
-        const match = matchPath(req.url, route);
+        const match = matchPath(req.path, route);
 
         if (match) {
             if (route.preload) {
-                promises.push(route.preload(req, req, store, match));
+                promises.push(route.preload(req, res, store.dispatch, match));
             }
 
             if (route.stop) return false;
@@ -31,6 +31,7 @@ const serverRender = async (req: any,  res: any) => {
     }
 
     const context = {};
+
     const html = ReactDOMServer.renderToString(
         <Provider store={store}>
             <StaticRouter context={context} location={req.url}>
@@ -40,6 +41,7 @@ const serverRender = async (req: any,  res: any) => {
     )
     return {
         html,
+        context,
         state: store.getState(),
     };
 }

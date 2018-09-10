@@ -52,10 +52,11 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   appTsConfig: resolveApp('tsconfig.json'),
   appTsProdConfig: resolveApp('tsconfig.prod.json'),
+  appTsSSRConfig: resolveApp('tsconfig.server.json'),
   appTsLint: resolveApp('tslint.json'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
   styles: resolveApp('src/styles'),
-  ssrEntry: resolveApp('build-ssr/ssr.js'),
+  ssrEntry: resolveApp('src/ssr.tsx'),
   ssrBuild: resolveApp('../backend/src/ssr/'),
 };

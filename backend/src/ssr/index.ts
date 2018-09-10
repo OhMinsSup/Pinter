@@ -33,7 +33,10 @@ export const indexHtml = buildHtml('', null);
 
 const ssr = async (req: Request, res: Response) => {
     try {
-        const { state, html } = await render(req, res);
+        const { state, html, context } = await render(req, res);
+        if (context.status) {
+            res.status = context.status;
+          }
         const body = buildHtml(html, state);
         res.json(body);
     } catch (e) {

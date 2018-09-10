@@ -1,5 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -47,7 +49,7 @@ module.exports = {
                     options: {
                       // disable type checker - we will use it in fork plugin
                       transpileOnly: true,
-                      configFile: paths.appTsConfig,
+                      configFile: paths.appTsSSRConfig,
                     },
                   },
                 ],
@@ -63,20 +65,20 @@ module.exports = {
                   loader: require.resolve('css-loader/locals'),
                   options: {
                     importLoaders: 1,
-                    modules: true,
+                    modules: 1,
                     localIdentName: '[name]__[local]___[hash:base64:5]'
                   },
                 },
                 {
                   loader: require.resolve('sass-loader'),
                   options: {
-                    includePaths: [paths.styles],
-                  },
-                },
-              ],
+                    includePaths: [paths.styles]
+                  }
+                }
+              ]
             },
             {
-              exclude: [/\.js$/, /\.html$/, /\.json$/, /\.ts$/],
+              exclude: [/\.js$/, /\.html$/, /\.json$/, /\.ts$/,/\.tsx$/,/\.jsx$/],
               loader: require.resolve('file-loader'),
               options: {
                 emitFile: false,
@@ -92,8 +94,22 @@ module.exports = {
         // It is guaranteed to exist because we tweak it in `env.js`
         process.env.NODE_PATH.split(path.delimiter).filter(Boolean),
       ),
+      extensions: [
+        '.mjs',
+        '.web.ts',
+        '.ts',
+        '.web.tsx',
+        '.tsx',
+        '.web.js',
+        '.js',
+        '.json',
+        '.web.jsx',
+        '.jsx',
+      ],
     },
     plugins: [
       new webpack.DefinePlugin(env.stringified),
+      new webpack.IgnorePlugin(/^utf-8-validate$/),
+      new webpack.IgnorePlugin(/^bufferutil$/),
     ],
   };

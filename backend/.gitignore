@@ -4,6 +4,8 @@
 # production
 /dist
 /.webpack
+src/ssr/render.js
+src/ssr/render.js.map
 
 # config
 src/config/config.ts
