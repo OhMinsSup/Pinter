@@ -1,9 +1,0 @@
-{
-    "apps": [{
-      "name": "server",
-      "script" : "./src",
-      "env": {
-        "NODE_PATH": "src"
-      }
-    }]
-}

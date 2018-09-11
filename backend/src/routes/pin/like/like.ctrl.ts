@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Pin, { IPin } from '../../../database/models/Pin';
+import Pin from '../../../database/models/Pin';
 import Like, { ILike } from '../../../database/models/Like';
 
 export const like = async (req: Request, res: Response): Promise<any> => {

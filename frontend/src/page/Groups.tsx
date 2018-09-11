@@ -1,15 +1,18 @@
 import * as React from 'react';
-import GroupTemplate from '../components/group/GroupTemplate';
-import CreateBoxContainer from '../containers/group/CreateBoxContainer';
-import GroupList from '../containers/list/GroupList';
+import { Switch, Route } from 'react-router-dom';
+import ListGroup from './group/ListGroup';
+import WriteGroup from './group/WriteGroup';
 
-const Groups = () => {
+type Props = {
+    location: Location
+}
+
+const Groups: React.SFC<Props> = ({ }) => {    
     return (
-        <GroupTemplate
-            box={<CreateBoxContainer/>}
-        >
-            <GroupList />
-        </GroupTemplate>
+        <Switch>
+            <Route exact path='/groups' component={ListGroup} />
+            <Route exact path='/groups/write' component={WriteGroup} />
+        </Switch>
     )
 }
 

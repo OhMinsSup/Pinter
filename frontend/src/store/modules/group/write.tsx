@@ -15,8 +15,8 @@ export interface GroupWriteState {
     form: {
         title: string,
         description: string,
-        thumbnail: string,
-        type: string,
+        coverThumbnail: string,
+        visibility: string,
     }
 }
 
@@ -24,8 +24,8 @@ const initialState: GroupWriteState = {
     form: {
         title: '',
         description: '',
-        thumbnail: '',
-        type: '',
+        coverThumbnail: '',
+        visibility: '',
     }
 }
 

@@ -4,9 +4,11 @@ import WriteGroupContainer from '../../containers/group/WriteGroupContainer';
 
 const WriteGroup = () => {
     return (
-        <WriteGroupTemplate>
-            <WriteGroupContainer/>
-        </WriteGroupTemplate>
+        <div>
+            <WriteGroupTemplate>
+                <WriteGroupContainer/>
+            </WriteGroupTemplate>
+        </div>
     )
 }
 

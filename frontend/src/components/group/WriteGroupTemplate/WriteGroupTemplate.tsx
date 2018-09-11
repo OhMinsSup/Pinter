@@ -11,7 +11,7 @@ type Props = {
 const WriteGroupTemplate: React.SFC<Props> = ({ children }) => {
     return (
         <div className={cx('write-group-template')}>
-            <main>{children}</main>
+           {children}
         </div>
     )
 }

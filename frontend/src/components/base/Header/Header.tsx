@@ -25,10 +25,10 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
     return (
         <React.Fragment>
         {   
-            size <= 790  || size <= 796 ? (
+            size <= 796 ? (
                 <div className={cx('mobile-head')}>
                 <div className={cx('button-area')}>
-                    <Button theme="outline">새 글쓰기</Button>
+                    <Button theme="outline" to='/write'>새 글쓰기</Button>
                 </div>
                 <div className={cx('spacer')} />
                 <Logo />

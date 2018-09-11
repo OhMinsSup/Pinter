@@ -12,7 +12,7 @@ server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
 
-initSocket(server);
+// initSocket(server);
 
 function normalizePort(val: number | string): number | string | boolean {
     const port: number = (typeof val === "string") ? parseInt(val, 10) : val;

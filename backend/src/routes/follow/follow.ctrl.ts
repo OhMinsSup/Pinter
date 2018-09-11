@@ -33,6 +33,8 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
         }
 
         await Follow.create({ following: followId, follower: userId });
+        await User.followerCount(userId);
+        await User.followingCount(followId);
         res.json({
             follow: true,
         });
@@ -74,6 +76,9 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
             following: followId, 
             follower: userId,
         }).lean();
+        await User.unfollowerCount(userId);
+        await User.unfollowingCount(followId);
+
         res.json({
             follow: false,
         });

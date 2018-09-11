@@ -28,7 +28,7 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
         tags: joi.array().items(joi.string()).required(),
     });
 
-    const result: any = joi.validate(req.body, schema);
+    const result = joi.validate(req.body, schema);
 
     if (result.error) {
         return res.status(400).json({
@@ -53,7 +53,8 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
 
         const pinId = pin._id;      
         await TagLink.Link(pinId, tagIds);
-        
+        await User.pinCount(userId);
+
         res.json({
             pinId,
         });
@@ -120,6 +121,7 @@ export const updatePin = async (req: Request, res: Response): Promise<any> => {
 
 export const deletePin = async (req: Request, res: Response): Promise<any> => {
     const pinId: string = req['pin']._id;
+    const userId: string = req['user']._id;
 
     try {
         await Promise.all([
@@ -132,6 +134,7 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
         await Pin.deleteOne({
             _id: pinId,
         }).lean();
+        await User.unpinCount(userId);
 
         res.json({
             pin: true,

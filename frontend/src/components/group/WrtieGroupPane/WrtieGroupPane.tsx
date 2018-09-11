@@ -30,11 +30,11 @@ const GroupType: React.SFC<{
     value: string,
     name: string,
     onChange(e: any): void,
-}> = ({ title, value, onChange }) => {
+}> = ({ title, value, onChange, name }) => {
     return (
         <li>
             <label className={cx('secret')}>
-                <input type='radio' name={name} value={value} onChange={onChange}/>
+                <input type="radio" name={name} value={value} onChange={onChange}/>
                 <span className={cx('check-label')}>
                     {title}
                 </span>
@@ -43,12 +43,10 @@ const GroupType: React.SFC<{
     )
 }
 
-
 type Props = {
     title: string,
     thumbnail: string,
     description: string,
-    name: string,
     onChangeInput(e: any): void,
     onUploadClick(): void,
 }
@@ -61,7 +59,6 @@ class WrtieGroupPane extends React.Component<Props> {
             description,
             thumbnail,
             onUploadClick,
-            name,
         } = this.props;
         return (
             <div className={cx('write-group-pane')}>
@@ -99,13 +96,13 @@ class WrtieGroupPane extends React.Component<Props> {
                         <ul className={cx('type-list')}>
                             <GroupType
                                 title="공개"
-                                name={name}
+                                name='visibility'
                                 value='public'
                                 onChange={onChangeInput}
                             />
                             <GroupType
                                 title="비공개"
-                                name={name}
+                                name='visibility'
                                 value='private'
                                 onChange={onChangeInput}
                             />

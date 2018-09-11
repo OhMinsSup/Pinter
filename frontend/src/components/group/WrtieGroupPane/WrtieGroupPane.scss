@@ -4,6 +4,10 @@
     width: 840px;
     margin: 0 auto;
     padding-top: 58px;
+
+    @include media("<=medium") {
+        width: 100%;
+    }
     .input-wrapper {
         margin-top: 2rem;
         position: relative;

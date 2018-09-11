@@ -1,0 +1,18 @@
+@import 'utils';
+
+.group-template {
+    .box {
+        display: flex;
+        position: relative;
+        box-sizing: border-box;
+        overflow: hidden;
+        justify-content: left;
+    }
+
+    main {
+        padding-bottom: 20px;
+        padding-top: 20px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
