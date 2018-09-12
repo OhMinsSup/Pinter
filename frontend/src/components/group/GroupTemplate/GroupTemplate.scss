@@ -1,0 +1,11 @@
+@import 'utils';
+
+.group-template {
+    display: flex !important;
+    flex-direction: row !important;
+    -webkit-box-orient: horizontal!important;
+    -webkit-box-direction: normal!important;
+    justify-content: center!important;
+    -webkit-box-pack: justify!important;
+    max-width: 1540px;
+}

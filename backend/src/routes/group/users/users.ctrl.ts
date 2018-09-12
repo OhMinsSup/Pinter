@@ -55,3 +55,7 @@ export const groupSignOut = async (req: Request, res: Response): Promise<any> =>
         res.status(500).json(e);
     }
 }
+
+export const groupSignCheck = async (req: Request, res: Response): Promise<any> => {
+    
+}

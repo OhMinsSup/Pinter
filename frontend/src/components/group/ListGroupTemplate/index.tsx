@@ -1,1 +1,1 @@
-export { default } from './GroupTemplate';
+export { default } from './ListGroupTemplate';

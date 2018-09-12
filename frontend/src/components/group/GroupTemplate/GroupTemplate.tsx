@@ -5,15 +5,13 @@ const styles = require('./GroupTemplate.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    children: React.ReactNode,
-    box: React.ReactNode,
+    children: React.ReactNode
 }
 
-const GroupTemplate: React.SFC<Props> = ({ children, box }) => {
+const GroupTemplate: React.SFC<Props> = ({ children }) => {
     return (
         <div className={cx('group-template')}>
-            <div className={cx('box')}>{box}</div>
-            <main>{children}</main>
+            {children}
         </div>
     )
 }

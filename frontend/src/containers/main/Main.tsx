@@ -6,7 +6,7 @@ import { Dispatch, bindActionCreators, compose } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { Recent, Tags, Users, Groups } from '../../page';
+import { Recent, Tags, Users, WriteGroup, ListGroup, GroupPage } from '../../page';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -32,8 +32,9 @@ class Main extends React.Component<MainProps> {
                     <Route exact path="/" component={Recent} />
                     <Route exact path='/tags/:tag?' component={Tags}/>
                     <Route exact path='/users' component={Users} />
-                    <Route exact path='/groups' component={Groups} />
-                    <Route exact path='/groups/write' component={Groups} />
+                    <Route exact path='/groups' component={ListGroup} />
+                    <Route exact path='/groups/write' component={WriteGroup} />
+                    <Route exact path='/groups/:id' component={GroupPage} />
                 </Switch>
             </MainTemplate>
         )
