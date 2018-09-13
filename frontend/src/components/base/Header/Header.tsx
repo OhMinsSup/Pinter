@@ -7,7 +7,6 @@ import SearchInput from '../SearchInput';
 import Button from '../../common/Button';
 
 const styles = require('./Header.scss');
-const GroupIcon = require('react-icons/lib/fa/group');
 const NoticeIcon = require('react-icons/lib/io/android-notifications');
 const LogoutIcon = require('react-icons/lib/fa/sign-out');
 const TagIcon = require('react-icons/lib/fa/tags');
@@ -57,9 +56,6 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                                 </Button>
                                 <Button theme='noline'>
                                     <NoticeIcon className={cx('notice')}/>
-                                </Button>
-                                <Button theme='noline' to="/groups">
-                                    <GroupIcon />
                                 </Button>
                                 <Button theme='noline' onClick={onLogout}>
                                     <LogoutIcon />

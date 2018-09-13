@@ -3,8 +3,8 @@ import * as classNames from 'classnames/bind';
 import SidebarMenu from '../SidebarMenu';
 
 const styles = require('./Sidebar.scss');
+const HomeIcon = require('react-icons/lib/fa/home');
 const UserIcon = require('react-icons/lib/fa/user');
-const GroupIcon = require('react-icons/lib/fa/group');
 const LogoutIcon = require('react-icons/lib/fa/sign-out');
 const TagIcon = require('react-icons/lib/fa/tags');
 const cx = classNames.bind(styles);
@@ -26,6 +26,7 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName, size }) => {
                             <SidebarMenu
                                 to={`/@${displayName}`}
                                 name="내 블로그"
+                                icon={<HomeIcon />}
                                 onClick={onClose}
                             />
                             <SidebarMenu
@@ -38,12 +39,6 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName, size }) => {
                                 to="/users"
                                 name="유저"
                                 icon={<UserIcon/>}
-                                onClick={onClose}
-                            />
-                            <SidebarMenu
-                                to="/groups"
-                                name="그룹"
-                                icon={<GroupIcon/>}
                                 onClick={onClose}
                             />
                             <SidebarMenu

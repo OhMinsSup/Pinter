@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import Tag, { ITag } from '../../database/models/Tag';
-import Pin, { IPin } from '../../database/models/Pin';
 import TagLink from '../../database/models/TagLink';
 import { serializeTag, serializeTagPin } from '../../lib/serialize';
 

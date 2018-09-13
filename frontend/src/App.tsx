@@ -11,7 +11,7 @@ const App = () => {
     <React.Fragment>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path='/(tags|users|groups)/:tag?' component={Home} />
+        <Route exact path='/(tags|users)/:tag?' component={Home} />
         <Route exact path='/email-register' component={Register} />
         <Route exact path='/email-login' component={EmailLogin} />
         <Route exact path='/write' component={Write} />

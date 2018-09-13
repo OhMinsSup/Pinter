@@ -66,11 +66,12 @@ export const getLike = async (req: Request, res: Response): Promise<any> => {
 
     let liked = false;
     
-    if (userId) {
-        const exists = await Like.checkExists(userId, pinId);
-        liked = !!exists;
-    }
     try {
+        if (userId) {
+            const exists = await Like.checkExists(userId, pinId);
+            liked = !!exists;
+        }
+        
         const pin = await Pin.findById(pinId).lean();
 
         res.json({

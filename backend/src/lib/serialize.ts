@@ -1,5 +1,4 @@
 import { pick } from "lodash";
-import TagLinkModel, { ITagLink } from "../database/models/TagLink";
 
 const serializePin = (pinData: any, tagData: any) => {
     const {
@@ -188,7 +187,6 @@ const serializeUsers = (data: any) => {
         },
     };
 };
-
 
 export {
     serializePin,

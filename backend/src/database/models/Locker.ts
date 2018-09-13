@@ -38,9 +38,6 @@ Locker.statics.lockerList = function(userId: string, cursor?: string): Promise<a
         populate: [{
             path: "user",
             model: "User",
-        }, {
-            path: "tags",
-            model: "Tag",
         }],
     })
     .sort({ _id: -1 })
