@@ -4,6 +4,8 @@ import { StoreState } from '../../store/modules';
 import { Dispatch, bindActionCreators, compose } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
+import { userCreators } from '../../store/modules/user';
+import Storage from '../../lib/storage';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -15,6 +17,18 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
         BaseActions.setSidebar(false);
     }
 
+
+    public onLogout = async () => {
+        const { UserActions } = this.props;
+        try {
+          await UserActions.logout();
+        } catch (e) {
+          console.log(e);
+        }
+        Storage.remove('__pinter_user__');
+        window.location.href = '/';
+    }
+
     public render() {
         const { visible,displayName, size } = this.props;
         if (!visible) return null;
@@ -24,6 +38,7 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
                 displayName={displayName}
                 onClose={this.onClose}
                 size={size}
+                onLogout={this.onLogout}
             />
         );
     }
@@ -37,6 +52,7 @@ const mapStateToProps = ({ base, user }: StoreState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch),
+    UserActions: bindActionCreators(userCreators, dispatch),
 })
 
 export default compose(

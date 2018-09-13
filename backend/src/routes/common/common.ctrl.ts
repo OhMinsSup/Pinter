@@ -21,6 +21,7 @@ export const getUserInfo = async (req: Request, res: Response): Promise<any> => 
     
     try {
         const user: IUser = await User.findByDisplayName(displayName);
+        
         res.json({
             username: user.username,
             displayName: user.profile.displayName,

@@ -12,10 +12,11 @@ const cx = classNames.bind(styles);
 type Props = {
     displayName: string | null,
     size: number,
-    onClose(): void
+    onClose(): void,
+    onLogout(): Promise<void>,
 }
 
-const Sidebar: React.SFC<Props> = ({ onClose, displayName, size }) => {
+const Sidebar: React.SFC<Props> = ({ onClose, displayName, size, onLogout }) => {
     return (
         <React.Fragment>
             {
@@ -43,7 +44,7 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName, size }) => {
                             />
                             <SidebarMenu
                                 name="로그아웃"
-                                onClick={onClose}
+                                onClick={onLogout}
                                 icon={<LogoutIcon/>}
                             />
                         </div>

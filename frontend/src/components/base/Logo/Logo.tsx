@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as classNames from 'classnames/bind';
 
+const LogoIcon = require('react-icons/lib/fa/pinterest');
 const styles = require('./Logo.scss');
 const cx = classNames.bind(styles);
 
@@ -11,7 +12,11 @@ const Logo: React.SFC<Props> = () => {
     return (
         <div className={cx('logo-wrapper')}>
             <Link to="/" className={cx('logo')}>
-                <span>Pinter</span>
+                <div className={cx('nav-icons')}>
+                    <div className={cx('icons')}>
+                        <LogoIcon />
+                    </div>
+                </div>
             </Link>
         </div>
     );

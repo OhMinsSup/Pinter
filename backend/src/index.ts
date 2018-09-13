@@ -1,7 +1,6 @@
 import * as http from "http";
 import * as config from "./config/config";
 import Server from "./server";
-import { initSocket } from './lib/socket';
 
 const port = normalizePort(config.PORT || 5000);
 Server.set("port", port);
@@ -11,8 +10,6 @@ const server = http.createServer(Server);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
-
-// initSocket(server);
 
 function normalizePort(val: number | string): number | string | boolean {
     const port: number = (typeof val === "string") ? parseInt(val, 10) : val;

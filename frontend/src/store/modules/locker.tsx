@@ -71,7 +71,7 @@ export default handleActions<LockerState, any>({
     },
     [GET_LOCKER_PIN_SUCCESS]: (state, action: GetLockerPinAcion) => {
         const { payload: { data } } = action;
-        return produce(state, (draft) => {
+        return produce(state, (draft) => {            
             if (data === undefined) return;
             draft.locker = data.locker;
         })

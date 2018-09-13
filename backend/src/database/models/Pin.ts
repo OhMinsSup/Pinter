@@ -66,7 +66,7 @@ Pin.statics.readPinList = function(userId?: string, cursor?: string): Promise<an
     return this.find(query)
     .populate("user")
     .sort({ _id: -1 })
-    .limit(5)
+    .limit(20)
     .lean();
 };
 

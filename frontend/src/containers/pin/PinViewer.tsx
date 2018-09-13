@@ -101,7 +101,7 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 
     public render() {    
-        const { pin, loading, follow, username, displayName, menuVisible } = this.props;
+        const { pin, loading, follow, username, displayName, menuVisible, locker } = this.props;
         const { onToggleLike, onToggleLocker, onToggleFollow, onClick, onClickUpdate, onAskRemove } = this;
         if (loading) return <FakePin />;
 
@@ -129,6 +129,7 @@ class PinViewer extends React.Component<PinViewerProps> {
                 />
                 <PinContent
                     pin={pin}
+                    locker={locker}
                     onToggleLocker={onToggleLocker}
                     onToggleLike={onToggleLike}
                 />

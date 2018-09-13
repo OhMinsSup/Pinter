@@ -6,6 +6,7 @@ import * as mongoose from "mongoose";
 import * as path from 'path';
 import * as config from "./config/config";
 import { jwtMiddleware } from "./lib/middleware/jwtMiddleware";
+import corsMiddleware from './lib/middleware/cors';
 import redisClient from './lib/redisClient';
 import router from './routes';
 
@@ -29,14 +30,9 @@ class Server {
             jwtMiddleware(req, res, next);
         });
         app.use(cors());
-        app.use((req, res, next): void => {
-            res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-            res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials");
-            res.header("Access-Control-Allow-Credentials", "true");
-            next();
+        app.use((req, res, next) => {
+            corsMiddleware(req, res, next);
         });
-
         app.use(express.static(path.join(__dirname, "../../frontend/build/")));
     }
 

@@ -66,8 +66,6 @@ export const getLockerPin = async (req: Request, res: Response): Promise<any> =>
     }
 
     try {
-        const locker = await Locker.findById(pinId).lean();
-
         res.json({
             locker,
         });

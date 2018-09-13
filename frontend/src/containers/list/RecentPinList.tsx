@@ -92,6 +92,7 @@ class RecentPinList extends React.Component<RecentPinListProps> {
             <CommonCardList
                 pins={pins} 
                 onOpen={onOpen}
+                theme="user"
             />
         )
     }

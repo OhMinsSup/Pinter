@@ -4,35 +4,56 @@
     display: block;
     box-sizing: border-box;
     position: relative;
-    @include media(">=816px") {
-        .logo {
-            display: flex;
-            height: 48px;
-            width: 48px;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-            cursor: pointer;
-            border-radius: 50%;
-            &:hover {
-                background-color: $oc-gray-2;
-            }
-        }
-    }
-    @include media("<=815px") {
-        font-family: Inconsolata;
-        color: #212529;
-        position: absolute;
-        left: 50%;
+    @include media("<=816px") {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        right: 30%;
         -webkit-transform: translate(-50%);
         -ms-transform: translate(-50%);
         transform: translate(-50%);
-        font-size: 2rem;
-        font-weight: 500;
     }
 
-    @include media("<=small") {
-        left: 60%;
+    @include media ("<=470px") {
+        right: 15%;
+    }
+    .logo {
+        font-weight: bold;
+        text-decoration: none;
+        .nav-icons {
+            height: 48px;
+            width: 48px;
+            box-sizing: border-box;
+            border-radius: 50%;
+            cursor: pointer;
+            &:hover {
+                background-color: $oc-gray-2;
+            }
+            .icons {
+                display: flex;
+                height: 48px;
+                width: 48px;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                box-sizing: border-box;
+                padding-left: 4px;
+                padding-right: 4px;
+                padding-bottom: 4px;
+                padding-top: 4px;
+
+                svg {
+                    display: block;
+                    font-size: 2.1rem;
+                    color: $oc-red-8;
+                    stroke-width: 0;
+                    vertical-align: middle;
+                    height: 28;
+                    width: 28;
+                    overflow: hidden;
+                }
+            }
+        }
     }
 }

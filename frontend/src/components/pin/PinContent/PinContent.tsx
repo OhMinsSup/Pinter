@@ -12,11 +12,12 @@ const cx = classNames.bind(styles);
 
 type Props = {
     pin: any,
+    locker: boolean,
     onToggleLike(): Promise<void>,
     onToggleLocker(): Promise<void>,
 }
 
-const PinContent:React.SFC<Props> = ({ pin, onToggleLike, onToggleLocker }) => {
+const PinContent:React.SFC<Props> = ({ pin, onToggleLike, onToggleLocker, locker }) => {
     const imageList = pin.urls.map((url: string, index: number) => {
         return (
             <div key={index} className={cx('image-containter')}>
@@ -64,6 +65,7 @@ const PinContent:React.SFC<Props> = ({ pin, onToggleLike, onToggleLocker }) => {
                     <PinItem
                         icons={<SaveIcon/>}
                         type="save"
+                        locker={locker}
                         onClick={onToggleLocker}
                     />
                 </div>

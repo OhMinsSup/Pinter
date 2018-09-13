@@ -170,7 +170,7 @@ export const listPin = async (req: Request, res: Response): Promise<any> => {
         }
         
         const pin: IPin[] = await Pin.readPinList(userId, cursor);
-        const next = pin.length === 5 ? `/pin/${displayName ? `${displayName}/user` : '' }?cursor=${pin[4]._id}` : null;
+        const next = pin.length === 20 ? `/pin/${displayName ? `${displayName}/user` : '' }?cursor=${pin[19]._id}` : null;
         const pinWithData = pin.map(serializePinList);
         res.json({
             next,

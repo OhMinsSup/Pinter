@@ -8,17 +8,26 @@ type Props = {
     icons: React.ReactNode,
     count?: number,
     type: string,
+    locker?: boolean,
     onClick?(): Promise<void>
 }
 
-const PinItem:React.SFC<Props> = ({ icons, count, type, onClick }) => {
+const PinItem:React.SFC<Props> = ({ icons, count, type, onClick, locker }) => {
     return (
         <div className={cx('group')}>
             <button className={cx('btn')} onClick={onClick}>
                 <div className={cx('item', type)}>
-                    <span>
-                        {icons}
-                    </span>
+                    {
+                        locker === true && type === 'save' ? (
+                            <span className={cx('save-locker')}>
+                                {icons}
+                            </span>
+                        ) : (
+                            <span>
+                                {icons}
+                            </span>
+                        )
+                    }
                 </div>
                 <span className={cx('item-count', type)}>{count}</span>
             </button>
