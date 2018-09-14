@@ -1,27 +1,57 @@
 import * as socketIO from 'socket.io';
-import { Server } from 'http';
+import * as http from 'http';
 
-function initSocket(server: Server) {
-    const io = socketIO(server, {
-        serveClient: false,
-        pingInterval: 10000,
-        pingTimeout: 5000,
-        cookie: false,
-    });
+class Socket {
+    public io: SocketIO.Server | null = null;
+    public socket: SocketIO.Socket | null = null;
+    public server: http.Server | null = null;
+    public socketIds: string[] = [];
 
-    return io;
+    public set setServer(server: http.Server) {
+        this.server = server;
+    }
+
+    public get getSocket() {
+        if (!this.socket) return false;
+        return this.socket;
+    }
+
+    public get conencted() {
+        if (!this.io) return false;
+        return this.io;
+    }
+
+    public connect() {
+        const p = new Promise(
+            (resolve, reject) => {
+                const io = socketIO(this.server, {
+                    serveClient: false,
+                    pingInterval: 10000,
+                    pingTimeout: 5000,
+                    cookie: false,
+                });
+        
+                io.on('connection', (socket: SocketIO.Socket) => {
+                    console.log(`conneted websocket ${socket.id}`);
+                    this.socket = socket; 
+                    resolve();
+
+                    socket.on(`disconnect`, () => {
+                        console.log(`disconneted websocket ${socket.id}`);
+                    });
+                });
+
+                io.on('Connect_failed', (err) => {
+                    reject(err);
+                });
+
+                this.io = io;
+            },
+        );
+        return p;
+    }
 }
 
-function socketMiddleware (io: SocketIO.Server): any {
-    io.on('connection', (socket) => {
-        console.log(`conneted websocket ${socket.id}`);
-        socket.on(`disconnect`, () => {
-            console.log(`disconneted websocket ${socket.id}`);
-        });
-    });
-}
+const socketServer = new Socket();
 
-export {
-    socketMiddleware,
-    initSocket,
-};
+export default socketServer;

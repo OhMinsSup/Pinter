@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev:server": "tsc-watch --onSuccess \" node dist/index.js\"",
-    "dev:ssr": "nodemon dist/ssr/server.ssr.js --watch ./dist",
+    "dev:ssr": "nodemon dist/ssr/server.js --watch ./dist/",
     "build:server": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

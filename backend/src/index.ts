@@ -1,6 +1,7 @@
 import * as http from "http";
 import * as config from "./config/config";
 import Server from "./server";
+import socketServer from './lib/socket';
 
 const port = normalizePort(config.PORT || 5000);
 Server.set("port", port);
@@ -9,7 +10,7 @@ console.log(`Server listening on port ${port} ✅`);
 const server = http.createServer(Server);
 server.listen(port);
 server.on("error", onError);
-server.on("listening", onListening);
+onSocket(server);
 
 function normalizePort(val: number | string): number | string | boolean {
     const port: number = (typeof val === "string") ? parseInt(val, 10) : val;
@@ -39,7 +40,15 @@ function onError(error: NodeJS.ErrnoException): void {
     }
 }
 
-function onListening(): void {
-    const addr = server.address();
-    const bind = (typeof addr === "string") ? `pipe ${addr}` : `port ${addr.port}`;
+function onSocket(server: http.Server): any {
+    let io: any;
+    socketServer.setServer = server;
+
+    if (!socketServer.conencted) {
+        io = socketServer.connect();
+    } else {
+        io = null;
+        console.log('socket connection...');
+    }
+    return io;
 }
