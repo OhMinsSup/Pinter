@@ -1,18 +1,22 @@
 import * as socketIO from 'socket.io';
 import * as http from 'http';
+import User, { IUser } from '../database/models/User';
+
+type NewPayLoad = {
+    displayName: string;
+}
 
 class Socket {
     public io: SocketIO.Server | null = null;
     public socket: SocketIO.Socket | null = null;
     public server: http.Server | null = null;
-    public socketIds: string[] = [];
 
     public set setServer(server: http.Server) {
         this.server = server;
     }
 
     public get getSocket() {
-        if (!this.socket) return false;
+        if (!this.socket) return;
         return this.socket;
     }
 

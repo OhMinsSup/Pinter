@@ -3,9 +3,9 @@ import { IUser } from './User';
 
 export interface INotice extends Document {
     _id: string;
-    to: IUser;
-    from: IUser;
-    message: string;
+    creator?: IUser;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface INoticeModel extends Model<INotice> {
@@ -13,17 +13,12 @@ export interface INoticeModel extends Model<INotice> {
 }
 
 const Notice = new Schema({
-    to: {
+    creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-    },
-    from: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
-    message: {
-        type: String,
     }
+}, {
+    timestamps: true,
 });
 
 const NoticeModel = model<INotice>('Notice', Notice) as INoticeModel;

@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
 import * as joi from 'joi';
 import { diff } from 'json-diff';
 import Tag, { ITag } from '../../database/models/Tag';
@@ -39,6 +39,7 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
 
     const { relationUrl, body, urls, tags }: BodySchema = req.body;
     const userId: string = req['user']._id;
+    const displayName: string = req['user'].displayName;
     const uniqueTags: string[] = filterUnique(tags);
 
     try {            

@@ -188,6 +188,47 @@ const serializeUsers = (data: any) => {
     };
 };
 
+const serializeNoticeRoom = (data: any) => {
+    const { 
+        _id: noticeId,
+        creator,
+        createdAt
+    } = data;
+
+    return {
+        noticeId,
+        creator: {
+            ...pick(creator, ['_id', 'username']),
+            ...pick(creator.profile, ['displayName', 'thumbnail']),
+        },
+        createdAt,
+    }
+}
+
+const serializeNoticeMessage = (data: any) => {
+    const {
+        sender,
+        recipient,
+        notice: noticeId,
+        message,
+        createdAt,
+    } = data;
+
+    return {
+        noticeId,
+        sender: {
+            ...pick(sender, ['_id', 'username']),
+            ...pick(sender.profile, ['displayName', 'thumbnail']),
+        },
+        recipient: {
+            ...pick(recipient, ['_id', 'username']),
+            ...pick(recipient.profile, ['displayName', 'thumbnail']),
+        },
+        message,
+        createdAt
+    }
+}
+
 export {
     serializePin,
     serializePinList,
@@ -198,4 +239,6 @@ export {
     serializeTag,
     serializeTagPin,
     serializeUsers,
+    serializeNoticeRoom,
+    serializeNoticeMessage,
 };

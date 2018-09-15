@@ -16,6 +16,7 @@ module.exports = {
       path: paths.ssrBuild,
       filename: 'render.js',
       libraryTarget: 'commonjs2',
+      // globalObject: `typeof self !== 'undefined' ? self : this`,
     },
     devtool: 'source-map',
     module: {
