@@ -3,6 +3,7 @@ import Notice, { INotice } from '../../../database/models/Notice';
 import NoticeMessage, { INoticeMessage } from '../../../database/models/NoticeMessage';
 import Follow, { IFollow } from '../../../database/models/Follow';
 import { serializeNoticeRoom } from '../../../lib/serialize';
+import { filterUnique } from '../../../lib/common'
 import socketServer from '../../../lib/socket';
 
 export const getNoticeRoom = async (req: Request, res: Response): Promise<any> => {
@@ -47,47 +48,68 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 
     const { message }: BodySchema = req.body;
     const userId: string = req['user']._id;
-    const username: string = req['user'].displayName;
+    const displayName: string = req['user'].displayName;
+    let userIds: string[] = [];
 
     try {
+        // 내가 팔로우한 유저
         const followingUsers: IFollow[] = await Follow.find({ follower: userId }).lean();
+        const followerUsers: IFollow[] = await Follow.find({ following: userId }).lean();
+    
+        // 팔로우, 팔로잉 유저의 아이디를 가져와 userIds에 저장
+        followingUsers.map(user => userIds.push((user.following as any)));
+        followerUsers.map(user => userIds.push((user.follower as any)));
 
-        const followingIds = followingUsers.map(user => user.following);
-
-        const following: INotice[] =  await Promise.all(followingIds.map(follower => Notice.findOne({ creator: follower })
-        .populate({
+        // 중복 아이디 제거
+        const uniqueUserIds: string[] = filterUnique(userIds);
+        
+        // 각 아이디의 notice를 찾아서 온다
+        const notice: INotice[] = await Promise.all(uniqueUserIds.map(userId => Notice.findOne({ creator: userId }).populate({
             path: 'creator',
             select: 'username profile.displayName profile.thumbnail'
-        })
-        .lean()));
-        
-        const messageData: INoticeMessage[] = await Promise.all(following.map(user => {
-            const notice = new NoticeMessage({
-                sender: userId,
-                recipient: user.creator._id,
-                notice: user._id,
-                message: `${user.creator.profile.displayName}님 ${username}님이 ${message} 하였습니다`,
-            }).save();
-            return notice;
-        })) 
+        }).lean()));
 
-        messageData.map(message => {
+        const messsage = await Promise.all(notice.map(notice => {
+            const m = new NoticeMessage({
+                sender: userId,
+                recipient: notice.creator._id,
+                notice: notice._id,
+                message: `${notice.creator.profile.displayName}님 ${displayName}님이 ${message} 하였습니다`,
+            }).save();
+            return m;
+        }));
+
+        messsage.map(message => {
             socketServer.getSocket.to((message.notice as any)).emit('new-message', {
                 message: message.message,
             });
         });
 
         res.json({
-            messageWithData: messageData,
+            messageWithData: messsage,
         });
     } catch (e) {
-        res.status(500).json(e);
+        res.status(500).json,(e);
     }
 }
 
 export const getNoticeList = async (req: Request, res: Response): Promise<any> => {
+    const userId: string = req['user']._id;
+
     try {
-        res.json('리스트')
+        const notice: INotice = await Notice.findOne({ creator: userId }).lean();
+        
+        if (!notice) {
+            return res.status(404).json({
+                name: '알림방이 존재하지 않습니다'
+            });
+        }
+
+        const message: INoticeMessage = await NoticeMessage.find({ notice: notice._id }).lean().limit(10);
+        
+        res.json({
+            messageWithData: message,
+        });
     } catch (e) {
         res.status(500).json(e);
     }

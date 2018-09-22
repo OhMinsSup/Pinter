@@ -4,7 +4,7 @@ interface Storage {
     remove(key: string): void
 }
 
-const storage: Storage= {
+const storage: Storage = {
     set: (key, object) => {
         if(!localStorage) return;
         localStorage[key] = (typeof object) === 'string' ? object : JSON.stringify(object);

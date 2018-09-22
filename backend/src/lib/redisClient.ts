@@ -24,7 +24,7 @@ class RedisClient {
 
                 client.on('ready', () => {
                     this.connectedTime = Date.now();
-                    console.log('Redis is ready');
+                    console.log('Redis is ready ✅');
                     resolve();
                 });
                 this.client = client;

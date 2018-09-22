@@ -17,7 +17,7 @@ class Server {
         this.app = express();
         this.initializeDb();
         // 서버사이드 렌더링 완성후 사용
-        // this.initializeRedis();
+        this.initializeRedis();
         this.middleware();
         this.routes();
     }
