@@ -32,6 +32,7 @@ const NoticeMessage = new Schema({
     notice: {
         type: Schema.Types.ObjectId,
         ref: 'Notice',
+        index: true,
     },
     message: String,
 }, {

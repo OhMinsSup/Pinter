@@ -81,7 +81,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 
         messsage.map(message => {
             socketServer.getSocket.to((message.notice as any)).emit('new-message', {
-                message: message.message,
+                messageWithData: message.message,
             });
         });
 

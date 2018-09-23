@@ -67,8 +67,8 @@ export const localRegister = async (req: Request, res: Response): Promise<any> =
 
     const schema = joi.object().keys({
         registerToken: joi.string().required(),
-        displayName: joi.string().min(1).max(40),
-        username: joi.string().min(3).max(16).required(),
+        displayName: joi.string().min(1).max(40).required(),
+        username: joi.string().min(2).max(16).required(),
     });
 
     const result: any = joi.validate(req.body, schema);
@@ -79,6 +79,7 @@ export const localRegister = async (req: Request, res: Response): Promise<any> =
             payload: result.error,
         });
     }
+
     const { registerToken, username, displayName }: BodySchema = req.body;
 
     try {
@@ -115,6 +116,12 @@ export const localRegister = async (req: Request, res: Response): Promise<any> =
 
         const token: string = await User.generate(auth);
 
+        if (!token) {
+            res.status(409).json({
+                name: '토큰 생성 안됨',
+            });
+        }
+
         res.cookie('access_token', token, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -141,7 +148,7 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
 
     const { code }: BodySchema = req.body;
 
-    if (typeof code !== 'string') {
+    if (typeof code !== 'string' || !code) {
         return res.status(400);
     }
 
@@ -160,6 +167,12 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
         }
 
         const token: string = await User.generate(user);
+
+        if (!token) {
+            res.status(409).json({
+                name: '토큰 생성 안됨',
+            });
+        }
 
         res.cookie('access_token', token, {
             httpOnly: true,
@@ -183,6 +196,10 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
 export const code = async (req: Request, res: Response): Promise<any> => {
     const { code } = req.params;
 
+    if (!code) {
+        return res.status(400);
+    }
+
     try {
         const auth: IEmailAuth = await EmailAuth.findCode(code);
 
@@ -190,6 +207,13 @@ export const code = async (req: Request, res: Response): Promise<any> => {
 
         const { email, code: emailCode } = auth;            
         const registerToken: string = await generateToken({ email }, { expiresIn: '1h', subject: 'auth-register' });
+
+        if (!registerToken) {
+            res.status(409).json({
+                name: '토큰 생성 안됨',
+            });
+        }
+
         await EmailAuth.use(emailCode);
 
         res.json({
@@ -234,7 +258,7 @@ export const socialRegister = async (req: Request, res: Response): Promise<any> 
     const schema = joi.object().keys({
         accessToken: joi.string().required(),
         displayName: joi.string().min(1).max(40),
-        username: joi.string().min(3).max(16).required(),
+        username: joi.string().min(2).max(16).required(),
     });
 
     const result = joi.validate(req.body, schema);

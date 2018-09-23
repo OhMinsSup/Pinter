@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as joi from 'joi';
 import Comment, { IComment } from '../../../database/models/Comment';
 import User, { IUser } from '../../../database/models/User';
-import Pin, { IPin } from '../../../database/models/Pin';
+import Pin from '../../../database/models/Pin';
 import { serializeComment } from '../../../lib/serialize';
 
 export const writeComment = async (req: Request, res: Response): Promise<any> => {
@@ -30,7 +30,7 @@ export const writeComment = async (req: Request, res: Response): Promise<any> =>
     const userId: string = req['user']._id;
 
     try {
-        const tagUserNames = await Promise.all(tags.map(tag => User.findOne({ 'profile.displayName': tag }).select('_id').lean()));
+        const tagUserNames: IUser[] = await Promise.all(tags.map(tag => User.findOne({ 'profile.displayName': tag }).select('_id').lean()));
         const tagIds = tagUserNames.map(id => id).filter(e => e);
         
         const comment = await Comment.create({ 

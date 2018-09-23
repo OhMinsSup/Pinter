@@ -6,7 +6,7 @@ const routes = [
     {
         path: '/',
         exact: true,
-        preload: async (req: any, res: any, { dispatch }: any, match: match<any>) => {
+        preload: async (ctx: any, { dispatch }: any, match: match<any>) => {
             const ListActions = bindActionCreators(recentCreators, dispatch);
             return ListActions.getPinList();
         }

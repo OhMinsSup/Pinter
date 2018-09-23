@@ -6,16 +6,16 @@ import App from './App';
 import configure from './store/configureStore';
 import routesConfig from './routesConfig';
 
-const serverRender = async (req: any,  res: any) => {
+const serverRender = async (ctx: any) => {
     const store = configure();
     const promises: any[] = [];
 
     routesConfig.every((route: any) => {
-        const match = matchPath(req.path, route);
+        const match = matchPath(ctx.path, route);
 
         if (match) {
             if (route.preload) {
-                promises.push(route.preload(req, res, store.dispatch, match));
+                promises.push(route.preload(ctx, store.dispatch, match));
             }
 
             if (route.stop) return false;
@@ -34,7 +34,7 @@ const serverRender = async (req: any,  res: any) => {
 
     const html = ReactDOMServer.renderToString(
         <Provider store={store}>
-            <StaticRouter context={context} location={req.url}>
+            <StaticRouter context={context} location={ctx.url}>
                 <App />
             </StaticRouter>
         </Provider>

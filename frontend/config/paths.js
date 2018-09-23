@@ -58,5 +58,5 @@ module.exports = {
   servedPath: getServedPath(resolveApp('package.json')),
   styles: resolveApp('src/styles'),
   ssrEntry: resolveApp('src/ssr.tsx'),
-  ssrBuild: resolveApp('../backend/src/ssr/'),
+  ssrBuild: resolveApp('../ssr/src/ssr/'),
 };
