@@ -18,21 +18,25 @@
   overflow: hidden;
   vertical-align: middle;
 
+  @include media("<=470px") {
+    min-width: 120px;
+  }
+
   &:hover {
-      border-bottom: 2px solid $oc-red-4; 
-      color: $oc-red-5;
-      .text {
-        font-weight: 500;
-      }
+    border-bottom: 2px solid $oc-red-4; 
+    color: $oc-red-5;
+    .text {
+      font-weight: 500;
+    }
   }
 
 
   &.active {
-      border-bottom: 2px solid $oc-red-4; 
-      color: $oc-red-5;
-      .text {
-        font-weight: 500;
-      }
+    border-bottom: 2px solid $oc-red-4; 
+    color: $oc-red-5;
+    .text {
+      font-weight: 500;
+    }
   }
 
   .text {

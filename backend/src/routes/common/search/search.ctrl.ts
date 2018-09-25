@@ -6,33 +6,51 @@ import { serializePin, serializeUsers } from '../../../lib/serialize';
 
 export const serachPin = async (req: Request, res: Response): Promise<any> => {
     type BodySchema = {
-        value?: string,
-        type?: 'body' | 'url',
+        value: string,
+        type: 'body' | 'url',
     }
 
-    const { value, type = 'body' }: BodySchema = req.body;
+    const { value, type }: BodySchema = req.body;
     const { cursor } = req.query;
     let searchBy;
-
+    
     if (!value) {
         return res.status(204).json({
-            next: null,
-            Data: null,
+            next: '',
+            Data: [],
         });
     }
 
     if (type === 'body') {
         searchBy = Object.assign(
             {},
-            { _id: { $lt: cursor }, body: { $regex: value } },
+            cursor ? { 
+                _id: { $lt: cursor }, 
+                body: { 
+                    $regex: `${value}`
+                } 
+            } : { 
+                body: { 
+                    $regex: `${value}` 
+                } 
+            },
         );
-        return;
     } else if (type === 'url') {
         searchBy = Object.assign(
             {},
-            { _id: { $lt: cursor }, relationUrl: { $regex: value } }
+            cursor ? { 
+                _id: { 
+                    $lt: cursor 
+                }, 
+                relationUrl: { 
+                    $regex: `/${value}/` 
+                } 
+            } : { 
+                relationUrl: { 
+                    $regex: `/${value}/` 
+                } 
+            }
         );
-        return;
     }
 
     try {
@@ -42,7 +60,7 @@ export const serachPin = async (req: Request, res: Response): Promise<any> => {
         .sort({ _id: -1 })
         .lean();
         const next = pin.length === 10 ? `/common/search/pin?cursor=${pin[9]._id}` : null;
-
+        
         res.json({
             next,
             Data: pin.map(serializePin),
@@ -62,8 +80,8 @@ export const serachUser = async (req: Request, res: Response): Promise<any> => {
 
     if (!value) {
         return res.status(204).json({
-            next: null,
-            Data: null,
+            next: '',
+            Data: [],
         });
     }
 
@@ -106,8 +124,8 @@ export const searchTag = async (req: Request, res: Response): Promise<any> => {
 
     if (!value) {
         return res.status(204).json({
-            next: null,
-            Data: null,
+            next: '',
+            Data: [],
         });
     }
 

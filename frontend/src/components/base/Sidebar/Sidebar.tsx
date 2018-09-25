@@ -3,6 +3,7 @@ import * as classNames from 'classnames/bind';
 import SidebarMenu from '../SidebarMenu';
 
 const styles = require('./Sidebar.scss');
+const SearchIcon = require('react-icons/lib/fa/search');
 const HomeIcon = require('react-icons/lib/fa/home');
 const UserIcon = require('react-icons/lib/fa/user');
 const LogoutIcon = require('react-icons/lib/fa/sign-out');
@@ -41,6 +42,12 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName, size, onLogout }) => 
                                 name="유저"
                                 icon={<UserIcon/>}
                                 onClick={onClose}
+                            />
+                            <SidebarMenu
+                                to="/search"
+                                name="검색"
+                                onClick={onClose}
+                                icon={<SearchIcon/>}
                             />
                             <SidebarMenu
                                 name="로그아웃"

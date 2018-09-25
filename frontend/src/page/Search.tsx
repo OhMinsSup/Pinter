@@ -2,6 +2,7 @@ import * as React from 'react';
 import SearchTemplate from '../components/search/SearchTemplate';
 import SearchNavHeader from '../containers/search/SearchNavHeader';
 import HeaderContainer from '../containers/base/HeaderContainer';
+import SearchContent from '../containers/search/SearchContent';
 
 const Search = () => {
     return (
@@ -10,7 +11,7 @@ const Search = () => {
             <SearchTemplate
                 header={<SearchNavHeader/>}
             >
-                sdsds
+                <SearchContent/>
             </SearchTemplate>
         </React.Fragment>
     )

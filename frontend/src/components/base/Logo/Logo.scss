@@ -4,7 +4,18 @@
     display: block;
     box-sizing: border-box;
     position: relative;
-    @include media("<=816px") {
+    @include media("<=836px") {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        right: 35%;
+        -webkit-transform: translate(-50%);
+        -ms-transform: translate(-50%);
+        transform: translate(-50%);
+    }
+
+    @include media("<=730px") {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -15,8 +26,19 @@
         transform: translate(-50%);
     }
 
+    @include media("<=570px") {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        right: 25%;
+        -webkit-transform: translate(-50%);
+        -ms-transform: translate(-50%);
+        transform: translate(-50%);
+    }
+
     @include media ("<=470px") {
-        right: 15%;
+        right: 20%;
     }
     .logo {
         font-weight: bold;

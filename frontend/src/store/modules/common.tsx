@@ -19,7 +19,7 @@ export const commonCreators = {
     initializeProfile: createAction(INITIALIZE_PROFILE),
     changeInputProfile: createAction(CHANGE_INPUT_PROFILE, (payload: ChangeInputProfilePayload) => payload),
     getProfile: createPromiseThunk(GET_PROFILE, commonAPI.getProfileAPI),
-    searchPin: createPromiseThunk(SEARCH_PIN, commonAPI.searchPinAPI)
+    searchPin: createPromiseThunk(SEARCH_PIN, commonAPI.searchPinAPI),
 }
 
 type GetProfileAction = GenericResponseAction<{
@@ -57,7 +57,7 @@ export interface CommonState {
     search: {
         next: string,
         loading: boolean,
-        Data: any,
+        Data: any[],
     }
 }
 
@@ -79,7 +79,7 @@ const initialState: CommonState = {
     search: {
         next: '',
         loading: false,
-        Data: null,
+        Data: [],
     }
 }
 
@@ -141,7 +141,7 @@ export default handleActions<CommonState, any>({
     [SEARCH_PIN_SUCCESS]: (state, action: SearchPinDataAction) => {
         const { payload: { data } } = action;
         return produce(state, (draft) => {
-            if (data === undefined) return;
+            if (data === undefined) return;            
             draft.search = {
                 loading: false,
                 next: data.next,
