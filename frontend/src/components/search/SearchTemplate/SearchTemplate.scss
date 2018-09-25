@@ -1,0 +1,28 @@
+@import 'utils';
+
+.search-template {
+  .head {
+    position: relative;
+    top: 7.5rem;
+    background: #fff;
+    display: flex;
+    max-width: 768px;
+    min-height: 3rem;
+    margin: 0 auto;
+    background: white;
+    text-align: left;
+    box-sizing: border-box;
+    @include material-shadow(1, 0.9);
+  }
+
+  .search-content {
+    display: block;
+    position: relative;
+    top: 10rem;
+    width: 100%;
+    max-width: 768px;
+    min-height: 3rem;
+    margin: 0 auto;
+    padding: 0;
+  }
+}

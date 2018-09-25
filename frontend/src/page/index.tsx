@@ -7,3 +7,4 @@ export { default as User } from './user/User';
 export { default as Tags } from './Tags';
 export { default as Users } from './Users';
 export { default as Write } from './Write';
+export { default as Search } from './Search';

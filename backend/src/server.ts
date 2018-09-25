@@ -4,10 +4,10 @@ import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import * as mongoose from "mongoose";
 import * as path from 'path';
+import * as compresion from 'compression';
 import * as config from "./config/config";
 import { jwtMiddleware } from "./lib/middleware/jwtMiddleware";
 import corsMiddleware from './lib/middleware/cors';
-import redisClient from './lib/redisClient';
 import router from './routes';
 
 class Server {
@@ -16,14 +16,13 @@ class Server {
     constructor() {
         this.app = express();
         this.initializeDb();
-        // 서버사이드 렌더링 완성후 사용
-        this.initializeRedis();
         this.middleware();
         this.routes();
     }
 
     private middleware(): void {
         const { app } = this;
+        app.use(compresion());
         app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
         app.use(bodyParser.json());
         app.use(cookieParser());
@@ -35,14 +34,6 @@ class Server {
             corsMiddleware(req, res, next);
         });
         app.use(express.static(path.join(__dirname, "../../frontend/build/")));
-    }
-
-    private initializeRedis(): void {
-        if (!redisClient.connected) {
-            redisClient.connect();
-        } else {
-            console.log('redis connection...');
-        }
     }
 
     private initializeDb(): void {

@@ -16,7 +16,6 @@ module.exports = {
       path: paths.ssrBuild,
       filename: 'render.js',
       libraryTarget: 'commonjs2',
-      // globalObject: `typeof self !== 'undefined' ? self : this`,
     },
     devtool: 'source-map',
     module: {
@@ -110,7 +109,5 @@ module.exports = {
     },
     plugins: [
       new webpack.DefinePlugin(env.stringified),
-      new webpack.IgnorePlugin(/^utf-8-validate$/),
-      new webpack.IgnorePlugin(/^bufferutil$/),
     ],
   };

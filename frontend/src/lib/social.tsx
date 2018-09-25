@@ -4,7 +4,7 @@ hello.init({
     facebook: '907895206056337',
     google: '971840625730-mduvognobp4deu6qqa577jf1kpspk47o.apps.googleusercontent.com'
 }, {
-    redirect_uri: '/redirect.html'
+    redirect_uri: 'redirect.html',
 });
 
 export default(function () {

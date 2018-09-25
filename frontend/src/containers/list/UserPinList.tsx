@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import { match } from 'react-router-dom';
 import { baseCreators } from '../../store/modules/base';
-import { getScrollBottom, createArray } from '../../lib/common';
+import { getScrollBottom } from '../../lib/common';
 import { recentCreators } from '../../store/modules/list/recent';
 import { pinCreators } from '../../store/modules/pin';
 import CommonCardList from '../../components/common/CommonCardList';
-import FakePinCard from '../../components/common/FakePinCard';
+import FakePinCards from '../../components/common/FakePinCards/FakePinCards';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -86,7 +86,7 @@ class UserPinList extends React.Component<UserPinListProps> {
         const { pins, loading } = this.props;
         const { onOpen } = this;
 
-        if (loading) return createArray(pins.length === 0 ? 10 : pins.length).map(num => <FakePinCard key={num} />);
+        if (loading) return <FakePinCards pins={pins}/>;
 
         return (
             <CommonCardList

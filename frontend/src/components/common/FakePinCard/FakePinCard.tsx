@@ -48,33 +48,27 @@ type Props = {
     flex?: string,
 }
 
-const FakePinCard: React.SFC<Props> = ({ flex }) => {
+const FakePinCard : React.SFC<Props>= ({ flex }) => {
     return (
-        <React.Fragment>
-            <div className={cx('FakePinCard', flex )}>
+        <div className={cx('fake-pin', flex)}>
             <div className={cx('thumbnail-wrapper')}>
                 <div className={cx('thumbnail')}/>
             </div>
             <div className={cx('card-content')}>
                 <div className={cx('content-head')}>
-                <div className={cx('username')}>
-                    <GrayBox min={6} max={8} />
-                </div>
-                <h3>
-                    <GrayBoxes count={7} />
-                </h3>
-                <div className={cx('subinfo')}>
-                    <GrayBox min={4} max={4} />
-                    <GrayBox min={5} max={5} />
-                </div>
+                    <div className={cx('displayName')}>
+                        <GrayBox min={6} max={8} />
+                    </div>
+                    <div className={cx('subinfo')}>
+                        <GrayBox min={4} max={4} />
+                        <GrayBox min={5} max={5} />
+                    </div>
                 </div>
                 <div className={cx('description')}>
                     <GrayBoxes count={7} />
                 </div>
             </div>
-            </div>
-        </React.Fragment>
+        </div>
     )
 }
-
 export default FakePinCard;

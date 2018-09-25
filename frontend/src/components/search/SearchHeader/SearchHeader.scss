@@ -1,0 +1,13 @@
+@import 'utils';
+
+.search-tool-bar {
+  display: flex;
+  flex: 6 1;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  height: 48px;
+  margin: 0 auto;
+  text-transform: uppercase;
+}

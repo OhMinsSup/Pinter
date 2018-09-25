@@ -6,8 +6,7 @@ import { tagsCreators } from '../../store/modules/list/tags';
 import CommonCardList from '../../components/common/CommonCardList';
 import { pinCreators } from '../../store/modules/pin';
 import { baseCreators } from '../../store/modules/base';
-import { createArray } from '../../lib/common';
-import FakePinCard from '../../components/common/FakePinCard';
+import FakePinCards from '../../components/common/FakePinCards/FakePinCards';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -47,13 +46,14 @@ class TagPinList extends React.Component<TagPinsCardProps> {
     public render() {
         const { pins, loading } = this.props;
         const { onOpen } = this;
-        if (loading) return createArray(pins.length).map(num => <FakePinCard key={num} />);
+
+        if (loading) return <FakePinCards pins={pins}/>
 
         return (
             <CommonCardList
                 pins={pins}
                 onOpen={onOpen}
-                theme="tag"
+                theme="user"
             />
         )
     }

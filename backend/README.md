@@ -10,5 +10,3 @@
     - socket.io
     - redis
     - 소셜 sdk
-
-

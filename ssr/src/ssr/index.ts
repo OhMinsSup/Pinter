@@ -30,13 +30,12 @@ function buildHtml(rendered, state) {
 
 export const indexHtml = buildHtml('', null);
 
-
 const ssr = async (ctx: Context) => {
     try {
         const { state, html, context } = await render(ctx);
         if (context.status) {
             ctx.status = context.status;
-          }
+        }
         const body = buildHtml(html, state);
         ctx.body = body;
     } catch (e) {

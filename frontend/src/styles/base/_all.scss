@@ -1,5 +1,6 @@
 @import url("//fonts.googleapis.com/earlyaccess/notosanskr.css");
 @import url("//cdn.jsdelivr.net/gh/velopert/font-d2coding@1.2.1/d2coding.css");
+@import '~open-color/open-color';
 
 html, body {
   margin: 0;
@@ -7,6 +8,7 @@ html, body {
   font-family: "Helvetica Neue", "Helvetica", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: $oc-gray-0;
 }
 
 * {

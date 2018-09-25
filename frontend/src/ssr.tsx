@@ -5,11 +5,22 @@ import { Provider } from 'react-redux';
 import App from './App';
 import configure from './store/configureStore';
 import routesConfig from './routesConfig';
+import defaultClient from './lib/defaultClient';
+import { userCreators } from './store/modules/user';
 
 const serverRender = async (ctx: any) => {
     const store = configure();
     const promises: any[] = [];
+    const token = ctx.cookies.get('access_token');
 
+    defaultClient.defaults.headers.cookie = '';
+
+    if (token) {
+        ctx.state.logged = true;
+        defaultClient.defaults.headers.cookie = `access_token=${token}`;
+        promises.push(store.dispatch(userCreators.checkUser() as any));
+    }
+    
     routesConfig.every((route: any) => {
         const match = matchPath(ctx.path, route);
 

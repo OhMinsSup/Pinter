@@ -116,12 +116,6 @@ export const localRegister = async (req: Request, res: Response): Promise<any> =
 
         const token: string = await User.generate(auth);
 
-        if (!token) {
-            res.status(409).json({
-                name: '토큰 생성 안됨',
-            });
-        }
-
         res.cookie('access_token', token, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -167,12 +161,6 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
         }
 
         const token: string = await User.generate(user);
-
-        if (!token) {
-            res.status(409).json({
-                name: '토큰 생성 안됨',
-            });
-        }
 
         res.cookie('access_token', token, {
             httpOnly: true,

@@ -17,7 +17,7 @@ export const serachPin = async (req: Request, res: Response): Promise<any> => {
     if (!value) {
         return res.status(204).json({
             next: null,
-            pinWithData: null,
+            Data: null,
         });
     }
 
@@ -45,7 +45,7 @@ export const serachPin = async (req: Request, res: Response): Promise<any> => {
 
         res.json({
             next,
-            pinWithData: pin.map(serializePin),
+            Data: pin.map(serializePin),
         });
     } catch (e) {
         res.status(500).json(e);
@@ -63,7 +63,7 @@ export const serachUser = async (req: Request, res: Response): Promise<any> => {
     if (!value) {
         return res.status(204).json({
             next: null,
-            pinWithData: null,
+            Data: null,
         });
     }
 
@@ -89,7 +89,7 @@ export const serachUser = async (req: Request, res: Response): Promise<any> => {
 
         res.json({
             next,
-            userWithData: user.map(serializeUsers),
+            Data: user.map(serializeUsers),
         });
     } catch (e) {
         res.status(500).json(e);
@@ -107,7 +107,7 @@ export const searchTag = async (req: Request, res: Response): Promise<any> => {
     if (!value) {
         return res.status(204).json({
             next: null,
-            pinWithData: null,
+            Data: null,
         });
     }
 
@@ -133,7 +133,7 @@ export const searchTag = async (req: Request, res: Response): Promise<any> => {
 
         res.json({
             next,
-            tagWithData: tag,
+            Data: tag,
         });
     } catch (e) {
         res.status(500).json(e);

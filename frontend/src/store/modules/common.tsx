@@ -9,12 +9,17 @@ const GET_PROFILE_SUCCESS = 'common/GET_PROFILE_SUCCESS';
 const GET_PROFILE_PENDING = 'common/GET_PROFILE_PENDING';
 const CHANGE_INPUT_PROFILE = 'common/CHANGE_INPUT_PROFILE';
 
+const SEARCH_PIN = 'common/SEARCH_PIN';
+const SEARCH_PIN_PENDING = 'common/SEARCH_PIN_PENDING';
+const SEARCH_PIN_SUCCESS = 'common/SEARCH_PIN_SUCCESS';
+
 type ChangeInputProfilePayload = { value: string, name: string };
 
 export const commonCreators = {
     initializeProfile: createAction(INITIALIZE_PROFILE),
     changeInputProfile: createAction(CHANGE_INPUT_PROFILE, (payload: ChangeInputProfilePayload) => payload),
     getProfile: createPromiseThunk(GET_PROFILE, commonAPI.getProfileAPI),
+    searchPin: createPromiseThunk(SEARCH_PIN, commonAPI.searchPinAPI)
 }
 
 type GetProfileAction = GenericResponseAction<{
@@ -27,6 +32,10 @@ type GetProfileAction = GenericResponseAction<{
     pin: number,
  }, string>;
 type ChangeInputProfileAction = ReturnType<typeof commonCreators.changeInputProfile>;
+type SearchPinDataAction = GenericResponseAction<{
+    next: string,
+    Data: any
+}, string>;
 
 export interface UserProfileSubState {
     username: string;
@@ -44,6 +53,11 @@ export interface CommonState {
     setting: {
         displayName: string,
         thumbnail: string,
+    },
+    search: {
+        next: string,
+        loading: boolean,
+        Data: any,
     }
 }
 
@@ -61,6 +75,11 @@ const initialState: CommonState = {
     setting : {
         displayName: '',
         thumbnail: '',
+    },
+    search: {
+        next: '',
+        loading: false,
+        Data: null,
     }
 }
 
@@ -113,5 +132,21 @@ export default handleActions<CommonState, any>({
             if (action.payload === undefined) return;
             draft.setting[action.payload.name] = action.payload.value;
         })
+    },
+    [SEARCH_PIN_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.search.loading = true;
+        });
+    },
+    [SEARCH_PIN_SUCCESS]: (state, action: SearchPinDataAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            if (data === undefined) return;
+            draft.search = {
+                loading: false,
+                next: data.next,
+                Data: data.Data,
+            }
+        });
     }
 }, initialState);
