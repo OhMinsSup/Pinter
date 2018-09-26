@@ -22,11 +22,6 @@ const SearchHeader: React.SFC<Props> = ({ url }) => {
           to="/search/user"
           active={url === '/search/user'}
         />
-        <SearchMenuItem
-          text="태그"
-          to="/search/tag"
-          active={url === '/search/tag'}
-        />
       </div>
   );
 }

@@ -12,14 +12,31 @@ const CHANGE_INPUT_PROFILE = 'common/CHANGE_INPUT_PROFILE';
 const SEARCH_PIN = 'common/SEARCH_PIN';
 const SEARCH_PIN_PENDING = 'common/SEARCH_PIN_PENDING';
 const SEARCH_PIN_SUCCESS = 'common/SEARCH_PIN_SUCCESS';
+const SEARCH_PIN_ERROR = 'common/SEARCH_PIN_ERROR';
+
+const SEARCH_USER = 'common/SEARCH_USER';
+const SEARCH_USER_PENDING = 'common/SEARCH_USER_PENDING';
+const SEARCH_USER_SUCCESS = 'common/SEARCH_USER_SUCCESS';
+
+const PREFETCH_LIST = 'commom/PREFETCH_LIST';
+const PREFETCH_LIST_SUCCESS = 'common/PREFETCH_LIST_SUCCESS';
+
+const REVEAL_PREFETCHED  = 'common/REVEAL_PREFETCHED';
+const CHANGE_SEARCH_VALUE = 'common/CHANGE_SEARCH_VALUE';
+const INITIALIZE_SEARCH = 'common/INITIALIZE_SEARCH';
 
 type ChangeInputProfilePayload = { value: string, name: string };
 
 export const commonCreators = {
     initializeProfile: createAction(INITIALIZE_PROFILE),
+    initializeSearch: createAction(INITIALIZE_SEARCH),
+    changeSearchValue: createAction(CHANGE_SEARCH_VALUE, (value: string | undefined) => value),
     changeInputProfile: createAction(CHANGE_INPUT_PROFILE, (payload: ChangeInputProfilePayload) => payload),
     getProfile: createPromiseThunk(GET_PROFILE, commonAPI.getProfileAPI),
     searchPin: createPromiseThunk(SEARCH_PIN, commonAPI.searchPinAPI),
+    searchUser: createPromiseThunk(SEARCH_USER, commonAPI.searchUserAPI),
+    prefetchList: createPromiseThunk(PREFETCH_LIST, commonAPI.nextAPI),
+    revealPrefetched: createAction(REVEAL_PREFETCHED, (type: string) => type),
 }
 
 type GetProfileAction = GenericResponseAction<{
@@ -32,10 +49,13 @@ type GetProfileAction = GenericResponseAction<{
     pin: number,
  }, string>;
 type ChangeInputProfileAction = ReturnType<typeof commonCreators.changeInputProfile>;
-type SearchPinDataAction = GenericResponseAction<{
+type SearchDataAction = GenericResponseAction<{
     next: string,
-    Data: any
+    Data: any[]
 }, string>;
+type PrefetchListAction = GenericResponseAction<{ Data: any[], next: string }, string>; 
+type RevealPrefetchedAction = ReturnType<typeof commonCreators.revealPrefetched>;
+type ChangeSearchValueAction = ReturnType<typeof commonCreators.changeSearchValue>;
 
 export interface UserProfileSubState {
     username: string;
@@ -58,7 +78,10 @@ export interface CommonState {
         next: string,
         loading: boolean,
         Data: any[],
-    }
+        prefetched: any[],
+        end: boolean,
+    },
+    value: string,
 }
 
 const initialState: CommonState = {
@@ -80,7 +103,10 @@ const initialState: CommonState = {
         next: '',
         loading: false,
         Data: [],
-    }
+        prefetched: [],
+        end: false,
+    },
+    value: '',
 }
 
 export default handleActions<CommonState, any>({
@@ -99,6 +125,18 @@ export default handleActions<CommonState, any>({
             draft.setting = {
                 displayName: '',
                 thumbnail: '',
+            }
+        })
+    },
+    [INITIALIZE_SEARCH]: (state) => {
+        return produce(state, (draft) => {
+            draft.value = '',
+            draft.search = {
+                next: '',
+                loading: false,
+                Data: [],
+                prefetched: [],
+                end: false,
             }
         })
     },
@@ -138,15 +176,86 @@ export default handleActions<CommonState, any>({
             draft.search.loading = true;
         });
     },
-    [SEARCH_PIN_SUCCESS]: (state, action: SearchPinDataAction) => {
+    [SEARCH_PIN_SUCCESS]: (state, action: SearchDataAction) => {
         const { payload: { data } } = action;
         return produce(state, (draft) => {
-            if (data === undefined) return;            
+            if (data.Data === undefined) return;            
             draft.search = {
                 loading: false,
                 next: data.next,
                 Data: data.Data,
+                prefetched: [],
+                end: false,
             }
+        });
+    },
+    [SEARCH_PIN_ERROR]: (state) => {
+        return produce(state, (draft) => {
+            draft.search = {
+                loading: false,
+                next: '',
+                Data: [],
+                prefetched: [],
+                end: false
+            }
+        })
+    },
+    [SEARCH_USER_PENDING]: (state) => {
+        return produce(state, (draft) => {
+            draft.search.loading = true;
+        });
+    },
+    [SEARCH_USER_SUCCESS]: (state, action: SearchDataAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            if (data === undefined) return;
+            
+            if (data.Data === undefined || data.Data.length === 0) {
+                draft.search = {
+                    loading: false,
+                    next: '',
+                    Data: [],
+                    prefetched: [],
+                    end: false,
+                }
+                return;
+            }
+
+            draft.search = {
+                loading: false,
+                next: data.next,
+                Data: data.Data,
+                prefetched: [],
+                end: false
+            }
+        });
+    },
+    [PREFETCH_LIST_SUCCESS]: (state, action: PrefetchListAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            draft.search.prefetched = data.Data;
+            draft.search.next = data.next;
+            if (data.Data && data.Data.length === 0) {
+                draft.search.end = true;
+            }
+        })
+    },
+    [REVEAL_PREFETCHED]: (state, action: RevealPrefetchedAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            const { payload } = action;
+            const { pins, prefetched } = draft[payload];
+            if (pins && prefetched) {
+                pins.push(...prefetched);
+                draft[payload].prefetched = null;
+            }
+        })
+    },
+    [CHANGE_SEARCH_VALUE]: (state, action: ChangeSearchValueAction) => {
+        const { payload } = action;
+        return produce(state, (draft) => {
+            if (payload === undefined) return;
+            draft.value = payload;
         });
     }
 }, initialState);

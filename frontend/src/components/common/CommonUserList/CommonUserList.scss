@@ -1,0 +1,147 @@
+@import 'utils';
+
+.common-user-list {
+    .common-card {
+        width: calc((100% - 8.75rem) / 5);
+        position: relative;
+        margin: 0.875rem;
+        @include media("<=x-huge") {
+            // 1920px
+            width: calc(25% - 1.75rem);
+        }
+        @include media("<=huge") {
+            width: calc(33.333% - 1.75rem);
+            // 1600px;
+        }
+        @include media("<=wide") {
+            // 1200px;
+            width: calc(50% - 1.75rem);
+        }
+        @include media("<=large") {
+            // 1024px
+            width: calc(100% - 1.75rem);
+            margin-top: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .wrapper {
+            box-sizing: border-box;
+            .profile-group {
+                color: $oc-gray-5;
+                cursor: pointer;
+                .profile {
+                    width: 100%;
+                    box-sizing: border-box;
+                    display: block;
+                    .thumbnail-wrapper {
+                        width: 100%;
+                        box-sizing: border-box;
+                        position: relative;
+                        border-radius: 50%;
+                        background-color: #fff;
+                        .wrapper {
+                            position: relative;
+                            overflow: hidden;
+                            border-radius: 50%;
+                            will-change: transform;
+                            .thumbnail {
+                                background-color: rgb(239, 239, 239);
+                                padding-bottom: 100%;
+                                box-sizing: border-box;
+                                position: relative;
+                                img {
+                                    color: transparent;
+                                    width: 100%;
+                                    position: absolute;
+                                    max-width: 100%;
+                                    width: auto\9;
+                                    height: auto;
+                                    vertical-align: middle;
+                                    border: 0;
+                                }
+                            }
+                        }
+                    }
+    
+                    .info-wrapper {
+                        box-sizing: border-box;
+                        padding-bottom: 8px;
+                        padding-top: 8px;
+                        display: block;
+                        .wrapper {
+                            width: 100%;
+                            justify-content: center;
+                            align-content: center;
+                            box-sizing: border-box;
+                            margin-bottom: 8px;
+                            display: flex;
+                            flex-direction: row;
+                            .displayName {
+                                font-weight: 700;
+                                line-height: 1.2;
+                                letter-spacing: -0.4px;
+                                display: block;
+                                word-wrap: break-word;
+                                max-width: 100%;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                font-size: 21px;
+                                color: $oc-gray-5;
+                                text-align: left;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+        .button-wrapper {
+            box-sizing: border-box;
+            margin-top: 12px;
+            display: block;
+                .button {
+                    cursor: pointer;
+                    width: 100%;
+                    box-sizing: border-box;
+                    min-height: 40px;
+                    display: block;
+                    border: 0;
+                    background-color: white;
+                    border: 1px solid $oc-red-6;
+                    padding: 10px 14px;
+                    border-radius: 4px;
+                    line-height: normal;
+                    margin: 0;
+                    font-size: 100%;
+                    vertical-align: middle;
+                    align-items: flex-start;
+                    text-align: center;
+                    letter-spacing: normal;
+                    word-spacing: normal;
+                    text-transform: none;
+                    text-indent: 0px;
+                    text-shadow: none;
+                    text-rendering: auto;
+                    font: 400 13.3333px Arial;
+            
+                .profile-button {
+                    display: block;
+                    color: $oc-red-4;
+                    font-size: 16px;
+                    text-align: center;
+                    font-weight: 700;
+                    line-height: 1.2;
+                    letter-spacing: -.4px;
+                    &:hover {
+                        color: white;
+                    }
+                }
+            
+                &:hover {
+                    background-color: $oc-red-7;
+                }
+            }
+        }
+    }
+}
+

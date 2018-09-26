@@ -1,53 +1,75 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, compose, bindActionCreators } from 'redux';
-import { withRouter, match } from 'react-router-dom';
+import { Dispatch, bindActionCreators } from 'redux';
 import { StoreState } from '../../store/modules';
 import SearchInput from '../../components/search/SearchInput';
 import { commonCreators } from '../../store/modules/common';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = { match: match<string> };
 
-type SearchContentProps = StateProps & DispatchProps & OwnProps;
+type SearchContentProps = StateProps & DispatchProps;
 
 class SearchContent extends React.Component<SearchContentProps> {
-  public onSearchPin = async (value: string, type: string) => {
+  public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { CommonActions } = this.props;
-    try {
-      await CommonActions.searchPin(value, type);
-    } catch (e) {
-      console.error(e);
-    }
-  }
+    const { value } = e.target
+    CommonActions.changeSearchValue(value);
+  } 
 
   public render () {
-    const { onSearchPin } = this;
-    const { match } = this.props;
-    const urlSplit = match.url.split("/");
-    const type = urlSplit[urlSplit.length - 1];    
+    const { value } = this.props;
+    const { onChange } = this;
+    
     return (
       <SearchInput
-        onSearchPin={onSearchPin}
-        type={type}
+        value={value}
+        onChange={onChange}
       />
     );
   }
 }
 
-const mapStateToProps = ({  }: StoreState) => ({
-
+const mapStateToProps = ({ common }: StoreState) => ({
+  value: common.value
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   CommonActions: bindActionCreators(commonCreators, dispatch),
 });
 
-export default compose(
-  withRouter,
-  connect<StateProps, DispatchProps, OwnProps>(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+export default connect<StateProps, DispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
 )(SearchContent);
+
+
+/*
+  public onSearchPin = throttle(async(value: string) => {
+    const { CommonActions } = this.props;
+    try {
+      await CommonActions.searchPin(value);
+    } catch (e) {
+      console.error(e);
+    }
+  }, 750);
+
+  public onSearchUser = throttle(async(value: string) => {
+    const { CommonActions } = this.props;
+    try {
+      await CommonActions.searchUser(value);
+    } catch (e) {
+      console.error(e);
+    }
+  }, 750);
+
+  public onSearchTag = throttle(async(value: string) => {
+    const { CommonActions } = this.props;
+    try {
+      await CommonActions.searchTag(value);
+    } catch (e) {
+      console.error(e);
+    }
+  }, 750);
+
+*/

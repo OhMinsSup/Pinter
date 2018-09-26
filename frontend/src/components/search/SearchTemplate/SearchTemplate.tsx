@@ -6,14 +6,16 @@ const cx = classNames.bind(styles);
 
 type Props = {
     header: React.ReactNode,
+    search: React.ReactNode,
     children: React.ReactNode
 }
 
-const SearchTemplate: React.SFC<Props> = ({ header, children }) => {
+const SearchTemplate: React.SFC<Props> = ({ header, search,children }) => {
     return (
         <div className={cx('search-template')}>
             <div className={cx('head')}>{header}</div>
-            <main className={cx('search-content')}>{children}</main>
+            <div className={cx('search-content')}>{search}</div>
+            <div className={cx('result')}>{children}</div>
         </div>
     );
 };
