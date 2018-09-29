@@ -1,0 +1,39 @@
+@import 'utils';
+
+.sidebar {
+    .sidebar-top {
+        display: block;
+        box-sizing: border-box;
+        .logo-section {
+            padding: 1.5rem 2rem 2rem;
+            margin-bottom: 1rem;
+            .logo {
+                width: 180px;
+                position: relative;
+                cursor: pointer;
+                padding-left: 1.5rem;
+                svg {
+                    font-size: 1.8rem;
+                    color: $oc-red-5;
+                    margin-bottom: 0.85rem;
+                }
+                span {
+                    margin-left: 0.5rem;
+                    width: 600;
+                    color: $oc-gray-7;
+                    font-size: 2rem;
+                }
+            }
+        }
+
+        .primary {
+            .list {
+                padding-left: 0;
+                list-style: none;
+                margin-top: 0;
+                margin-bottom: 1rem;
+                box-sizing: border-box;
+            }
+        }
+    }
+}

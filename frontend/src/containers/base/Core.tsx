@@ -40,7 +40,7 @@ class Core extends React.Component<CoreProps>{
 
   public initialize = () => {
     this.checkUser();
-    // this.socketConnect();
+    this.socketConnect();
   }
 
   public componentDidMount() {

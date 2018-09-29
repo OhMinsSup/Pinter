@@ -7,6 +7,7 @@ import { match } from 'react-router-dom';
 import { getScrollBottom } from '../../lib/common';
 import FollowCardList from '../../components/follow/FollowCardList';
 import { followsCreators } from '../../store/modules/list/follows';
+import FakePinCards from '../../components/common/FakePinCards/FakePinCards';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -70,7 +71,7 @@ class FollowerUserList extends React.Component<FollowerUserListProps> {
     public render() {
         const { users, loading } = this.props;
 
-        if (loading) return null;
+        if (loading) return <FakePinCards pins={users} />;;
 
         return (
             <FollowCardList

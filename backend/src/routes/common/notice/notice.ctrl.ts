@@ -6,6 +6,8 @@ import { serializeNoticeRoom } from '../../../lib/serialize';
 import { filterUnique } from '../../../lib/common'
 import socketServer from '../../../lib/socket';
 
+const socket = socketServer.getSocket;
+
 export const getNoticeRoom = async (req: Request, res: Response): Promise<any> => {
     const userId: string = req['user']._id;
 
@@ -79,12 +81,6 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
             return m;
         }));
 
-        messsage.map(message => {
-            socketServer.getSocket.to((message.notice as any)).emit('new-message', {
-                messageWithData: message.message,
-            });
-        });
-
         res.json({
             messageWithData: messsage,
         });
@@ -97,7 +93,9 @@ export const getNoticeList = async (req: Request, res: Response): Promise<any> =
     const userId: string = req['user']._id;
 
     try {
-        const notice: INotice = await Notice.findOne({ creator: userId }).lean();
+        const notice: INotice = await Notice
+        .findOne({ creator: userId })
+        .lean();
         
         if (!notice) {
             return res.status(404).json({
@@ -105,10 +103,17 @@ export const getNoticeList = async (req: Request, res: Response): Promise<any> =
             });
         }
 
-        const message: INoticeMessage = await NoticeMessage.find({ notice: notice._id }).lean().limit(10);
+        const message: INoticeMessage = await NoticeMessage
+        .find({ notice: notice._id })
+        .sort({ _id: -1 })
+        .lean();
         
+        socket.to(notice._id).emit('notice-list', {
+            message,
+        });
+
         res.json({
-            messageWithData: message,
+            message,
         });
     } catch (e) {
         res.status(500).json(e);

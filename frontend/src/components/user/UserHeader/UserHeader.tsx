@@ -29,29 +29,29 @@ const UserHeader: React.SFC<Props> = ({
                 <section className={cx('top')}>
                     {
                         <div className={cx('subscribe-wrapper')}>
-                            <Button to="/write" className={cx('setting')} theme="outline">
-                                글쓰기
-                            </Button>
                             {
                                 (username === profile.username) && (displayName === profile.displayName) ? ( 
                                     <React.Fragment>
+                                        <Button to="/write" className={cx('setting')} theme="outline">
+                                            글쓰기
+                                        </Button>
                                         <Button className={cx('setting')} theme="outline" onClick={onSetting}>
                                             프로필
                                         </Button>
-                                        {
-                                            follow ? (
-                                                <Button className={cx('subscribe')} theme="default" onClick={onFollow}>
-                                                    구독중
-                                                </Button>
-                                            ) : (
-                                                <Button className={cx('subscribe')} theme="outline" onClick={onFollow}>
-                                                    구독하기
-                                                </Button>
-                                            )                                            
-                                        } 
                                     </React.Fragment>
                                 ) : null
-                            }                           
+                            }                    
+                            {
+                                follow ? (
+                                    <Button className={cx('subscribe')} theme="default" onClick={onFollow}>
+                                        구독중
+                                    </Button>
+                                ) : (
+                                    <Button className={cx('subscribe')} theme="outline" onClick={onFollow}>
+                                        구독하기
+                                    </Button>
+                                )                                            
+                            }        
                         </div>
                         
                     }

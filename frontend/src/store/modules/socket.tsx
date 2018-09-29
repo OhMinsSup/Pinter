@@ -15,7 +15,7 @@ export const socketCreators = {
 
         socket = SocketIOClient('ws://localhost:5000/');
           
-        socket.emit('connection', () => {            
+        socket.on('connection', () => {            
             dispatch({
                 type: SOCKETS_CONNECTION_SUCCESS,
             });

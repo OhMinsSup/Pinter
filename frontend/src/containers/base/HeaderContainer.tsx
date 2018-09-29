@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dispatch, bindActionCreators } from 'redux';
+import { Dispatch, bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import { StoreState } from '../../store/modules';
@@ -7,14 +7,17 @@ import { userCreators } from '../../store/modules/user';
 import Header from '../../components/base/Header';
 import Storage from '../../lib/storage';
 import { baseCreators } from '../../store/modules/base';
+import { withRouter } from 'react-router';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type HeaderContainerProps = StateProps & DispatchProps;
+type OwnProps = { location: Location };
+type HeaderContainerProps = StateProps & DispatchProps & OwnProps;
 
 class HeaderContainer extends React.Component<HeaderContainerProps> {
     public onResize = throttle(() => {
-        this.props.BaseActions.getbowserSize(document.body.scrollWidth);
+        const { BaseActions } = this.props;
+        BaseActions.getbowserSize(document.body.scrollWidth);
     }, 250);
     
     public constructor(props: HeaderContainerProps) {
@@ -71,7 +74,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch)
 });
 
-export default connect<StateProps, DispatchProps>(
-    mapStateToProps,
-    mapDispatchToProps
+export default compose(
+    withRouter, 
+    connect<StateProps, DispatchProps, OwnProps>(
+        mapStateToProps,
+        mapDispatchToProps
+    )
 )(HeaderContainer);

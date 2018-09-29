@@ -42,6 +42,11 @@
                     padding-left: 0.2rem;
                     padding-top: 0.25rem;
                 }
+
+                .group {
+
+                }
+                
                 @include media ("<=545px") {
                     position: relative;
                     display: flex;
