@@ -20,6 +20,7 @@ const App = () => {
         <Route exact path="/@:displayName/(pin|following|follower|locker)" component={User} />
         <Route exact path="/search/(pin|user)?" component={Search} />
         <Route exact path="/group/(test|test1|test2|test3|create)?" component={Group} />
+        <Route exact path="/group/@:title" component={Group} />
         <Route component={NotFound} />
       </Switch>
       <Core />

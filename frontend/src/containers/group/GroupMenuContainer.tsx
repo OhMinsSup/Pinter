@@ -4,7 +4,7 @@ import GroupMenu from '../../components/group/GroupMenu';
 class GroupMenuContaienr extends React.Component<{}> {
     public render() {
         return(
-            <GroupMenu />
+            <GroupMenu /> 
         )
     }
 }
