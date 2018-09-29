@@ -24,12 +24,12 @@ const GroupSidebar: React.SFC<Props> = ({ url }) => {
                 <div className={cx('primary')}>
                     <ul className={cx('list')}>
                         <GroupNavItem
-                            text="Test"
+                            text="그룹"
                             active={url === `/group/test`}
                             to={`/group/test`}
                         />
                         <GroupNavItem
-                            text="Test1"
+                            text="인기그룹"
                             active={url === `/group/test1`}
                             to={`/group/test1`}
                         />

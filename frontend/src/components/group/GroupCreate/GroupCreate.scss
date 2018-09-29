@@ -1,0 +1,84 @@
+@import 'utils';
+
+.group-create {
+    display: block;
+    position: relative;
+    .cover-thumbnail-wrapper {
+        margin-bottom: 0;
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        min-height: 60px;
+        margin-right: 16px;
+        margin-left: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.42);
+        border-style: dashed;
+        text-align: center;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        svg {
+            font-size: 1.5rem;
+            color: $oc-blue-5;
+        }
+        .cover-thumbnail {
+            margin-left: 1rem;
+            font-weight: 500;
+            color: $oc-gray-7;
+            font-size: 1.5rem;
+        }
+    }
+
+    .title {
+        height: 51px;
+        font-size: 2.813rem;
+        font-weight: 400;
+        letter-spacing: normal;
+        line-height: 3rem;
+        text-decoration: inherit;
+        text-transform: inherit;
+        margin: 1rem 0 0 -0.07em;
+        color: rgba(0, 0, 0, 0.87);
+        word-wrap: break-word;
+        font-family: Roboto, "Noto Sans KR", sans-serif;
+        padding: 0 24px;
+        border: none;
+        box-sizing: border-box;
+        outline: none;
+        resize: none;
+        overflow-y: hidden;
+        width: 100%;
+        background-color: $oc-gray-1;
+    }
+
+    .contents-wrapper {
+        display: block;
+        position: relative;
+        z-index: 1;
+        color: #9197a3;
+        top: 7px;
+        padding: 0 24px;
+        .contents {
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            background-color: $oc-gray-1;
+            outline: none;
+            resize: none;
+            font-size: 1.25rem;
+            font-weight: 400;
+            letter-spacing: normal;
+            line-height: 3rem;
+            font-family: Roboto, "Noto Sans KR", sans-serif;
+        }
+    }
+
+    .submit-wrapper {
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        color: #9197a3;
+        top: 3rem;
+        padding: 0 24px;
+    }
+}

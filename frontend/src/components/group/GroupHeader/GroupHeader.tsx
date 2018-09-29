@@ -22,7 +22,7 @@ const GroupHeader: React.SFC<Props> = ({ displayName, thumbnail, menu, size }) =
                 <div className={cx('group-header')}>
                     <div className={cx('left-items')}>
                         <div className={cx('btn-group')}>
-                            <Link to='/' className={cx('create')}>그룹 만들기</Link>
+                            <Link to='/group/create' className={cx('create')}>그룹 만들기</Link>
                         </div>
                     </div>
                     <div className={cx('mobile-head')}>
@@ -43,7 +43,7 @@ const GroupHeader: React.SFC<Props> = ({ displayName, thumbnail, menu, size }) =
                 <div className={cx('group-header')}>
                     <div className={cx('left-items')}>
                         <div className={cx('btn-group')}>
-                            <Link to='/' className={cx('create')}>그룹 만들기</Link>
+                            <Link to='/group/create' className={cx('create')}>그룹 만들기</Link>
                         </div>
                     </div>
                     <div className={cx('right-items')}>

@@ -20,12 +20,12 @@ const GroupMenu: React.SFC<Props> = ({ onClick, onLogout, username }) => {
         <div className={cx('rotated-square')} />
         <div className={cx('group-menu')} onClick={onClick}>
           <div className={cx('menu-items')}>
-            <GroupMenuItem to={`/@${username}`}>내 벨로그</GroupMenuItem>
+            <GroupMenuItem to={`/@${username}`}>내 페이지</GroupMenuItem>
             <div className={cx('separator')} />
-            <GroupMenuItem to="/write">새 글 작성</GroupMenuItem>
-            <GroupMenuItem to="/saves">임시 글</GroupMenuItem>
+            <GroupMenuItem to="/">새 글 작성</GroupMenuItem>
+            <GroupMenuItem to="/">임시 글</GroupMenuItem>
             <div className={cx('separator')} />
-            <GroupMenuItem to="/settings">설정</GroupMenuItem>
+            <GroupMenuItem to="/">설정</GroupMenuItem>
             <GroupMenuItem>로그아웃</GroupMenuItem>
           </div>
         </div>

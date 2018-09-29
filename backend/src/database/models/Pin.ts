@@ -30,11 +30,9 @@ const Pin = new Schema({
     },
     body: {
         type: String,
-        index: true,
     },
     relationUrl: {
         type: String,
-        index: true,
     },
     urls: {
         type: [String],
