@@ -9,7 +9,7 @@ const GroupPageNav = () => {
     return (
         <div className={cx('group-header-nav')}>
             <GroupCommonLink
-                active={true}
+                active={false}
                 to="/group/@test/recent"
                 text="최신 핀"
             />

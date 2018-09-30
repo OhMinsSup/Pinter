@@ -22,7 +22,7 @@ const Group: React.SFC<Props> = ({ match }) => {
             <Switch>
                 <Route exact path="/group" component={MainGroup}/>
                 <Route exact path="/group/create" component={GroupCreateContainer} />
-                <Route exact path="/group/@:title" component={GroupPageContainer} />
+                <Route exact path="/group/@:title/(recent|trending|users)?" component={GroupPageContainer} />
             </Switch>
         </GroupTemplate>
     )

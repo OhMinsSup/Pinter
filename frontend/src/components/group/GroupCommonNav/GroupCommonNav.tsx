@@ -16,12 +16,12 @@ const GroupCommonNav: React.SFC<Props> = ({ size }) => {
             <GroupCommonLink
                 active={true}
                 to="/group"
-                text="그룹"
+                text="최신"
             />
             <GroupCommonLink
                 active={false}
                 to="/group/trending"
-                text="인기 그룹"
+                text="인기"
             />
             <GroupCommonLink
                 active={false}
