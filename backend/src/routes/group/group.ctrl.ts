@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import * as joi from 'joi';
-import Group from '../../database/models/Group';
+import Group, { IGroup } from '../../database/models/Group';
 import GroupUser from '../../database/models/GroupUser';
 
 export const createGroup = async (req: Request, res: Response): Promise<any> => {
@@ -51,7 +51,24 @@ export const createGroup = async (req: Request, res: Response): Promise<any> => 
         });
         
         res.json({
+            title: group.title,
             groupId: group._id,
+        });
+    } catch (e) {
+        res.status(500).json(e);
+    }
+}
+
+export const listGroup = async (req: Request, res: Response): Promise<any> => {
+    const { cursor } = req.query;
+
+    try {
+        const group: IGroup[] = await Group.readGroupList(cursor);
+        const next = group.length === 10 ? `/group/?cursor=${group[9]._id}` : null;
+        
+        res.json({
+            next,
+            group,
         });
     } catch (e) {
         res.status(500).json(e);

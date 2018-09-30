@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 
-const styles = require('./GroupMobileLink.scss');
+const styles = require('./GroupCommonLink.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
     active?: boolean,
 }
 
-const GroupMobileLink: React.SFC<Props> = ({ to, text, active }) => {
+const GroupCommonLink: React.SFC<Props> = ({ to, text, active }) => {
     return (
         <li className={cx('mobile-nav-item', { active })}>
             <Link to={to}>
@@ -23,9 +23,9 @@ const GroupMobileLink: React.SFC<Props> = ({ to, text, active }) => {
     )
 }
 
-GroupMobileLink.defaultProps = {
+GroupCommonLink.defaultProps = {
     to: '',
     active: false,
 }
 
-export default GroupMobileLink;
+export default GroupCommonLink;

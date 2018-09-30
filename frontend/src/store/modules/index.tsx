@@ -10,6 +10,7 @@ import common, { CommonState } from './common';
 import follow, { FollowState } from './follow';
 import tag, { TagState } from './tag';
 import socket, { SocketState } from './socket';
+import group, { GroupState } from './group';
 
 export default combineReducers({
     auth: auth,
@@ -23,6 +24,7 @@ export default combineReducers({
     follow: follow,
     tag: tag,
     socket: socket,
+    group: group,
 });
 
 export interface StoreState { 
@@ -37,4 +39,5 @@ export interface StoreState {
     follow: FollowState,
     tag: TagState,
     socket: SocketState,
+    group: GroupState,
 }

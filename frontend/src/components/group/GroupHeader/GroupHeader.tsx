@@ -32,7 +32,7 @@ const GroupHeader: React.SFC<Props> = ({ displayName, thumbnail, menu, size }) =
                         </Link>
                     </div>
                     <div className={cx('right-items')}>
-                        <Button className={cx('users')} theme='noline' to={`/@${displayName}`}>
+                        <Button className={cx('users')} theme='noline'>
                             <img className={cx('thumbnail')} src={thumbnail} alt={displayName}/>
                             <span className={cx('username')}>{displayName}</span>
                         </Button>
@@ -47,7 +47,7 @@ const GroupHeader: React.SFC<Props> = ({ displayName, thumbnail, menu, size }) =
                         </div>
                     </div>
                     <div className={cx('right-items')}>
-                        <Button className={cx('users')} theme='noline' to={`/@${displayName}`}>
+                        <Button className={cx('users')} theme='noline'>
                             <img className={cx('thumbnail')} src={thumbnail} alt={displayName}/>
                             <span className={cx('username')}>{displayName}</span>
                         </Button>

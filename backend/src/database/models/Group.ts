@@ -12,7 +12,8 @@ export interface IGroup extends Document {
 }
 
 export interface IGroupModel extends Model<IGroup> {
-
+    findByTitle(value: string): Promise<any>;
+    readGroupList(cursor?: string): Promise<any>;
 }
 
 const Group = new Schema({
@@ -21,11 +22,34 @@ const Group = new Schema({
         ref: 'User',
     },
     cover: String,
-    title: String,
+    title: {
+        type: String,
+        unique: true,
+    },
     contents: String,
 }, {
     timestamps: true
 });
+
+Group.statics.findByTitle = function(value: string): Promise<any> {
+    return this.findOne({
+        title: value,
+    })
+    .lean();
+};
+
+Group.statics.readGroupList = function(cursor?: string): Promise<any> {
+    const query = Object.assign(
+        {},
+        cursor ? { _id: { $lt: cursor } } : {}
+    )
+
+    return this.find(query)
+    .populate('creator')
+    .sort({ _id: -1 })
+    .limit(10)
+    .lean();
+}
 
 const GroupModel = model<IGroup>("Group", Group) as IGroupModel;
 

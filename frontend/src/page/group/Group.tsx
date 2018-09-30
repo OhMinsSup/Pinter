@@ -6,15 +6,10 @@ import MainGroup from '../../containers/group/MainGroup';
 import GroupHeaderContainer from '../../containers/group/GroupHeaderContainer';
 import GroupCreateContainer from '../../containers/group/GroupCreateContainer';
 import GroupPrimarySidebarContainer from '../../containers/group/GroupPrimarySidebarContainer';
+import GroupPageContainer from '../../containers/group/GroupPageContainer';
 
 type Props = {
     match: match<string>
-}
-
-const Test = () => {
-    return (
-        <div>dsds</div>
-    )
 }
 
 const Group: React.SFC<Props> = ({ match }) => {
@@ -27,7 +22,7 @@ const Group: React.SFC<Props> = ({ match }) => {
             <Switch>
                 <Route exact path="/group" component={MainGroup}/>
                 <Route exact path="/group/create" component={GroupCreateContainer} />
-                <Route exact path="/group/@:title" component={Test} />
+                <Route exact path="/group/@:title" component={GroupPageContainer} />
             </Switch>
         </GroupTemplate>
     )

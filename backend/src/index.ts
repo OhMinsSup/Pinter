@@ -1,6 +1,6 @@
 import * as http from "http";
-// import * as cluster from 'cluster';
-// import { cpus } from 'os';
+import * as cluster from 'cluster';
+import { cpus } from 'os';
 import * as config from "./config/config";
 import Server from "./server";
 import socketServer from './lib/socket';
@@ -22,7 +22,7 @@ if (cluster.isMaster) {
         cluster.fork()
     })
 } else {
-  */
+*/
     const port = normalizePort(config.PORT || 5000);
     Server.set("port", port);
     

@@ -160,7 +160,7 @@ export const listPin = async (req: Request, res: Response): Promise<any> => {
     const { displayName } = req.params;
     const { cursor } = req.query;
     
-    let userId: string = null;
+    let userId: string = '';
 
     try {
         if (displayName) {
