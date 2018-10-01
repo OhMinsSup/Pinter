@@ -3,6 +3,7 @@ import WriteTemplate from '../components/write/WriteTemplate';
 import HeaderContainer from '../containers/base/HeaderContainer';
 import MakePin from '../containers/pin/MakePin';
 import { History } from 'history';
+import SettingPinBox from '../containers/pin/SettingPinBox';
 
 type Props = {
     history: History,
@@ -11,14 +12,17 @@ type Props = {
 
 const Write: React.SFC<Props> = ({ history, location }) => {
     return (
-        <WriteTemplate
-            header={<HeaderContainer/>}
-        >
-            <MakePin 
-                history={history}
-                location={location}
-            />
-        </WriteTemplate>
+        <React.Fragment>
+            <WriteTemplate
+                header={<HeaderContainer/>}
+            >
+                <MakePin 
+                    history={history}
+                    location={location}
+                />
+            </WriteTemplate>
+            <SettingPinBox />
+        </React.Fragment>
     );
 }
 

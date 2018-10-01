@@ -21,25 +21,9 @@
         display: flex!important;
         justify-content: space-between!important;
         flex-direction: row!important;
-        .cancel-btn {
-            cursor: pointer;
-            color: #7f7f7f;
-            border-radius: 1000px;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: middle;
-            user-select: none;
-            border: 1px solid transparent;
-            padding: .375rem .75rem;
-            line-height: 1.5;
-            display: inline-block;
-            margin-left: 1rem;
-            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-        }
         .submit-btn {
             margin: 0 0 0 auto;
             margin-right: 6rem;
-
             @include media("<=medium") {
                 margin-right: 0;
             }

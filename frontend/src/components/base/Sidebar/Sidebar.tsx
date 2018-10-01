@@ -28,7 +28,7 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName, size, onLogout }) => 
                         <div className={cx('sidebar')}>
                             <SidebarMenu
                                 to={`/@${displayName}`}
-                                name="내 블로그"
+                                name="내 페이지"
                                 icon={<HomeIcon />}
                                 onClick={onClose}
                             />

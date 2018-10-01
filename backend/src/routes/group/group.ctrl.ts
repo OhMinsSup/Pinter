@@ -59,6 +59,20 @@ export const createGroup = async (req: Request, res: Response): Promise<any> => 
     }
 }
 
+export const writeGroupPin = async (req: Request, res: Response): Promise<any> => {
+    type BodySchema = {
+        pinId: string,
+        groupId: string,
+    }
+    const { pinId, groupId }: BodySchema = req.body;
+
+    try {
+        
+    } catch (e) {
+        res.status(500).json(e);
+    }
+}
+
 export const listGroup = async (req: Request, res: Response): Promise<any> => {
     const { cursor } = req.query;
 

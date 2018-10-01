@@ -16,9 +16,9 @@ const App = () => {
         <Route exact path='/email-login' component={EmailLogin} />
         <Route exact path='/write' component={Write} />
         <Route exact path='/pin/:id' component={Pin} />
+        <Route exact path="/search/(pin|user)?" component={Search} />
         <Route exact path='/@:displayName' component={User} />
         <Route exact path="/@:displayName/(pin|following|follower|locker)" component={User} />
-        <Route exact path="/search/(pin|user)?" component={Search} />
         <Route exact path="/group/(test|test1|test2|test3|create)?" component={Group} />
         <Route exact path="/group/@:title/(recent|trending|users)?" component={Group} />
         <Route component={NotFound} />

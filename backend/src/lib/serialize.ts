@@ -86,10 +86,8 @@ const serializeFollower = (data: any) => {
         follower,
     } = data;
     return {
-        follower: {
-            ...pick(follower, ['_id', 'username']),
-            ...pick(follower.profile, ['displayName', 'thumbnail']),
-        },
+        ...pick(follower, ['_id', 'username']),
+        ...pick(follower.profile, ['displayName', 'thumbnail']),
     };
 };
 
@@ -98,10 +96,8 @@ const serializeFollowing = (data: any) => {
         following,
     } = data;
     return {
-        following: {
-            ...pick(following, ['_id', 'username']),
-            ...pick(following.profile, ['displayName', 'thumbnail']),
-        },
+        ...pick(following, ['_id', 'username']),
+        ...pick(following.profile, ['displayName', 'thumbnail']),
     };
 };
 

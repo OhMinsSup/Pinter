@@ -92,4 +92,36 @@
             display: none;
         }
     }
+
+    .floating-button {
+        z-index: 90;
+        display: inline-block;
+        position: fixed;
+        bottom: 0%;
+        right: 2%;
+        outline: none;
+        width: 50px;
+        height: 120px;
+        .add-button {
+            cursor: pointer;
+            z-index: 90;
+            position: absolute;
+            background: white;
+            display: inline-block;
+            right: 2%;
+            box-shadow: 0 2px 0 0 rgba(0,0,0,0.5), 0 0 0 0.5px rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border: 0;
+            padding: 11px 13px;
+            margin: 0;
+            outline: none;
+            
+            &:hover {
+                background: $oc-gray-4;
+                svg {
+                    color: white;
+                }
+            }
+        }
+    }
 }

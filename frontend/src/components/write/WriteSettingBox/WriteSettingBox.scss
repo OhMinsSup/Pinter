@@ -1,0 +1,58 @@
+@import 'utils';
+
+.write-setting-box {
+  background: white;
+  border-top: 4px solid $oc-red-5;
+  padding: 1rem;
+  width: 450px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  @include material-shadow(2, 0.75);
+  h2 {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $oc-gray-4;
+  }
+  .content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    position: relative;
+  }
+  .foot {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: -1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding: 1rem;
+    background: $oc-gray-1;
+    border-top: 1px solid darken($oc-gray-1, 5%);
+    .button {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      cursor: pointer;
+      @include material-shadow(2, 0.3);
+      background: white;
+      transition: all 0.1s ease-in;
+      &.save {
+        color: $oc-red-6;
+      }
+      &.cancel {
+        color: $oc-gray-7;
+      }
+      &:hover {
+        @include material-shadow(2, 0.75);
+      }
+      &:active {
+        background: $oc-gray-0;
+      }
+    }
+    .button + .button {
+      margin-left: 0.5rem;
+    }
+  }
+}

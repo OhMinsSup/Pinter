@@ -28,7 +28,7 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
             size <= 816 ? (
                 <div className={cx('mobile-head')}>
                 <div className={cx('button-area')}>
-                    <Button theme="outline" to='/write'>새 글쓰기</Button>
+                    <Button theme="outline" to='/write'>새 핀</Button>
                 </div>
                 <div className={cx('spacer')} />
                 <Logo />

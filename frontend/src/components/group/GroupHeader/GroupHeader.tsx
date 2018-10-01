@@ -21,14 +21,14 @@ const GroupHeader: React.SFC<Props> = ({ displayName, thumbnail, menu, size }) =
             size <= 875 ? (
                 <div className={cx('group-header')}>
                     <div className={cx('left-items')}>
-                        <div className={cx('btn-group')}>
-                            <Link to='/group/create' className={cx('create')}>그룹 만들기</Link>
+                        <div className={cx('btn-group-mobile')}>
+                            <Link to='/group/create' className={cx('btn-mobile')}>새 그룹</Link>
+                            <Link to='/write' className={cx('btn-mobile')}>새 핀</Link>
                         </div>
                     </div>
                     <div className={cx('mobile-head')}>
                         <Link to="/" className={cx('title')}>
                             <LogoIcon />
-                            <span>Pinter</span>
                         </Link>
                     </div>
                     <div className={cx('right-items')}>
@@ -43,7 +43,7 @@ const GroupHeader: React.SFC<Props> = ({ displayName, thumbnail, menu, size }) =
                 <div className={cx('group-header')}>
                     <div className={cx('left-items')}>
                         <div className={cx('btn-group')}>
-                            <Link to='/group/create' className={cx('create')}>그룹 만들기</Link>
+                            <Link to='/group/create' className={cx('btn')}>그룹 만들기</Link>
                         </div>
                     </div>
                     <div className={cx('right-items')}>

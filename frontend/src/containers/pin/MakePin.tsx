@@ -117,7 +117,6 @@ class MakePin extends React.Component<MakePinProps> {
 
     public render() {
         const { 
-            size, 
             body, 
             relationUrl,
             tags, 
@@ -149,7 +148,6 @@ class MakePin extends React.Component<MakePinProps> {
                     onPaste={onPasteImage}
                     onUploadClick={onUploadClick}
                 />}
-                size={size}
                 onChange={onChangeInput}
                 body={body}
                 urls={urls}

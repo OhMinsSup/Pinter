@@ -15,7 +15,7 @@ const FollowCard: React.SFC<Props> = ({ displayName, thumbnail }) => {
     return (
         <div className={cx('follow-card')}>
             <div className={cx('wrapper')}>
-                <Link to="/" className={cx('profile-group')}>
+                <Link to={`/@${displayName}`} className={cx('profile-group')}>
                     <div className={cx('profile')}>
                         <div className={cx('thumbnail-wrapper')}>
                             <div className={cx('wrapper')}>
@@ -26,7 +26,7 @@ const FollowCard: React.SFC<Props> = ({ displayName, thumbnail }) => {
                         </div>
                         <div className={cx('info-wrapper')}>
                             <div className={cx('wrapper')}>
-                                <div className={cx('displayName')}>veloss</div>
+                                <div className={cx('displayName')}>{displayName}</div>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
+import { Link } from 'react-router-dom';
 
+const Plus = require('react-icons/lib/fa/plus');
 const styles = require('./GroupTemplate.scss');
 const cx = classNames.bind(styles);
 
@@ -29,6 +31,11 @@ const GroupTemplate: React.SFC<Props> = ({ children, sidebar, primarySidebar, he
             <aside className={cx('primary-sidebar')}>
                 {primarySidebar}
             </aside>
+            <div className={cx('floating-button')}>
+                <Link className={cx('add-button')} to="/write">
+                    <Plus />
+                </Link>
+            </div>
         </div>
     )
 }

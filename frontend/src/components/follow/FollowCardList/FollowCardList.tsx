@@ -11,11 +11,11 @@ type Props = {
 
 const FollowCardList: React.SFC<Props> = ({ users }) => {
     const userList = users.map(
-        (user) => {
+        (user, i) => {
             const { _id, displayName, thumbnail } = user;
             return (
                 <FollowCard
-                    key={_id}
+                    key={i}
                     id={_id}
                     thumbnail={thumbnail}
                     displayName={displayName}
