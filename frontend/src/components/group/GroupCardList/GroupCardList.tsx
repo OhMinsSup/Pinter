@@ -5,20 +5,38 @@ import GroupCard from '../GroupCard/GroupCard';
 const styles = require('./GroupCardList.scss');
 const cx = classNames.bind(styles);
 
-const GroupCardList = () => {
+type Props = {
+    groups: any[],
+}
+
+const GroupCardList: React.SFC<Props> = ({ groups }) => {
+    const groupList = groups.map(group => {
+        const {
+            groupId, 
+            cover,
+            title,
+            contents,
+            creator: {
+                displayName,
+                thumbnail,
+            }
+        } = group;
+
+        return (
+            <GroupCard 
+                key={groupId}
+                id={groupId}
+                cover={cover}
+                title={title}
+                contents={contents}
+                displayName={displayName}
+                thumbnail={thumbnail}
+            />
+        )
+    })
     return (
         <div className={cx('group-card-list')}>
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
-            <GroupCard />
+            {groupList}
         </div>
     )
 }

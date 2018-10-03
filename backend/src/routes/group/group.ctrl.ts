@@ -2,6 +2,7 @@ import { Response, Request } from 'express';
 import * as joi from 'joi';
 import Group, { IGroup } from '../../database/models/Group';
 import GroupUser from '../../database/models/GroupUser';
+import { serializeGroup } from '../../lib/serialize';
 
 export const createGroup = async (req: Request, res: Response): Promise<any> => {
     type BodySchema = {
@@ -79,10 +80,11 @@ export const listGroup = async (req: Request, res: Response): Promise<any> => {
     try {
         const group: IGroup[] = await Group.readGroupList(cursor);
         const next = group.length === 10 ? `/group/?cursor=${group[9]._id}` : null;
+        const groupWithData = group.map(serializeGroup);
         
         res.json({
             next,
-            group,
+            groupWithData,
         });
     } catch (e) {
         res.status(500).json(e);

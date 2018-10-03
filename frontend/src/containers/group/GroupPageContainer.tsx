@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Dispatch, bindActionCreators } from 'redux';
-import GroupCardList from '../../components/group/GroupCardList';
 import GroupCommonNav from '../../components/group/GroupCommonNav';
 import { StoreState } from '../../store/modules';
 import { baseCreators } from '../../store/modules/base';
@@ -20,7 +19,6 @@ class GroupPageContainer extends React.Component<GroupPageContainerProps> {
                 <GroupCommonNav size={size}/>
                 <GroupPageInfo />
                 <GroupPageNav />
-                <GroupCardList />
             </React.Fragment>
         )
     }

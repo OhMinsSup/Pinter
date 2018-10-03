@@ -7,17 +7,21 @@ const styles = require('./GroupCard.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-
+    id: string,
+    cover: string,
+    title: string,
+    contents: string,
+    displayName: string,
+    thumbnail: string,
 }
 
-const GroupCard: React.SFC<Props> = () => {
-    let cover = 'https://images.velog.io/post-images/velopert/65d87b10-c356-11e8-a7e2-57af7a25e2db/code-splitting.png';
+const GroupCard: React.SFC<Props> = ({ id, cover, title, contents, displayName, thumbnail }) => {
 
     return (
         <div className={cx('group-card')}>
-            <Link to='/' className={cx('cover-wrapper')}>
+            <Link to={`/group/@${id}/recent`} className={cx('cover-wrapper')}>
             {cover ? (
-                <img src={cover} alt={'veloss'} />
+                <img src={cover} alt={displayName} />
             ) : (
                 <div className={cx("image-placeholder")}>
                     <ImageIcon />
@@ -27,15 +31,15 @@ const GroupCard: React.SFC<Props> = () => {
             </Link>
             <div className={cx('card-content')}>
             <div className={cx('user-thumbnail-wrapper')}>
-                <img src={'https://images.velog.io/thumbnails/veloss/43c665f0-b44c-11e8-b8f5-49cedc880031-DHxDbYmUwAASvCI.png'} alt={'veloss'} />
+                <img src={thumbnail} alt={displayName} />
             </div>
             <div className={cx('content-head')}>
-                <div className={cx('username')}>{'veloss'}</div>
+                <div className={cx('username')}>{displayName}</div>
                 <h3>
-                    <Link to='/'>그룹제목</Link>
+                    <Link to='/'>{title}</Link>
                 </h3>
             </div>
-            <div className={cx('description')}>설명설명설명설명</div>
+            <div className={cx('description')}>{contents}</div>
             </div>
         </div>
     )
