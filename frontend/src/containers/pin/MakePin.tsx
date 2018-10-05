@@ -8,6 +8,7 @@ import InputTags from '../../components/write/InputTags';
 import DropImage from '../../components/write/DropImage';
 import { writeCreators } from '../../store/modules/write';
 import { History } from 'history';
+import { commonCreators } from '../../store/modules/common';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -19,12 +20,14 @@ class MakePin extends React.Component<MakePinProps> {
     public onSubmit = async () => {
         const { 
             WriteActions, 
+            CommonActions,
             tags, 
             relationUrl, 
             body, 
             urls, 
             pinId,
-            form
+            form,
+            history
         } = this.props;
 
         try {
@@ -47,12 +50,17 @@ class MakePin extends React.Component<MakePinProps> {
                 urls,
                 relationUrl
             });
-
-            this.props.history.push(`/pin/${this.props.pinId}`);
+            await CommonActions.sendMessage('새 핀을 작성')
             WriteActions.initialState();
+            history.push(`/pin/${this.props.pinId}`);
         } catch (e) {
             console.log(e);
         }
+    }
+
+    public onSetting = () => {
+        const { WriteActions, setting } = this.props;
+        setting ? WriteActions.settingMobal(false) : WriteActions.settingMobal(true);
     }
 
     public OnUploadUrl = async (file: any) => {
@@ -128,6 +136,7 @@ class MakePin extends React.Component<MakePinProps> {
             onInsertTag, 
             onRemoveTag, 
             onDrop, 
+            onSetting,
             onPasteImage, 
             onUploadClick, 
             onChangeInput,
@@ -148,6 +157,7 @@ class MakePin extends React.Component<MakePinProps> {
                     onPaste={onPasteImage}
                     onUploadClick={onUploadClick}
                 />}
+                onSetting={onSetting}
                 onChange={onChangeInput}
                 body={body}
                 urls={urls}
@@ -167,12 +177,14 @@ const mapStateToProps = ({ base, write }: StoreState) => ({
     urls: write.form.urls,
     pinId: write.pinId,
     form: write.form,
-})
+    setting: write.setting.visible,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch),
     WriteActions: bindActionCreators(writeCreators, dispatch),
-})
+    CommonActions: bindActionCreators(commonCreators, dispatch),
+});
 
 export default connect<StateProps, DispatchProps, OwnProps>(
     mapStateToProps,

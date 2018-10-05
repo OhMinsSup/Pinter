@@ -25,6 +25,7 @@ const WRITE_SUBMIT_ERROR = 'write/WRITE_SUBMIT_ERROR';
 
 const EDIT_PIN = 'write/EDIT_POST';
 const REMOVE_PIN = 'write/REMOVE_PIN';
+const SETTING_MODAL = 'write/SETTING_MODAL';
 
 type ChangeInputPayload = { name: string, value: string };
 
@@ -40,7 +41,8 @@ export const writeCreators = {
     getPinData: createPromiseThunk(GET_PIN_DATA, PinAPI.readPinAPI),
     setpinId: createAction(SET_PIN_ID, (id: string) => id),
     editPin: createPromiseThunk(EDIT_PIN, WriteAPI.updatePinAPI),
-    removePin: createPromiseThunk(REMOVE_PIN, WriteAPI.removePinAPI)
+    removePin: createPromiseThunk(REMOVE_PIN, WriteAPI.removePinAPI),
+    settingMobal: createAction(SETTING_MODAL, (visible: boolean) => visible),
 }
 
 type ChangeInputAction = ReturnType<typeof writeCreators.changeInput>;
@@ -51,6 +53,7 @@ type CreateSignedUrlAction = GenericResponseAction<{ url: string, path: string }
 type RemoveUploadUrlAction = ReturnType<typeof writeCreators.removeUploadUrl>;
 type WriteSubmitAction = GenericResponseAction<{ pinId: string } ,string>;
 type SetPinIdAction = ReturnType<typeof writeCreators.setpinId>;
+type SettingModalAction = ReturnType<typeof writeCreators.settingMobal>;
 type GetPinDataAction = GenericResponseAction<{
     pinId: string,
     relationUrl: string,
@@ -80,6 +83,9 @@ export interface WriteState {
         path: string,
         uploading: boolean
     },
+    setting: {
+        visible: boolean,
+    },
     pinId: string,
 }
 
@@ -94,6 +100,9 @@ const initialState: WriteState = {
         url: '',
         path: '',
         uploading: false
+    },
+    setting: {
+        visible: false
     },
     pinId: '',
 }
@@ -114,6 +123,12 @@ export default handleActions<WriteState, any>({
             };
             draft.pinId = '';
         });
+    },
+    [SETTING_MODAL]: (state, action: SettingModalAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.setting.visible = action.payload;
+        })
     },
     [SET_PIN_ID]: (state, action: SetPinIdAction) => {
         return produce(state, (draft) => {

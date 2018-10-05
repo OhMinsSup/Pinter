@@ -7,6 +7,7 @@ import { StoreState } from '../../store/modules';
 import FullscreenLoader from '../../components/base/FullscreenLoader';
 import Storage from '../../lib/storage';
 import { socketCreators } from '../../store/modules/socket';
+import { commonCreators } from '../../store/modules/common';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -15,14 +16,16 @@ type CoreProps = StateProps & DispatchProps;
 class Core extends React.Component<CoreProps>{
   public checkUser = async () => {
     const storageUser = Storage.get('__pinter_user__');
-    const { UserActions } = this.props;
+    const { UserActions, CommonActions } = this.props;
     if (!storageUser) {
       UserActions.process();
       return;
     }
     UserActions.setUser(storageUser);
+    
     try {
       await UserActions.checkUser();
+      await CommonActions.createNotice();
     } catch (e) {
       Storage.remove('__pinter_user__');
     }
@@ -66,6 +69,7 @@ const mapStateToProps = ({ base, user, socket }: StoreState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     UserActions: bindActionCreators(userCreators, dispatch),
     BaseActions: bindActionCreators(baseCreators, dispatch),
+    CommonActions: bindActionCreators(commonCreators, dispatch),
     SocketActions: bindActionCreators(socketCreators, dispatch),
 });
 

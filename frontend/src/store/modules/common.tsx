@@ -25,6 +25,11 @@ const REVEAL_PREFETCHED  = 'common/REVEAL_PREFETCHED';
 const CHANGE_SEARCH_VALUE = 'common/CHANGE_SEARCH_VALUE';
 const INITIALIZE_SEARCH = 'common/INITIALIZE_SEARCH';
 
+const CREATE_NOTICE = 'common/CREATE_NOTICE';
+const CREATE_NOTICE_SUCCESS = 'common/CREATE_NOTICE_SUCCESS';
+
+const SEND_MESSAGE = 'commom/SEND_MESSAGE';
+
 type ChangeInputProfilePayload = { value: string, name: string };
 
 export const commonCreators = {
@@ -37,6 +42,8 @@ export const commonCreators = {
     searchUser: createPromiseThunk(SEARCH_USER, commonAPI.searchUserAPI),
     prefetchList: createPromiseThunk(PREFETCH_LIST, commonAPI.nextAPI),
     revealPrefetched: createAction(REVEAL_PREFETCHED, (type: string) => type),
+    createNotice: createPromiseThunk(CREATE_NOTICE, commonAPI.createNoticeRoomAPI),
+    sendMessage: createPromiseThunk(SEND_MESSAGE, commonAPI.sendMessageNoticeAPI),
 }
 
 type GetProfileAction = GenericResponseAction<{
@@ -56,6 +63,15 @@ type SearchDataAction = GenericResponseAction<{
 type PrefetchListAction = GenericResponseAction<{ Data: any[], next: string }, string>; 
 type RevealPrefetchedAction = ReturnType<typeof commonCreators.revealPrefetched>;
 type ChangeSearchValueAction = ReturnType<typeof commonCreators.changeSearchValue>;
+type CreateNoticeAction = GenericResponseAction<{ noticeWithData: {
+    noticeId: string,
+    creator: {
+        _id: string,
+        username: string,
+        displayName: string,
+        thumbnail: string,
+    }
+}}, string>;
 
 export interface UserProfileSubState {
     username: string;
@@ -81,6 +97,9 @@ export interface CommonState {
         prefetched: any[],
         end: boolean,
     },
+    notice: {
+        noticeId: string
+    }
     value: string,
 }
 
@@ -105,6 +124,9 @@ const initialState: CommonState = {
         Data: [],
         prefetched: [],
         end: false,
+    },
+    notice: {
+        noticeId: '',
     },
     value: '',
 }
@@ -139,6 +161,12 @@ export default handleActions<CommonState, any>({
                 end: false,
             }
         })
+    },
+    [CREATE_NOTICE_SUCCESS]: (state, action: CreateNoticeAction) => {
+        const { payload: { data } } = action;
+        return produce(state, (draft) => {
+            draft.notice.noticeId = data.noticeWithData.noticeId;
+        });
     },
     [GET_PROFILE_PENDING]: (state) => {
         return produce(state, (draft) => {

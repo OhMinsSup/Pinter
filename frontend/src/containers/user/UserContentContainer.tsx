@@ -43,7 +43,7 @@ class UserContentContainer extends React.Component<UserContentContainerProps> {
     }
     
     public componentDidUpdate(preProps: UserContentContainerProps) {
-        if ((preProps.match.url != this.props.match.url) || (preProps.tab != this.props.tab)) {
+        if ((preProps.match.url != this.props.match.url) || (preProps.tab != this.props.tab) || (preProps.cursor != this.props.cursor)) {
             this.initialize();
         }
     }

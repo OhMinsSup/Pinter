@@ -6,6 +6,7 @@ import PinComments from '../../components/pin/PinComments';
 import { bindActionCreators, compose } from 'redux';
 import { withRouter, match } from'react-router-dom';
 import { pinCreators } from '../../store/modules/pin';
+import { commonCreators } from '../../store/modules/common';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -29,11 +30,12 @@ class PinCommentContainer extends React.Component<PinCommentContainerProps, OwnS
     }
 
     public onSubmit = async () => {
-        const { PinActions, match, value, tags } = this.props;
+        const { PinActions, CommonActions, match, value, tags } = this.props;
         const { params: { id } } = match;
 
         try {
-            await PinActions.writeComment(id, value, tags);            
+            await PinActions.writeComment(id, value, tags);
+            await CommonActions.sendMessage('작성하신 핀에 댓글을 작성');            
         } catch (e) {
             console.log(e);
         }
@@ -130,6 +132,7 @@ const mapStateToProps = ({ pin, user }: StoreState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     PinActions: bindActionCreators(pinCreators, dispatch),
+    CommonActions: bindActionCreators(commonCreators, dispatch),
 });
 
 export default compose(

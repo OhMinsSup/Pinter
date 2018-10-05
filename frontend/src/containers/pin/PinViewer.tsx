@@ -12,6 +12,7 @@ import PinMenu from '../../components/pin/PinMenu';
 import { baseCreators } from '../../store/modules/base';
 import { writeCreators } from '../../store/modules/write';
 import { History } from 'history';
+import { commonCreators } from '../../store/modules/common';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -69,7 +70,7 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
 
     public onToggleFollow = async (displayName: string) => {
-        const { FollowActions, follow } = this.props;
+        const { FollowActions, CommonActions, follow } = this.props;
 
         try {
             if (follow) {
@@ -77,6 +78,7 @@ class PinViewer extends React.Component<PinViewerProps> {
             } else {
                 await FollowActions.follow(displayName);
             }
+            await CommonActions.sendMessage('작성하신 핀을 좋아요');
         } catch (e) {
             console.log(e);
         }
@@ -156,6 +158,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     FollowActions: bindActionCreators(followCreators, dispatch),
     BaseActions: bindActionCreators(baseCreators, dispatch),
     WriteActions: bindActionCreators(writeCreators, dispatch),
+    CommonActions: bindActionCreators(commonCreators, dispatch),
 })
 
 export default connect<StateProps, DispatchProps, OwnProps>(

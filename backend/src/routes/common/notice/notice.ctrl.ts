@@ -8,7 +8,7 @@ import socketServer from '../../../lib/socket';
 
 const socket = socketServer.getSocket;
 
-export const getNoticeRoom = async (req: Request, res: Response): Promise<any> => {
+export const createNoticeRoom = async (req: Request, res: Response): Promise<any> => {
     const userId: string = req['user']._id;
 
     try {
