@@ -128,10 +128,8 @@ export const getFollowing = async (req: Request, res: Response): Promise<any> =>
         }
 
         const following: IFollow[] = await Follow.followingList(user._id, cursor);
-        const next = following.length === 10 ? `/follow/${displayName}/following/?cursor=${following[9]._id}` : null; 
         const usersWithData = following.map(serializeFollowing);
         res.json({
-            next,
             usersWithData,
         });
     } catch (e) {
@@ -142,7 +140,6 @@ export const getFollowing = async (req: Request, res: Response): Promise<any> =>
 export const getFollower = async (req: Request, res: Response): Promise<any> => {
     const { displayName } = req.params;
     const { cursor } = req.query;
-
     try {
         const user: IUser = await User.findByDisplayName(displayName);
         
@@ -153,10 +150,8 @@ export const getFollower = async (req: Request, res: Response): Promise<any> => 
         }
 
         const follwer: IFollow[] = await Follow.followerList(user._id, cursor);
-        const next = follwer.length === 10 ? `/follow/${displayName}/following/?cursor=${follwer[9]._id}` : null; 
         const usersWithData = follwer.map(serializeFollower);
         res.json({
-            next,
             usersWithData,
         });
     } catch (e) {

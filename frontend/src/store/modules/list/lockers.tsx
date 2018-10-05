@@ -51,7 +51,7 @@ export interface LockersState {
     locker: ListingSetState
 }
 
-const initialListingSet = {
+const initialListingSet: ListingSetState = {
     pins: [],
     prefetched: [],
     end: false,

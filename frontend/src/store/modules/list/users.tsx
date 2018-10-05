@@ -43,7 +43,7 @@ export interface UsersState {
     user: ListingSetState;
 }
 
-const initialListingSet = {
+const initialListingSet: ListingSetState = {
     user: [],
     prefetched: [],
     next: '',

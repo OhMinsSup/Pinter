@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 
-const styles = require('./UserMenuItem.scss');
+const styles = require('./UserNavItem.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -11,9 +11,9 @@ type Props = {
     active?: boolean,
 };
 
-const UserMenuItem: React.SFC<Props> = ({ text, to, active }) => {
+const UserNavItem: React.SFC<Props> = ({ text, to, active }) => {
     return (
-        <div className={cx('menu-item', { active })}>
+        <div className={cx('nav-item', { active })}>
             <Link to={to}>
                 <div className={cx('text')}>{text}</div>
             </Link>
@@ -21,10 +21,10 @@ const UserMenuItem: React.SFC<Props> = ({ text, to, active }) => {
     );
 }
 
-UserMenuItem.defaultProps = {
+UserNavItem.defaultProps = {
     to: '',
     active: false,
 };
 
 
-export default UserMenuItem;
+export default UserNavItem;

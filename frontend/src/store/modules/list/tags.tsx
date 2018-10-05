@@ -40,7 +40,7 @@ export interface TagsState {
     tag: ListingSetState
 }
 
-const initialListingSet = {
+const initialListingSet: ListingSetState = {
     pins: [],
     loading: false
 }

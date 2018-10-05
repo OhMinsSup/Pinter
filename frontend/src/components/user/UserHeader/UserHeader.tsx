@@ -33,7 +33,7 @@ const UserHeader: React.SFC<Props> = ({
                                 (username === profile.username) && (displayName === profile.displayName) ? ( 
                                     <React.Fragment>
                                         <Button to="/write" className={cx('setting')} theme="outline">
-                                            글쓰기
+                                            핀 작성
                                         </Button>
                                         <Button className={cx('setting')} theme="outline" onClick={onSetting}>
                                             프로필
@@ -58,7 +58,7 @@ const UserHeader: React.SFC<Props> = ({
                     <div className={cx('username')}>@{profile.username}</div>
                 </section>
                 <section className={cx('mini-profile')}>
-                    <h2>@{profile.displayName}</h2>
+                    <h2>{profile.displayName}</h2>
                     <div className={cx('content-wrapper')}>
                         <p className={cx('count')}>팔로잉&nbsp;{profile.following}&nbsp;</p>
                         <p className={cx('count')}>팔로우&nbsp;{profile.follower}&nbsp;</p>

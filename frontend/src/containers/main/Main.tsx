@@ -10,7 +10,7 @@ import { Recent, Tags, Users } from '../../page';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = {  location: Location };
+type OwnProps = { location: Location };
 
 type MainProps = OwnProps & StateProps & DispatchProps; 
 

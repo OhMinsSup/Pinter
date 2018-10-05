@@ -3,7 +3,6 @@ import * as classNames from 'classnames/bind';
 import SidebarMenu from '../SidebarMenu';
 
 const styles = require('./Sidebar.scss');
-const GroupIcon = require('react-icons/lib/md/people');
 const SearchIcon = require('react-icons/lib/fa/search');
 const HomeIcon = require('react-icons/lib/fa/home');
 const UserIcon = require('react-icons/lib/fa/user');
@@ -42,12 +41,6 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName, size, onLogout }) => 
                                 to="/users"
                                 name="유저"
                                 icon={<UserIcon/>}
-                                onClick={onClose}
-                            />
-                            <SidebarMenu
-                                name="그룹"
-                                to="/group"
-                                icon={<GroupIcon/>}
                                 onClick={onClose}
                             />
                             <SidebarMenu

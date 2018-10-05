@@ -6,7 +6,6 @@ import follow from './follow';
 import locker from './locker';
 import tag from './tag';
 import common from './common';
-import group from './group';
 
 const router = Router();
 
@@ -17,6 +16,5 @@ router.use('/follow', follow);
 router.use('/locker', locker);
 router.use('/tag', tag);
 router.use('/common', common);
-router.use('/group', group);
 
 export default router;

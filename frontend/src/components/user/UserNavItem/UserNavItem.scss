@@ -19,30 +19,21 @@
     vertical-align: middle;
   
     &:hover {
-        border-right: 3px solid $oc-red-4;
+        color: $oc-red-7;
         .text {
-            color: $oc-red-7;
-            font-weight: 500;
+          font-weight: 500;
         }
     }
   
     &.active {
-        border-right: 3px solid $oc-red-4;
+        color: $oc-red-4;
+        border-bottom: 3px solid $oc-red-4;
         .text {
-          font-weight: 700;
-          color: $oc-red-7;
+          font-weight: 500;
         }
     }
-    
+  
     .text {
-        font-weight: 500;
-        color: $oc-gray-5;
-        padding-top: 0.8rem;
-        font-size: 1rem;
+      padding-top: 0.8rem;
     }
-
-    @include media("<medium") {
-        min-width: 78px;
-        min-height: 30px;
-    }
-}
+  }
