@@ -23,7 +23,6 @@ export const socketCreators = {
     }
 }
 
-
 export interface SocketState {
     isConnected: boolean;
 }

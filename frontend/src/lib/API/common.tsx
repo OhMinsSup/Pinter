@@ -10,3 +10,4 @@ export const searchTagAPI = (value: string): Promise<any> => axios.post(`/common
 
 export const createNoticeRoomAPI = (): Promise<any> => axios.post('/common/notice');
 export const sendMessageNoticeAPI = (message: string): Promise<any> => axios.post('/common/notice/send-message')
+export const getNoticeMessageAPI = (): Promise<any> => axios.get('/common/notice');

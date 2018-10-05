@@ -3,15 +3,16 @@ import * as classNames from 'classnames/bind';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ModalWrapper from '../../common/ModalWrapper';
 
-const styles = require('./WriteSettingBox.scss');
+const styles = require('./NoticeBoxModal.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
     open?: boolean,
     children: React.ReactNode,
+    onClick(): void,
 }
 
-class WriteSettingBox extends React.Component<Props> {
+class NoticeBoxModal extends React.Component<Props> {
     public content: any = null;
     public ps: any = null;
 
@@ -43,19 +44,16 @@ class WriteSettingBox extends React.Component<Props> {
     }
 
     public render() {
-        const { children } = this.props;
+        const { children, onClick } = this.props;
         return (
-        <ModalWrapper className={cx('write-setting-box')} open={true}>
-            <h2>그룹 설정</h2>
+        <ModalWrapper className={cx('notice-box-modal')} open={true}>
+            <h2>알림</h2>
             <div className={cx("content")} ref={(ref) => { this.content = ref; }}>
                 {children}
             </div>
             <div className={cx("foot")}>
-            <div className={cx("button", "cancel")} onClick={() => console.log('취소')}>
-                취소
-            </div>
-            <div className={cx("button", "save")} onClick={() => console.log('저장')}>
-                저장
+            <div className={cx("button", "cancel")} onClick={onClick}>
+                닫기
             </div>
             </div>
         </ModalWrapper>
@@ -63,4 +61,4 @@ class WriteSettingBox extends React.Component<Props> {
     }
 }
 
-export default WriteSettingBox;
+export default NoticeBoxModal;

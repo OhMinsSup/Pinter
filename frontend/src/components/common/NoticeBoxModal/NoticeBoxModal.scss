@@ -1,6 +1,6 @@
 @import 'utils';
 
-.write-setting-box {
+.notice-box-modal {
   background: white;
   border-top: 4px solid $oc-red-5;
   padding: 1rem;
@@ -38,11 +38,8 @@
       @include material-shadow(2, 0.3);
       background: white;
       transition: all 0.1s ease-in;
-      &.save {
-        color: $oc-red-6;
-      }
       &.cancel {
-        color: $oc-gray-7;
+        color: $oc-red-6;
       }
       &:hover {
         @include material-shadow(2, 0.75);

@@ -4,9 +4,6 @@ import NoticeMessage, { INoticeMessage } from '../../../database/models/NoticeMe
 import Follow, { IFollow } from '../../../database/models/Follow';
 import { serializeNoticeRoom } from '../../../lib/serialize';
 import { filterUnique } from '../../../lib/common'
-import socketServer from '../../../lib/socket';
-
-const socket = socketServer.getSocket;
 
 export const createNoticeRoom = async (req: Request, res: Response): Promise<any> => {
     const userId: string = req['user']._id;
@@ -71,7 +68,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
             select: 'username profile.displayName profile.thumbnail'
         }).lean()));
 
-        const messsage = await Promise.all(notice.map(notice => {
+        await Promise.all(notice.map(notice => {
             const m = new NoticeMessage({
                 sender: userId,
                 recipient: notice.creator._id,
@@ -82,7 +79,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
         }));
 
         res.json({
-            messageWithData: messsage,
+            messsage: true,
         });
     } catch (e) {
         res.status(500).json,(e);
@@ -103,17 +100,20 @@ export const getNoticeList = async (req: Request, res: Response): Promise<any> =
             });
         }
 
-        const message: INoticeMessage = await NoticeMessage
+        const message: INoticeMessage[] = await NoticeMessage
         .find({ notice: notice._id })
+        .populate('sender')
         .sort({ _id: -1 })
         .lean();
         
-        socket.to(notice._id).emit('notice-list', {
-            message,
-        });
-
         res.json({
-            message,
+            message: message.map(m => {
+                const { message, sender } = m;
+                return { 
+                    message,
+                    thumbnail: sender.profile.thumbnail
+                }
+            }),
         });
     } catch (e) {
         res.status(500).json(e);

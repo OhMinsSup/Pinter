@@ -17,10 +17,18 @@ type Props = {
     thumbnail: string | any,
     size: number,
     onLogout(): Promise<void>,
-    onSidebar(): void
+    onSidebar(): void,
+    onNotice(): void,
 }
 
-const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSidebar }) => {
+const Header: React.SFC<Props> = ({ 
+    displayName, 
+    thumbnail, 
+    onLogout, 
+    size, 
+    onSidebar,
+    onNotice,
+}) => {
     return (
         <React.Fragment>
         {   
@@ -54,7 +62,7 @@ const Header: React.SFC<Props> = ({ displayName, thumbnail, onLogout, size, onSi
                                     <img className={cx('thumbnail')} src={thumbnail} alt={displayName}/>
                                     <span className={cx('username')}>{displayName}</span>
                                 </Button>
-                                <Button theme='noline'>
+                                <Button theme='noline' onClick={onNotice}>
                                     <NoticeIcon className={cx('notice')}/>
                                 </Button>
                                 <Button theme='noline' onClick={onLogout}>

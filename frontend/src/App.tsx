@@ -5,6 +5,7 @@ import EmailLogin from './containers/auth/EmailLogin';
 import Core from './containers/base/Core';
 import SidebarContainer from './containers/base/SidebarContainer';
 import GalleryContainer from './containers/common/GalleryContainer';
+import NoticeModalContainer from './containers/common/NoticeMobalContainer';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
       <Core />
       <SidebarContainer />
       <GalleryContainer />
+      <NoticeModalContainer />
     </React.Fragment>
   );
 }

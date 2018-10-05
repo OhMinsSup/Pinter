@@ -38,7 +38,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch),
 })
 
-export default connect(
+export default connect<StateProps, DispatchProps>(
     mapStateToProps,
     mapDispatchToProps
 )(GalleryContainer);

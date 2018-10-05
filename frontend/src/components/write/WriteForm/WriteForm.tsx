@@ -27,14 +27,10 @@ const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, onChange,
                 {
                     id ? (
                         <div className={cx('submit-btn')}>
-                            <Button theme="outline" onClick={onSetting}>설정</Button>
-                            &nbsp;
                             <Button theme="outline" onClick={onSubmit}>수정하기</Button>
                         </div>
                     ) : (
                         <div className={cx('submit-btn')}>
-                            <Button theme="outline">설정</Button>
-                            &nbsp;
                             <Button theme='outline' onClick={onSubmit}>작성하기</Button>
                         </div>
                     )

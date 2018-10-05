@@ -8,6 +8,7 @@ import Header from '../../components/base/Header';
 import Storage from '../../lib/storage';
 import { baseCreators } from '../../store/modules/base';
 import { withRouter } from 'react-router';
+import { noticeCreators } from '../../store/modules/notice';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -19,7 +20,7 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
         const { BaseActions } = this.props;
         BaseActions.getbowserSize(document.body.scrollWidth);
     }, 250);
-    
+
     public constructor(props: HeaderContainerProps) {
         super(props);
         this.props.BaseActions.getbowserSize(document.body.scrollWidth);
@@ -28,6 +29,11 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
     public onSidebar = () => {
         const { BaseActions, visible } = this.props;
         visible ? BaseActions.setSidebar(false) : BaseActions.setSidebar(true);
+    }
+
+    public onNotice = () => {
+        const { NoticeActions } = this.props;
+        NoticeActions.noticeConfirm();
     }
 
     public onLogout = async () => {
@@ -47,7 +53,7 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
 
     public render() {
         const { thumbnail, displayName, size } = this.props;
-        const { onLogout, onSidebar } = this;
+        const { onLogout, onSidebar, onNotice } = this;
         
         return (
             <Header 
@@ -55,6 +61,7 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
                 displayName={displayName}
                 onLogout={onLogout}
                 onSidebar={onSidebar}
+                onNotice={onNotice}
                 size={size}
             />
         )
@@ -71,7 +78,8 @@ const mapStateToProps = ({ user, base }: StoreState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     UserActions: bindActionCreators(userCreators, dispatch),
-    BaseActions: bindActionCreators(baseCreators, dispatch)
+    BaseActions: bindActionCreators(baseCreators, dispatch),
+    NoticeActions: bindActionCreators(noticeCreators, dispatch),
 });
 
 export default compose(

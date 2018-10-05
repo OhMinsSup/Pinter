@@ -31,13 +31,13 @@ class Socket {
                 });
         
                 io.on('connection', (socket: SocketIO.Socket) => {
-                    console.log(`conneted websocket ${socket.id}`);
+                    console.log(`conneted websocket`);
                     this.socket = socket; 
                     socket.emit('connection');
                     resolve();
 
                     socket.on(`disconnect`, () => {
-                        console.log(`disconneted websocket ${socket.id}`);
+                        console.log(`disconneted websocket`);
                     });
                 });
 
