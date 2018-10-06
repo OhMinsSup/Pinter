@@ -29,7 +29,7 @@ const PinHeader:React.SFC<Props> = ({
     return (
         <div className={cx('pin-header')}>
             <div className={cx('premalink-header')}>
-                <Link className={cx('user-group')} to="/">
+                <Link className={cx('user-group')} to={`/@{displayName}`}>
                     <img className={cx('profile-thumbnail')} src={thumbnail} alt={username} />
                     <span className={cx('displayName-group')}>
                         <strong className={cx('displayNmae')}>{displayName}</strong>

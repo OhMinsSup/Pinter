@@ -23,7 +23,7 @@
         overflow: hidden;
         display: block;
         height: 32px;
-        margin-right: 12px;
+        // margin-right: 12px;
         width: 32px;
         border: 0
       }
@@ -31,6 +31,7 @@
     .right {
       float: right;
       margin-top: 0.35rem;
+      margin-left: 0.25rem;
       font-size: 0.75rem;
     }
   }

@@ -6,6 +6,7 @@ import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
 import { userCreators } from '../../store/modules/user';
 import Storage from '../../lib/storage';
+import { noticeCreators } from '../../store/modules/notice';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -17,6 +18,11 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
         BaseActions.setSidebar(false);
     }
 
+    public onToggleNotice = () => {
+        const { NoticeActions, BaseActions } = this.props;
+        NoticeActions.noticeConfirm();
+        BaseActions.setSidebar(false);
+    }
 
     public onLogout = async () => {
         const { UserActions } = this.props;
@@ -37,6 +43,7 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
             <Sidebar
                 displayName={displayName}
                 onClose={this.onClose}
+                onToggleNotice={this.onToggleNotice}
                 size={size}
                 onLogout={this.onLogout}
             />
@@ -53,6 +60,7 @@ const mapStateToProps = ({ base, user }: StoreState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch),
     UserActions: bindActionCreators(userCreators, dispatch),
+    NoticeActions: bindActionCreators(noticeCreators, dispatch),
 })
 
 export default compose(

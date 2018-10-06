@@ -1,5 +1,5 @@
 import * as React from 'react';
-import NoticeBoxModal from '../../components/common/NoticeBoxModal';
+import CommonBoxModal from '../../components/common/CommonBoxModal';
 import NoticeItemList from '../../components/common/NoticeItemList';
 import { connect } from 'react-redux';
 import { StoreState } from '../../store/modules';
@@ -18,6 +18,8 @@ class NoticeModalContainer extends React.Component<NoticeModalContainerProps> {
 
     public initialize = async () => {
         const { NoticeActions } = this.props;
+        console.log('테스트');
+        
         try {
             await NoticeActions.getNoticeMessage();
         } catch (e) {
@@ -29,20 +31,27 @@ class NoticeModalContainer extends React.Component<NoticeModalContainerProps> {
         this.initialize();
     }
 
+    public componentDidUpdate(preProps: NoticeModalContainerProps) {
+        if (preProps.visible !== this.props.visible) {
+            this.initialize();
+        }
+    }
+
     public render() {
         const { visible, messages } = this.props;
         const { onToggleNotice } = this;
         if (!visible) return null;
 
         return (
-            <NoticeBoxModal
+            <CommonBoxModal
+                title="알림"
                 open={visible}
                 onClick={onToggleNotice}
             >
                 <NoticeItemList 
                     messages={messages}
                 />
-            </NoticeBoxModal>
+            </CommonBoxModal>
         )
     }
 }

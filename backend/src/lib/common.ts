@@ -19,7 +19,7 @@ export const checkPinExistancy = async (req: Request, res: Response, next: NextF
 
         req["pin"] = pin;
     } catch (e) {
-        res.status(500).json(e);
+        return res.status(500).json(e);
     }
     return next();
 };

@@ -30,7 +30,11 @@ export const writeComment = async (req: Request, res: Response): Promise<any> =>
     const userId: string = req['user']._id;
 
     try {
-        const tagUserNames: IUser[] = await Promise.all(tags.map(tag => User.findOne({ 'profile.displayName': tag }).select('_id').lean()));
+        const tagUserNames: IUser[] = await Promise.all(
+            tags.map(tag => User.findOne({ 'profile.displayName': tag })
+            .select('_id')
+            .lean())
+        );
         const tagIds = tagUserNames.map(id => id).filter(e => e);
         
         const comment = await Comment.create({ 

@@ -44,10 +44,12 @@
                 button {
                     border: 0;
                     background-color: white;
-                    color: $oc-gray-5;
+                    border-radius: 5px;
+                    border: 1px solid $oc-red-5;
                     cursor: pointer;
                     &:hover {
-                        color: $oc-red-5;
+                        background-color: $oc-red-5;
+                        color: white;
                     }
                 }
             }

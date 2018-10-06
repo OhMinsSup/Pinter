@@ -14,24 +14,37 @@ type Props = {
     body: string,
     urls: string[],
     relationUrl: string,
-    onSetting(): void,
     onChange(e: any): void,
     onRemoveUrl(url: string): void,
     onSubmit(): void,
 }
 
-const WriteForm: React.SFC<Props> = ({ onSubmit ,inputTags, dropImage, onChange, relationUrl, body, urls, onRemoveUrl, id, onSetting }) => {
+const WriteForm: React.SFC<Props> = ({ 
+    onSubmit,
+    inputTags, 
+    dropImage, 
+    onChange, 
+    relationUrl, 
+    body, 
+    urls, 
+    onRemoveUrl, 
+    id, 
+}) => {
     return (
         <div className={cx('write-form')}>
             <div className={cx('form-header')}>
                 {
                     id ? (
                         <div className={cx('submit-btn')}>
-                            <Button theme="outline" onClick={onSubmit}>수정하기</Button>
+                            <Button theme="outline" onClick={onSubmit}>
+                                수정하기
+                            </Button>
                         </div>
                     ) : (
                         <div className={cx('submit-btn')}>
-                            <Button theme='outline' onClick={onSubmit}>작성하기</Button>
+                            <Button theme='outline' onClick={onSubmit}>
+                                작성하기
+                            </Button>
                         </div>
                     )
                 }

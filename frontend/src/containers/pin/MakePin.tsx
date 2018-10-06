@@ -51,16 +51,11 @@ class MakePin extends React.Component<MakePinProps> {
                 relationUrl
             });
             await CommonActions.sendMessage('새 핀을 작성')
-            WriteActions.initialState();
             history.push(`/pin/${this.props.pinId}`);
+            WriteActions.initialState();
         } catch (e) {
             console.log(e);
         }
-    }
-
-    public onSetting = () => {
-        const { WriteActions, setting } = this.props;
-        setting ? WriteActions.settingMobal(false) : WriteActions.settingMobal(true);
     }
 
     public OnUploadUrl = async (file: any) => {
@@ -136,7 +131,6 @@ class MakePin extends React.Component<MakePinProps> {
             onInsertTag, 
             onRemoveTag, 
             onDrop, 
-            onSetting,
             onPasteImage, 
             onUploadClick, 
             onChangeInput,
@@ -157,7 +151,6 @@ class MakePin extends React.Component<MakePinProps> {
                     onPaste={onPasteImage}
                     onUploadClick={onUploadClick}
                 />}
-                onSetting={onSetting}
                 onChange={onChangeInput}
                 body={body}
                 urls={urls}
@@ -177,7 +170,6 @@ const mapStateToProps = ({ base, write }: StoreState) => ({
     urls: write.form.urls,
     pinId: write.pinId,
     form: write.form,
-    setting: write.setting.visible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -52,7 +52,7 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
     }
 
     public render() {
-        const { thumbnail, displayName, size } = this.props;
+        const { thumbnail, displayName, size, message } = this.props;
         const { onLogout, onSidebar, onNotice } = this;
         
         return (
@@ -62,18 +62,20 @@ class HeaderContainer extends React.Component<HeaderContainerProps> {
                 onLogout={onLogout}
                 onSidebar={onSidebar}
                 onNotice={onNotice}
+                count={message.length}
                 size={size}
             />
         )
     }
 }
 
-const mapStateToProps = ({ user, base }: StoreState) => ({
+const mapStateToProps = ({ user, base, notice }: StoreState) => ({
     visible: base.sidebar.visible,
     user: user.user && user.user,
     displayName: user.user && user.user.displayName,
     thumbnail: user.user && user.user.thumbnail,
     size: base.size,
+    message: notice.messages
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

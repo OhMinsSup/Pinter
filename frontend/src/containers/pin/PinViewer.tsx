@@ -56,7 +56,7 @@ class PinViewer extends React.Component<PinViewerProps> {
     }
     
     public onToggleLike = async () => {
-        const { PinActions, id, liked } = this.props;
+        const { PinActions, id, liked, CommonActions } = this.props;
 
         try {
             if (liked) {
@@ -64,13 +64,14 @@ class PinViewer extends React.Component<PinViewerProps> {
             } else {
                 await PinActions.likePin(id);            
             } 
+            await CommonActions.sendMessage('작성하신 핀을 좋아요');
         } catch (e) {
             console.log(e);
         }
     }
 
     public onToggleFollow = async (displayName: string) => {
-        const { FollowActions, CommonActions, follow } = this.props;
+        const { FollowActions, follow } = this.props;
 
         try {
             if (follow) {
@@ -78,7 +79,6 @@ class PinViewer extends React.Component<PinViewerProps> {
             } else {
                 await FollowActions.follow(displayName);
             }
-            await CommonActions.sendMessage('작성하신 핀을 좋아요');
         } catch (e) {
             console.log(e);
         }

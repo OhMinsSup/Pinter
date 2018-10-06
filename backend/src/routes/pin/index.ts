@@ -13,6 +13,7 @@ pin.delete('/:id', needAuth, checkPinExistancy, pinCtrl.deletePin);
 pin.get('/:id', needAuth, pinCtrl.readPin);
 pin.get('/', needAuth, pinCtrl.listPin);
 pin.get('/:displayName/user', needAuth, pinCtrl.listPin);
+
 pin.use('/likes', needAuth, like);
 pin.use('/comments', needAuth, comment);
 

@@ -16,6 +16,7 @@ type Props = {
     displayName: string | any,
     thumbnail: string | any,
     size: number,
+    count: number,
     onLogout(): Promise<void>,
     onSidebar(): void,
     onNotice(): void,
@@ -26,6 +27,7 @@ const Header: React.SFC<Props> = ({
     thumbnail, 
     onLogout, 
     size, 
+    count,
     onSidebar,
     onNotice,
 }) => {
@@ -64,6 +66,15 @@ const Header: React.SFC<Props> = ({
                                 </Button>
                                 <Button theme='noline' onClick={onNotice}>
                                     <NoticeIcon className={cx('notice')}/>
+                                    {
+                                        (count === 0) || !count ? null : (
+                                            <span className={cx('notice-count')} >
+                                                {
+                                                    count > 99 ? ('99++') : (count)
+                                                }
+                                            </span>
+                                        )
+                                    }
                                 </Button>
                                 <Button theme='noline' onClick={onLogout}>
                                     <LogoutIcon />

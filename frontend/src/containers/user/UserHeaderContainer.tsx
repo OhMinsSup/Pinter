@@ -58,7 +58,7 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 
     public componentDidUpdate(preProps: UserHeadContainerProps) {
-        if (preProps.visible !== this.props.visible) {
+        if ((preProps.visible !== this.props.visible) || (preProps.match.params.displayName !== this.props.match.params.displayName)) {
             this.initialize();
         }
     }

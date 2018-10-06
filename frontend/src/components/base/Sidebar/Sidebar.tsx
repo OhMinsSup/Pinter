@@ -3,6 +3,7 @@ import * as classNames from 'classnames/bind';
 import SidebarMenu from '../SidebarMenu';
 
 const styles = require('./Sidebar.scss');
+const NoticeIcon = require('react-icons/lib/io/android-notifications');
 const SearchIcon = require('react-icons/lib/fa/search');
 const HomeIcon = require('react-icons/lib/fa/home');
 const UserIcon = require('react-icons/lib/fa/user');
@@ -14,10 +15,11 @@ type Props = {
     displayName: string | null,
     size: number,
     onClose(): void,
+    onToggleNotice(): void,
     onLogout(): Promise<void>,
 }
 
-const Sidebar: React.SFC<Props> = ({ onClose, displayName, size, onLogout }) => {
+const Sidebar: React.SFC<Props> = ({ onClose, displayName, size, onLogout, onToggleNotice }) => {
     return (
         <React.Fragment>
             {
@@ -48,6 +50,11 @@ const Sidebar: React.SFC<Props> = ({ onClose, displayName, size, onLogout }) => 
                                 name="검색"
                                 onClick={onClose}
                                 icon={<SearchIcon/>}
+                            />
+                            <SidebarMenu
+                                name="알림"
+                                onClick={onToggleNotice}
+                                icon={<NoticeIcon/>}
                             />
                             <SidebarMenu
                                 name="로그아웃"

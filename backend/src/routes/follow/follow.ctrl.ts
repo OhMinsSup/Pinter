@@ -140,6 +140,7 @@ export const getFollowing = async (req: Request, res: Response): Promise<any> =>
 export const getFollower = async (req: Request, res: Response): Promise<any> => {
     const { displayName } = req.params;
     const { cursor } = req.query;
+    
     try {
         const user: IUser = await User.findByDisplayName(displayName);
         

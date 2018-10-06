@@ -7,7 +7,6 @@ import Gallery from '../../components/common/Gallery';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-
 type GalleryContainerProps = StateProps & DispatchProps;
 
 class GalleryContainer extends React.Component<GalleryContainerProps> {

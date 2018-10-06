@@ -6,7 +6,6 @@ import { getScrollBottom } from '../../lib/common';
 import { usersCreatrors } from '../../store/modules/list/users';
 import { StoreState } from '../../store/modules';
 import UsersBox from '../../components/users/UsersBox';
-import Spinner from '../../components/common/Spinner';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -69,7 +68,7 @@ class UsersList extends React.Component<UsersListProps> {
 
     public render() {
         const { users, loading } = this.props;
-        if (loading) return <Spinner />;
+        if (loading) return null;
 
         return (
             <UsersBox users={users}/>

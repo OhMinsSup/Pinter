@@ -13,7 +13,7 @@ import FakePinCards from '../../components/common/FakePinCards/FakePinCards';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = { match: match<{ id: string }> };
+type OwnProps = { match: match<{ id: string, displayName: string }> };
 
 type RecentPinListProps = StateProps & DispatchProps & OwnProps;
 
@@ -76,6 +76,13 @@ class RecentPinList extends React.Component<RecentPinListProps> {
     public componentDidMount() {
         this.initialize();
         this.listenScroll();
+    }
+
+    public componentDidUpdate(preProps: RecentPinListProps) {
+        if (preProps.match.params.displayName !== this.props.match.params.displayName) {
+            this.initialize();
+            this.listenScroll();
+        }
     }
 
     public componentWillUnmount() {

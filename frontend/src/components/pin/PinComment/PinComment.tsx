@@ -10,6 +10,7 @@ const cx = classNames.bind(styles);
 type Props = {
     value: string,
     tags: string[],
+    onOpen: boolean,
     onChangeComment(e: any): void,
     onInsert(tag: string): void, 
     onRemove(tag: string):void,
@@ -37,6 +38,7 @@ class PinComment extends React.Component<Props, State> {
         const { 
             value, 
             tags, 
+            onOpen,
             onChangeComment, 
             onInsert, 
             onRemove, 
@@ -76,7 +78,13 @@ class PinComment extends React.Component<Props, State> {
                     </div>
                 </div>
                 <div className={cx('comment-visible-btn')}>
-                    <Button theme="noline" onClick={onClick}>댓글 열기</Button>
+                    {
+                        onOpen ? (
+                            <Button theme="noline" onClick={onClick}>댓글 닫기</Button>
+                        ) : (
+                            <Button theme="noline" onClick={onClick}>댓글 열기</Button>
+                        )
+                    }
                 </div>
             </div>
         )

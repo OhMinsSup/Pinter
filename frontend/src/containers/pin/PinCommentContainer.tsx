@@ -96,11 +96,13 @@ class PinCommentContainer extends React.Component<PinCommentContainerProps, OwnS
         const { visible } = this.state;
         const { onChangeComment, onInsertTag, onRemoveTag, onSubmit, onRemoveComment, onClickComments } = this;
         if (loading) return null;
+
         return (
             <React.Fragment>
                 <PinComment
                     value={value}
                     tags={tags}
+                    onOpen={visible}
                     onChangeComment={onChangeComment}
                     onInsert={onInsertTag} 
                     onRemove={onRemoveTag}

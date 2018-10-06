@@ -43,10 +43,13 @@
                     padding-top: 0.25rem;
                 }
 
-                .group {
-
+                .notice-count {
+                    background-color: #fa3e3e;
+                    border-radius: 2px;
+                    color: #fff;
+                    padding: 1px 3px;   
                 }
-                
+
                 @include media ("<=545px") {
                     position: relative;
                     display: flex;

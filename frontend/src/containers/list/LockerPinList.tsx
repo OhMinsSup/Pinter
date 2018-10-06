@@ -78,6 +78,13 @@ class LockerPinList extends React.Component<LockerPinListProps> {
         this.listenScroll();
     }
 
+    public componentDidUpdate(preProps: LockerPinListProps) {
+        if (preProps.match.params.displayName !== this.props.match.params.displayName) {
+            this.initialize();
+            this.listenScroll();
+        }
+    }
+
     public componentWillUnmount() {
         this.unlistenScroll();
     }
