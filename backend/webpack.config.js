@@ -13,7 +13,7 @@ module.exports = {
     output: {
         filename:'bundle.js',
         libraryTarget: 'commonjs',
-        path: path.join(__dirname, '.webpack'),
+        path: path.join(__dirname, 'build'),
     },
     module: {
         rules: [

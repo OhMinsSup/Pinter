@@ -4,6 +4,7 @@
   position: relative;
   .pin-menu-positioner {
     position: absolute;
+    z-index: 100;
     right: -4.5rem;
     top: -1rem;
     .pin-menu {
@@ -22,6 +23,10 @@
               margin-bottom: 0.5rem;
             }
         }
+    }
+
+    @include media("<=990px") {
+      right: 0;
     }
   }
 }

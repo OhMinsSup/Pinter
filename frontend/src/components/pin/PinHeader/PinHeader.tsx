@@ -13,6 +13,8 @@ type Props = {
     displayName: string,
     thumbnail: string,
     follow: boolean,
+    ownDisplayName: any,
+    ownUsername: any,
     onFollow(displayName: string): Promise<void>,
     onClick(): void,
 }
@@ -21,7 +23,8 @@ const PinHeader:React.SFC<Props> = ({
     username, 
     displayName, 
     thumbnail, 
-    id, 
+    ownDisplayName,
+    ownUsername,
     follow, 
     onFollow, 
     onClick 
@@ -29,7 +32,7 @@ const PinHeader:React.SFC<Props> = ({
     return (
         <div className={cx('pin-header')}>
             <div className={cx('premalink-header')}>
-                <Link className={cx('user-group')} to={`/@{displayName}`}>
+                <Link className={cx('user-group')} to={`/@${displayName}`}>
                     <img className={cx('profile-thumbnail')} src={thumbnail} alt={username} />
                     <span className={cx('displayName-group')}>
                         <strong className={cx('displayNmae')}>{displayName}</strong>
@@ -38,11 +41,17 @@ const PinHeader:React.SFC<Props> = ({
                     <span className={cx('username')}>@<b>{username}</b></span>
                 </Link>
                 <div className={cx('follow-bar')}>
-                    {
-                        follow ? (
-                            <Button theme="default" onClick={() => onFollow(displayName)}>구독중</Button>
-                        ) : (
-                            <Button theme="default" onClick={() => onFollow(displayName)}>구독하기</Button>
+                    {   
+                        (displayName === ownDisplayName) && (username === ownUsername) ? null : (
+                            <React.Fragment>
+                                {
+                                    follow ? (
+                                        <Button theme="default" onClick={() => onFollow(displayName)}>구독중</Button>
+                                    ) : (
+                                        <Button theme="default" onClick={() => onFollow(displayName)}>구독하기</Button>
+                                    )
+                                }
+                            </React.Fragment>
                         )
                     }
                 </div>

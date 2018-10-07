@@ -1,15 +1,18 @@
 import * as React from 'react';
 import QuestionModal from '../../components/common/QuestionModal';
 import { StoreState } from '../../store/modules';
-import { Dispatch, bindActionCreators } from 'redux';
+import { Dispatch, bindActionCreators, compose } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
 import { writeCreators } from '../../store/modules/write';
+import { withRouter } from 'react-router';
+import { History } from 'history';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type OwnProps = { history: History };
 
-type QuestionModalContainerProps = StateProps & DispatchProps;
+type QuestionModalContainerProps = StateProps & DispatchProps & OwnProps;
 
 class QuestionModalContainer extends React.Component<QuestionModalContainerProps> {
     public onCancel = () => {
@@ -18,13 +21,16 @@ class QuestionModalContainer extends React.Component<QuestionModalContainerProps
     }
 
     public onConfirm = async () => {
-        const { WriteActions, pinId } = this.props;
+        const { WriteActions, pinId, BaseActions, history } = this.props;
     
         try {
             await WriteActions.removePin(pinId);
         } catch (e) {
             console.log(e);
         }
+
+        BaseActions.setModal(false);
+        history.push('/');
     }
 
     public render() {
@@ -53,8 +59,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     WriteActions: bindActionCreators(writeCreators, dispatch),
 })
 
-export default connect<StateProps, DispatchProps>(
-    mapStateToProps,
-    mapDispatchToProps
+export default compose(
+    withRouter,
+    connect<StateProps, DispatchProps, OwnProps>(
+        mapStateToProps,
+        mapDispatchToProps
+    )
 )(QuestionModalContainer);
 

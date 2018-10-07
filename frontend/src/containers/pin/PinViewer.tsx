@@ -22,11 +22,12 @@ type PinViewerProps = StateProps & DispatchProps & OwnProps;
 
 class PinViewer extends React.Component<PinViewerProps> {
     public initialize = async () => {
-        const { PinActions, LockerActions, id } = this.props;
+        const { PinActions, LockerActions, id, FollowActions, pin: { user: { displayName } } } = this.props;
         try {
             await PinActions.getPin(id);
             await PinActions.getLike(id);
             await LockerActions.getLockerPin(id);
+            await FollowActions.checkExistsUserFollow(displayName);
         } catch (e) {
             console.log(e);
         }
@@ -113,6 +114,8 @@ class PinViewer extends React.Component<PinViewerProps> {
                     username={pin.user.username} 
                     displayName={pin.user.displayName} 
                     thumbnail={pin.user.thumbnail}
+                    ownDisplayName={displayName}
+                    ownUsername={username}
                     id={pin.user._id}
                     follow={follow}
                     onFollow={onToggleFollow}
