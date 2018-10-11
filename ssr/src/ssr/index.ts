@@ -1,6 +1,6 @@
 import { Context } from 'koa';
+import render from './render.js';
 const manifest  = require('../../../frontend/build/asset-manifest.json');
-const render = require('./render.js');
 
 function buildHtml(rendered, state) {
     const escaped = JSON.stringify(state).replace(/</g, '\\u003c');

@@ -9,6 +9,7 @@ import { baseCreators } from '../../store/modules/base';
 import { commonCreators } from '../../store/modules/common';
 import FullscreenLoader from '../../components/base/FullscreenLoader';
 import { followCreators } from '../../store/modules/follow';
+import { groupCreators } from 'src/store/modules/group';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -19,6 +20,11 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     public onSetting = () => {
         const { BaseActions } = this.props;
         BaseActions.setProfile(true);
+    }
+
+    public onGruop = () => {
+        const { GroupActions } = this.props;
+        GroupActions.setMakeGroup(true);
     }
 
     public onToggleFollow = async () => {
@@ -69,7 +75,7 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
 
     public render() {
         const { match: { url }, profile, loading, follow, username, displayName } = this.props;
-        const { onSetting, onToggleFollow } = this;
+        const { onSetting, onToggleFollow, onGruop } = this;
 
         if (loading) return <FullscreenLoader visible={loading}/>
         return (
@@ -80,6 +86,7 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
                     profile={profile}
                     follow={follow}
                     onSetting={onSetting}
+                    onGroup={onGruop}
                     onFollow={onToggleFollow}
                 />
                 <UserNav
@@ -91,11 +98,12 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     }
 }
 
-const mapStateToProps = ({ base, common, follow, user }: StoreState) => ({
+const mapStateToProps = ({ base, common, follow, user, group }: StoreState) => ({
     profile: common.profile,
     loading: common.profile.loading,
     visible: base.profile.visible,
     follow: follow.user.follow,
+    group: group.MakeModal.visible,
     username: user.user && user.user.username,
     displayName: user.user && user.user.displayName,
 });
@@ -104,6 +112,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch),
     CommonActions: bindActionCreators(commonCreators, dispatch),
     FollowActions: bindActionCreators(followCreators, dispatch),
+    GroupActions: bindActionCreators(groupCreators, dispatch),
 });
 
 export default compose(

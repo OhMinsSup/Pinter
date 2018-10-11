@@ -49,6 +49,16 @@
           .setting + .subscribe {
             margin-left: 1rem;
           }
+
+          @include media("<=medium") {
+            .setting + .setting {
+              margin-left: 0.25rem;
+            }
+  
+            .setting + .subscribe {
+              margin-left: 0.25rem;
+            }
+          }
       }
       .username {
         margin-top: auto;

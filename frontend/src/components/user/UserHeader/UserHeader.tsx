@@ -11,6 +11,7 @@ type Props = {
     profile: any,
     follow: boolean,
     onSetting(): void,
+    onGroup(): void,
     onFollow(): Promise<void>
 }
 
@@ -20,6 +21,7 @@ const UserHeader: React.SFC<Props> = ({
     follow, 
     profile, 
     onSetting, 
+    onGroup,
     onFollow 
 }) => {    
     return (
@@ -32,6 +34,9 @@ const UserHeader: React.SFC<Props> = ({
                             {
                                 (username === profile.username) && (displayName === profile.displayName) ? ( 
                                     <React.Fragment>
+                                        <Button className={cx('setting')} theme="outline" onClick={onGroup}>
+                                            핀 그룹
+                                        </Button>
                                         <Button to="/write" className={cx('setting')} theme="outline">
                                             핀 작성
                                         </Button>
@@ -44,11 +49,11 @@ const UserHeader: React.SFC<Props> = ({
                             {
                                 follow ? (
                                     <Button className={cx('subscribe')} theme="default" onClick={onFollow}>
-                                        구독중
+                                        언팔로우
                                     </Button>
                                 ) : (
                                     <Button className={cx('subscribe')} theme="outline" onClick={onFollow}>
-                                        구독하기
+                                        팔로우
                                     </Button>
                                 )                                            
                             }        

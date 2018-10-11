@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Locker, { ILockerModel, ILocker } from '../../database/models/Locker';
 import User, { IUser } from '../../database/models/User';
 import { serializeLocker } from '../../lib/serialize';
+import { formatShortDescription } from '../../lib/common';
 
 export const lockerPin = async (req: Request, res: Response): Promise<any> => {
     const userId: string = req['user']._id;
@@ -84,7 +85,9 @@ export const lockerList = async (req: Request, res: Response): Promise<any> => {
 
         const locker: ILocker[] = await Locker.lockerList(_id, cursor);
         const next = locker.length === 10 ? `/pin/locker/private/list?cusor=${locker[9]._id}` : null;
-        const pinWithData = locker.map(serializeLocker);
+        const pinWithData = locker.map(serializeLocker).map(pin => ({
+            ...pin, body: formatShortDescription(pin.body)
+        }))
         res.json({
             next,
             pinWithData,

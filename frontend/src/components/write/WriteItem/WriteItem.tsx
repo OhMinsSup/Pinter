@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames/bind';
-import AutoTextarea from 'react-textarea-autosize';
+import Textarea from 'react-textarea-autosize';
 
 const styles = require('./WriteItem.scss');
 const cx = classNames.bind(styles);
@@ -25,7 +25,7 @@ const WriteItem: React.SFC<Props> = ({ title, name, placeholder, type, element, 
                 type === 'input' ? (
                     <div className={cx('input')}>
                         <span>
-                            <AutoTextarea placeholder={placeholder} name={name} value={value} onChange={onChange}/>
+                            <Textarea placeholder={placeholder} name={name} value={value} onChange={onChange}/>
                         </span>
                     </div>
                 ) : (

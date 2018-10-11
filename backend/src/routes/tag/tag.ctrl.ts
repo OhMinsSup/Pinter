@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Tag, { ITag } from '../../database/models/Tag';
 import TagLink from '../../database/models/TagLink';
 import { serializeTag, serializeTagPin } from '../../lib/serialize';
+import { formatShortDescription } from '../../lib/common';
 
 export const getTags = async (req: Request, res: Response): Promise<any> => {
     const { sort = 'latest' } = req.query;
@@ -60,6 +61,7 @@ export const getTagInfo = async (req: Request, res: Response): Promise<any> => {
         
         res.json({
             pinWithData: pinData.map(serializeTagPin)
+            .map(pin => ({ ...pin, body: formatShortDescription(pin.body) }))
         });
     } catch (e) {
         res.status(500).json(e);

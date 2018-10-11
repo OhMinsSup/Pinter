@@ -34,3 +34,10 @@ export const checkObjectId = async (req: Request, res: Response, next: NextFunct
     return next();
 }
 
+export function formatShortDescription(body: string): string {
+    const replaced = body.replace(/\n/g, ' ');
+    return (
+        replaced
+        .slice(0, 100) + (replaced.length > 100 ? '...' : '')
+    );
+}

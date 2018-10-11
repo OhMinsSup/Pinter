@@ -22,7 +22,12 @@ const UserNav:React.SFC<Props> = ({ url, displayName }) => {
                 text="보관함"
                 active={url === `/@${displayName}/locker`}
                 to={`/@${displayName}/locker`}
-            />            
+            />     
+            <UserNavItem
+                text="핀 그룹"
+                active={url === `/@${displayName}/group`}
+                to={`/@${displayName}/group`}
+            />         
         </section>
     )
 }

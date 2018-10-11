@@ -45,9 +45,9 @@
 
                 .notice-count {
                     background-color: #fa3e3e;
-                    border-radius: 2px;
+                    border-radius: 20%;
                     color: #fff;
-                    padding: 1px 3px;   
+                    padding: 3px;   
                 }
 
                 @include media ("<=545px") {

@@ -20,6 +20,11 @@ const serverRender = async (ctx: any) => {
         defaultClient.defaults.headers.cookie = `access_token=${token}`;
         promises.push(store.dispatch(userCreators.checkUser() as any));
     }
+
+    if (token && ctx.path === '/') {
+        ctx.path = '/recent';
+        ctx.url = '/recent';
+    }
     
     routesConfig.every((route: any) => {
         const match = matchPath(ctx.path, route);
@@ -38,11 +43,10 @@ const serverRender = async (ctx: any) => {
     try {
         await Promise.all(promises);
     } catch (e) {
-        console.log(e);
+        throw e;
     }
 
     const context = {};
-
     const html = ReactDOMServer.renderToString(
         <Provider store={store}>
             <StaticRouter context={context} location={ctx.url}>

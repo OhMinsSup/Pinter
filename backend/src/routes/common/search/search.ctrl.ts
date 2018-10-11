@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Pin, { IPin } from '../../../database/models/Pin';
 import User, { IUser } from '../../../database/models/User';
 import { serializePinList, serializeUsers } from '../../../lib/serialize';
+import { formatShortDescription } from '../../../lib/common';
 
 export const serachPin = async (req: Request, res: Response): Promise<any> => {
     type BodySchema = {
@@ -38,7 +39,9 @@ export const serachPin = async (req: Request, res: Response): Promise<any> => {
         
         res.json({
             next,
-            Data: pins.map(serializePinList),
+            Data: pins.map(serializePinList).map(pin => ({
+                ...pin, body: formatShortDescription(pin.body)
+            })),
         });
     } catch (e) {
         res.status(500).json(e);

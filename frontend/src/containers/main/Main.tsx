@@ -30,6 +30,7 @@ class Main extends React.Component<MainProps> {
             >
                 <Switch>
                     <Route exact path="/" component={Recent} />
+                    <Route exact path="/Recent" component={Recent} />
                     <Route exact path='/tags/:tag?' component={Tags}/>
                     <Route exact path='/users' component={Users} />
                 </Switch>

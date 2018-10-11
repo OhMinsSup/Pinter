@@ -4,6 +4,7 @@ import needAuth from '../../lib/middleware/needAuth';
 import { checkPinExistancy, checkObjectId } from '../../lib/common';
 import like from './like';
 import comment from './comment';
+import group from './group';
 
 const pin = Router();
 
@@ -16,5 +17,6 @@ pin.get('/:displayName/user', needAuth, pinCtrl.listPin);
 
 pin.use('/likes', needAuth, like);
 pin.use('/comments', needAuth, comment);
+pin.use('/groups', needAuth, group);
 
 export default pin;

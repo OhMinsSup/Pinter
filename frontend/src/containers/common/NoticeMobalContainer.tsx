@@ -18,7 +18,6 @@ class NoticeModalContainer extends React.Component<NoticeModalContainerProps> {
 
     public initialize = async () => {
         const { NoticeActions } = this.props;
-        console.log('테스트');
         
         try {
             await NoticeActions.getNoticeMessage();

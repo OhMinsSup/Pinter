@@ -36,16 +36,16 @@ const Header: React.SFC<Props> = ({
         {   
             size <= 816 ? (
                 <div className={cx('mobile-head')}>
-                <div className={cx('button-area')}>
-                    <Button theme="outline" to='/write'>새 핀</Button>
-                </div>
-                <div className={cx('spacer')} />
-                <Logo />
-                <div className={cx('right-area')}>
-                    <Button theme="noline" onClick={onSidebar}>
-                        <FaBars/>
-                    </Button>
-                </div>
+                    <div className={cx('button-area')}>
+                        <Button theme="outline" to='/write'>새 핀</Button>
+                    </div>
+                    <div className={cx('spacer')} />
+                    <Logo />
+                    <div className={cx('right-area')}>
+                        <Button theme="noline" onClick={onSidebar}>
+                            <FaBars/>
+                        </Button>
+                    </div>
                 </div>
             ) : (
                 <div className={cx('header')}>
@@ -67,10 +67,10 @@ const Header: React.SFC<Props> = ({
                                 <Button theme='noline' onClick={onNotice}>
                                     <NoticeIcon className={cx('notice')}/>
                                     {
-                                        (count === 0) || !count ? null : (
+                                        count === 0 || !count ? null : (
                                             <span className={cx('notice-count')} >
                                                 {
-                                                    count > 99 ? ('99++') : (count)
+                                                    count > 99 ? '99++' : count
                                                 }
                                             </span>
                                         )
@@ -85,7 +85,7 @@ const Header: React.SFC<Props> = ({
                 </div>
             )
         }
-        </ React.Fragment>
+        </React.Fragment>
     )
 };
 

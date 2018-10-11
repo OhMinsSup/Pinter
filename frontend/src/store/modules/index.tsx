@@ -10,6 +10,7 @@ import common, { CommonState } from './common';
 import follow, { FollowState } from './follow';
 import tag, { TagState } from './tag';
 import notice, { NoticeState } from './notice';
+import group, { GroupState } from './group';
 
 export default combineReducers({
     auth: auth,
@@ -23,6 +24,7 @@ export default combineReducers({
     follow: follow,
     tag: tag,
     notice: notice,
+    group: group,
 });
 
 export interface StoreState { 
@@ -36,5 +38,6 @@ export interface StoreState {
     common: CommonState,
     follow: FollowState,
     tag: TagState,
+    group: GroupState,
     notice: NoticeState,
 }

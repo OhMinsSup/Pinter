@@ -9,7 +9,7 @@ import Locker from '../../database/models/Locker';
 import Comment from '../../database/models/Comment';
 import TagLink from '../../database/models/TagLink';
 import {
-    filterUnique,
+    filterUnique, formatShortDescription,
 } from '../../lib/common';
 import { serializePin, serializePinList } from '../../lib/serialize';
 
@@ -171,7 +171,9 @@ export const listPin = async (req: Request, res: Response): Promise<any> => {
         
         const pin: IPin[] = await Pin.readPinList(userId, cursor);
         const next = pin.length === 20 ? `/pin/${displayName ? `${displayName}/user` : '' }?cursor=${pin[19]._id}` : null;
-        const pinWithData = pin.map(serializePinList);
+        const pinWithData = pin.map(serializePinList)
+        .map(pin => ({ ...pin, body: formatShortDescription(pin.body) }));
+
         res.json({
             next,
             pinWithData,
