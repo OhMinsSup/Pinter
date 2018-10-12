@@ -9,7 +9,7 @@ export interface IGroup extends Document {
 }
 
 export interface IGroupModel extends Model<IGroup> {
-
+    groupList(userId: string, cursor?: string): Promise<any>;
 }
 
 const Group = new Schema({
@@ -26,6 +26,19 @@ const Group = new Schema({
         default: false
     }
 });
+
+Group.statics.groupList = function(userId: string, cursor?: string): Promise<any> {
+    const query = Object.assign(
+        {},
+        cursor ? { _id: { $lt: cursor }, user: userId } : { user: userId },
+    )
+
+    return this.find(query)
+    .populate("user")
+    .sort({ _id: -1 })
+    .limit(15)
+    .lean();
+}
 
 const GroupModel = model<IGroup>("Group", Group) as IGroupModel;
 

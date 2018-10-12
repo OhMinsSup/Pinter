@@ -8,3 +8,4 @@ export { default as Tags } from './Tags';
 export { default as Users } from './Users';
 export { default as Write } from './Write';
 export { default as Search } from './Search';
+export { default as Group } from './Group';

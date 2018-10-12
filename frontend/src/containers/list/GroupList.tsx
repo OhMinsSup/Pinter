@@ -1,40 +1,39 @@
 import * as React from 'react';
+import GroupCardList from 'src/components/group/GroupCardList';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
 import { throttle } from 'lodash';
+import { StoreState } from 'src/store/modules';
+import { bindActionCreators, Dispatch } from 'redux';
 import { getScrollBottom } from '../../lib/common';
-import { usersCreatrors } from '../../store/modules/list/users';
-import { StoreState } from '../../store/modules';
-import UsersBox from '../../components/users/UsersBox';
+import { groupsCreators } from 'src/store/modules/list/groups';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type GroupListProps = StateProps & DispatchProps;
 
-type UsersListProps = StateProps & DispatchProps;
-
-class UsersList extends React.Component<UsersListProps> {
+class GroupList extends React.Component<GroupListProps> {
     public prev: string | null = null;
 
     public onScroll = throttle(() => {
-        const scrollBottom = getScrollBottom();
-        if (scrollBottom > 1000) return;
+        const scrollButton = getScrollBottom();
+        if (scrollButton > 1000) return;
         this.prefetch();
     }, 250);
-
+    
     public prefetch = async () => {
-        const { users, next, ListActions } = this.props;
-        if (!users || users.length === 0) return;
+        const { ListActions, groups, next } = this.props;
+        if (!groups || groups.length === 0) return;
 
         if (this.props.prefetched) {
-           ListActions.revealUserPrefetched();
-           await Promise.resolve();
+            ListActions.revealPrefetched();
+            await Promise.resolve();
         }
 
         if (next === this.prev) return;
-        this.prev = next as string;
+        this.prev = next;
 
         try {
-            await ListActions.prefetchUserList(next as string);
+            await ListActions.prefetchGroupList(next);
         } catch (e) {
             console.log(e);
         }
@@ -42,13 +41,14 @@ class UsersList extends React.Component<UsersListProps> {
 
     public initialize = async () => {
         const { ListActions } = this.props;
+
         try {
-            await ListActions.getUserList();
+            await ListActions.getGroupsList();
         } catch (e) {
             console.log(e);
         }
     }
-    
+
     public listenScroll = () => {
         window.addEventListener('scroll', this.onScroll);
     };
@@ -57,9 +57,9 @@ class UsersList extends React.Component<UsersListProps> {
         window.removeEventListener('scroll', this.onScroll);
     };
 
+    
     public componentDidMount() {
         this.initialize();
-        this.listenScroll();
     }
 
     public componentWillUnmount() {
@@ -67,27 +67,28 @@ class UsersList extends React.Component<UsersListProps> {
     }
 
     public render() {
-        const { users, loading } = this.props;
-        if (loading) return null;
+        const { groups } = this.props;
 
         return (
-            <UsersBox users={users}/>
-        );
+            <GroupCardList 
+                groups={groups}
+            />
+        )
     }
 }
 
 const mapStateToProps = ({ list }: StoreState) => ({
-    users: list.users.user.user,
-    prefetched: list.users.user.prefetched,
-    next: list.users.user.next,
-    loading: list.users.user.loading,
+    groups: list.groups.groups.groups,
+    prefetched: list.groups.groups.prefetched,
+    next: list.groups.groups.next,
+    loading: list.groups.groups.loading,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    ListActions: bindActionCreators(usersCreatrors, dispatch),
+    ListActions: bindActionCreators(groupsCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps>(
     mapStateToProps,
     mapDispatchToProps
-)(UsersList);
+)(GroupList);

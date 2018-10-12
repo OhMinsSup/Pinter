@@ -13,12 +13,11 @@ const PREFETCH_USERS_LIST = 'list/PREFETCH_USERS_LIST';
 const PREFETCH_USERS_LIST_SUCCESS = 'list/PREFETCH_USERS_LIST_SUCCESS';
 
 export const usersCreatrors = {
-    revealUserPrefetched: createAction(REVEAL_USERS_PREFETCHED, (type: string) => type),
+    revealUserPrefetched: createAction(REVEAL_USERS_PREFETCHED),
     getUserList: createPromiseThunk(GET_USERS_LIST, CommonAPI.usersAPI),
     prefetchUserList: createPromiseThunk(PREFETCH_USERS_LIST, CommonAPI.nextAPI),
 }
 
-type RevealUserPrefetchedAction = ReturnType<typeof usersCreatrors.revealUserPrefetched>;
 type GetUserListAction = GenericResponseAction<{ usersWithData: UserSubState[], next: string }, string>;
 type PrefetchUserListAction = GenericResponseAction<{ usersWithData: UserSubState[], next: string }, string>;
 
@@ -56,14 +55,12 @@ const initialState: UsersState = {
 }
 
 export default handleActions<UsersState, any>({
-    [REVEAL_USERS_PREFETCHED]: (state, action: RevealUserPrefetchedAction) => {
+    [REVEAL_USERS_PREFETCHED]: (state) => {
         return produce(state, (draft) => {
-            if (action.payload === undefined) return;
-            const { payload } = action;
-            const { user, prefetched } = draft[payload];
+            const { user, prefetched } = draft.user;
             if (user && prefetched) {
                 user.push(...prefetched);
-                draft[payload].prefetched = null;
+                draft.user.prefetched = [];
             }
         })
     },

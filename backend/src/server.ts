@@ -23,7 +23,10 @@ class Server {
     private middleware(): void {
         const { app } = this;
         app.use(compresion());
-        app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
+        app.use(bodyParser.urlencoded({ 
+            extended: false, 
+            limit: "50mb" 
+        }));
         app.use(bodyParser.json());
         app.use(cookieParser());
         app.use((req, res, next): void => {

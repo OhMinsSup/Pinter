@@ -1,0 +1,74 @@
+@import 'utils';
+
+.group-card {
+    margin: 0.875rem;
+    width: calc((100% - 8.75rem) / 5);
+    position: relative;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.05);
+    @include media("<=x-huge") {
+      width: calc(25% - 1.75rem);
+    }
+    @include media("<=huge") {
+      width: calc(33.333% - 1.75rem);
+    }
+    @include media("<=wide") {
+      width: calc(50% - 1.75rem);
+    }
+    @include media("<=large") {
+      width: calc(100% - 1.75rem);
+      margin-top: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+  .card-content {
+    box-shadow: 0px -4px 16px rgba(0, 0, 0, 0.05);
+    position: relative;
+    border-bottom-left-radius: 4px;
+    background: white;
+    border-bottom-right-radius: 4px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    color: $oc-gray-8;
+    .user-thumbnail-wrapper {
+      position: absolute;
+      right: 1rem;
+      top: 3rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      background: white;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      img {
+        display: block;
+        width: 2.75rem;
+        height: 2.75rem;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    }
+    .content-head {
+      height: 3rem;
+      padding-bottom: 1.5rem;
+      .displayName {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: $oc-red-5;
+      }
+      h3 {
+        display: block;
+        margin: 0;
+        font-family: "Noto Sans KR";
+        font-size: 1.25rem;
+        line-height: 2rem;
+        max-height: 4rem;
+        font-weight: 600;
+        overflow: hidden;
+      }
+    }
+  }
+}

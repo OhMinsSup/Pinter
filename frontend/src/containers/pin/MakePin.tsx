@@ -9,6 +9,7 @@ import DropImage from '../../components/write/DropImage';
 import { writeCreators } from '../../store/modules/write';
 import { History } from 'history';
 import { commonCreators } from '../../store/modules/common';
+import { groupCreators } from 'src/store/modules/group';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -27,7 +28,8 @@ class MakePin extends React.Component<MakePinProps> {
             urls, 
             pinId,
             form,
-            history
+            history,
+            GroupActions,
         } = this.props;
 
         try {
@@ -53,6 +55,7 @@ class MakePin extends React.Component<MakePinProps> {
             await CommonActions.sendMessage('새 핀을 작성')
             history.push(`/pin/${this.props.pinId}`);
             WriteActions.initialState();
+            GroupActions.setGroupPin(true);
         } catch (e) {
             console.log(e);
         }
@@ -176,6 +179,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     BaseActions: bindActionCreators(baseCreators, dispatch),
     WriteActions: bindActionCreators(writeCreators, dispatch),
     CommonActions: bindActionCreators(commonCreators, dispatch),
+    GroupActions: bindActionCreators(groupCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps, OwnProps>(

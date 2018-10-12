@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as joi from 'joi';
-import Group from '../../../database/models/Group';
+import Group, { IGroup } from '../../../database/models/Group';
+import { serializeGroups } from '../../../lib/serialize';
 
 export const createGroup = async(req: Request, res: Response): Promise<any> => {
     type BodySchema = {
@@ -44,4 +45,25 @@ export const createGroup = async(req: Request, res: Response): Promise<any> => {
     } catch (e) {
         res.status(500).json(e);
     }
+}
+
+export const groupList = async (req: Request, res: Response): Promise<any> => {
+    const userId = req['user']._id;
+    const { cursor } = req.query;
+
+    try {
+        const groups: IGroup[] = await Group.groupList(userId, cursor);
+        const next = groups.length === 15 ? `/group?cursor=${groups[14]._id}` : null;
+
+        res.json({
+            next,
+            groupsWithData: groups.map(serializeGroups),
+        });
+    } catch (e) {
+        res.status(500).json(e);
+    }
+}
+
+export const groupPinList = async (req: Request, res: Response): Promise<any> => {
+    
 }

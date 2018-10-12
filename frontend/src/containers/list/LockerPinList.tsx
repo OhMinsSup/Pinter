@@ -31,7 +31,7 @@ class LockerPinList extends React.Component<LockerPinListProps> {
         if (!pins || pins.length === 0) return;
 
         if (this.props.prefetched) {
-            ListActions.revealLockerPrefetched('locker');
+            ListActions.revealLockerPrefetched();
             await Promise.resolve();
         }
 

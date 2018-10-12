@@ -8,6 +8,7 @@ import UserPinList from '../list/UserPinList';
 import LockerPinList from '../list/LockerPinList';
 import UserFollowView from '../../components/user/UserFollowView';
 import { followsCreators } from '../../store/modules/list/follows';
+import GroupList from '../list/GroupList';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -71,6 +72,7 @@ class UserContentContainer extends React.Component<UserContentContainerProps> {
                     <Route exact path="/@:displayName/" component={UserPinList} />
                     <Route exact path="/@:displayName/pin" component={UserPinList} />
                     <Route exact path="/@:displayName/locker" component={LockerPinList} />
+                    <Route exact path="/@:displayName/group" component={GroupList} />
                 </Switch>
             </UserContent>
         )

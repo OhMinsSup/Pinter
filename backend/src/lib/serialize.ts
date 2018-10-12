@@ -225,6 +225,25 @@ const serializeNoticeMessage = (data: any) => {
     }
 }
 
+const serializeGroups = (data: any) => {
+    const {
+        _id: groupId,
+        title,
+        user,
+        activation,
+    } = data;
+
+    return {
+        groupId,
+        title,
+        activation,
+        user: {
+            ...pick(user, ['_id', 'username']),
+            ...pick(user.profile, ['displayName', 'thumbnail']),
+        },
+    }
+}
+
 export {
     serializePin,
     serializePinList,
@@ -237,4 +256,5 @@ export {
     serializeUsers,
     serializeNoticeRoom,
     serializeNoticeMessage,
+    serializeGroups
 };

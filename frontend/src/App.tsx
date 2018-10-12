@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { Home, Register, Pin, NotFound, User, Write, Search } from './page';
+import { Home, Register, Pin, NotFound, User, Write, Search, Group } from './page';
 import EmailLogin from './containers/auth/EmailLogin';
 import Core from './containers/base/Core';
-import SidebarContainer from './containers/base/SidebarContainer';
-import GalleryContainer from './containers/common/GalleryContainer';
-import NoticeModalContainer from './containers/common/NoticeMobalContainer';
-import MakePinGroupContainer from './containers/common/MakePinGroupContainer';
+import EtcContainer from './containers/common/EtcContainer';
 
 const App = () => {
   return (
@@ -21,14 +18,13 @@ const App = () => {
         <Route exact path="/search/(pin|user)?" component={Search} />
         <Route exact path='/@:displayName' component={User} />
         <Route exact path="/@:displayName/(pin|locker|group)" component={User} />
+        <Route exact path="/@:displayName/group/:id" component={Group} />
         <Route component={NotFound} />
       </Switch>
       <Core />
-      <SidebarContainer />
-      <GalleryContainer />
-      <NoticeModalContainer />
-      <MakePinGroupContainer />
+      <EtcContainer />
     </React.Fragment>
   );
 }
+
 export default App;

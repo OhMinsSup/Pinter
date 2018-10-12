@@ -31,7 +31,7 @@ class RecentPinList extends React.Component<RecentPinListProps> {
         if (!pins || pins.length === 0) return;
 
         if (this.props.prefetched) {
-            ListActions.revealPrefetched('recent');
+            ListActions.revealPrefetched();
             await Promise.resolve();
         }
 

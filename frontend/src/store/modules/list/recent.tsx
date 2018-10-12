@@ -14,12 +14,11 @@ const PREFETCH_PIN_LIST_SUCCESS = 'list/PREFETCH_PIN_LIST_SUCCESS';
 
 
 export const recentCreators = {
-    revealPrefetched: createAction(REVEAL_PREFETCHED, (type: string) => type),
+    revealPrefetched: createAction(REVEAL_PREFETCHED),
     getPinList: createPromiseThunk(GET_PIN_LIST, ListAPI.listPinAPI),
     prefetchPinList: createPromiseThunk(PREFETCH_PIN_LIST, ListAPI.nextAPI),
 }
 
-type RevealPrefetchedAction = ReturnType<typeof recentCreators.revealPrefetched>;
 type GetPinListAction = GenericResponseAction<{ pinWithData: PinSubState[], next: string },string>;
 type PrefetchPinListAction = GenericResponseAction<{ pinWithData: PinSubState[], next: string }, string>; 
 
@@ -95,14 +94,12 @@ export default handleActions<RecentState, any>({
             } 
         })
     },
-    [REVEAL_PREFETCHED]: (state, action: RevealPrefetchedAction) => {
+    [REVEAL_PREFETCHED]: (state) => {
         return produce(state, (draft) => {
-            if (action.payload === undefined) return;
-            const { payload } = action;
-            const { pins, prefetched } = draft[payload];
+            const { pins, prefetched } = draft.recent;
             if (pins && prefetched) {
                 pins.push(...prefetched);
-                draft[payload].prefetched = null;
+                draft.recent.prefetched = [];
             }
         })
     },

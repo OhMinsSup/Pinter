@@ -13,12 +13,11 @@ const PREFETCH_LOCKER_LIST = 'list/PREFETCH_PIN_LIST';
 const PREFETCH_LOCKER_LIST_SUCCESS = 'list/PREFETCH_PIN_LIST_SUCCESS';
 
 export const lockersCreators = {
-    revealLockerPrefetched: createAction(REVEAL_LOCKER_PREFETCHED, (type: string) => type),
+    revealLockerPrefetched: createAction(REVEAL_LOCKER_PREFETCHED),
     getLockerList: createPromiseThunk(GET_LOCKER_LIST, LockerAPI.listLockerAPI),
     prefetchLockerList: createPromiseThunk(PREFETCH_LOCKER_LIST, LockerAPI.nextAPI),
 }
 
-type RevealLockerPrefetchedAction = ReturnType<typeof lockersCreators.revealLockerPrefetched>;
 type GetLockerListAction = GenericResponseAction<{ pinWithData: PinSubState[], next: string }, string>;
 type PrefetchLockerListAction = GenericResponseAction<{ pinWithData: PinSubState[], next: string }, string>;
 
@@ -64,14 +63,12 @@ const initialState: LockersState = {
 }
 
 export default handleActions<LockersState, any>({
-    [REVEAL_LOCKER_PREFETCHED]: (state, action: RevealLockerPrefetchedAction) => {
+    [REVEAL_LOCKER_PREFETCHED]: (state) => {
         return produce(state, (draft) => {
-            if (action.payload === undefined) return;
-            const { payload } = action;
-            const { pins, prefetched } = draft[payload];
+            const { pins, prefetched } = draft.locker;
             if (pins && prefetched) {
                 pins.push(...prefetched);
-                draft[payload].prefetched = null;
+                draft.locker.prefetched = [];
             }
         });
     },

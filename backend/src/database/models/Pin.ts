@@ -4,7 +4,6 @@ import { IUser } from "./User";
 export interface IPin extends Document {
     _id: string;
     user?: IUser;
-    title?: string;
     body?: string;
     relationUrl?: string;
     urls?: string[];
