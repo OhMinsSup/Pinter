@@ -79,7 +79,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
         }));
 
         res.json({
-            messsage: true,
+            payload: true,
         });
     } catch (e) {
         res.status(500).json,(e);

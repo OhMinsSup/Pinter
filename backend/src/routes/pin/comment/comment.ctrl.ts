@@ -79,7 +79,7 @@ export const deleteComment = async (req: Request, res: Response): Promise<any> =
             ],
         }).lean();
         res.json({
-            comment: true,
+            payload: true,
         });
     } catch (e) {
         res.status(500).json(e);

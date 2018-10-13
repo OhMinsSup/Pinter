@@ -95,7 +95,6 @@
                             display: block;
                             fill: currentColor;
                             stroke-width: 0;
-                            vertical-align: middle;
                         }
                     }
                 }
@@ -172,7 +171,6 @@
                                             position: absolute;
                                             display: block;
                                             height: auto;
-                                            vertical-align: middle;
                                             border: 0;
                                             max-width: 100%;
                                         }
@@ -268,10 +266,47 @@
                                         display: block;
 
                                         @include media("<=576px") {
-                                            padding-left: 12px;
-                                            padding-right: 12px;
                                             padding-bottom: 4px;
                                             padding-top: 4px;
+                                        }
+                                    }
+
+                                    .section-wrapper {
+                                        margin-bottom: 20px;
+                                        padding: 0.25rem;
+                                        justify-content: space-between!important;
+                                        flex-direction: row!important;
+                                        display: flex!important;
+                                    
+                                        .section-tab {
+                                            display: flex;
+                                            flex-wrap: wrap;
+                                            padding-left: 20px;
+                                            margin-bottom: 0;
+                                            list-style: none;
+                                            margin-top: 0;
+                                            .item {
+                                                display: list-item;
+                                                text-align: -webkit-match-parent;
+                                                font-weight: 600;
+                                                color: $oc-gray-6;
+                                                letter-spacing: -.4px;
+                                                cursor: pointer;
+                                                &:hover {
+                                                    border-bottom: 1px solid $oc-red-6;
+                                                    color: $oc-red-6;
+                                                    font-weight: 600;
+                                                }
+                                    
+                                                &.active {
+                                                    border-bottom: 2px solid $oc-red-7;
+                                                    color: $oc-red-7;
+                                                    font-weight: 650;
+                                                }
+                                            }
+                                            .item + .item {
+                                                margin-left: 1.25rem;
+                                            }
                                         }
                                     }
 

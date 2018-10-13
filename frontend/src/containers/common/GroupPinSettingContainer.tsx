@@ -29,15 +29,28 @@ class GroupPinSettingContainer extends React.Component<GroupPinSettingContainerP
             ListActions.revealPrefetched();
             await Promise.resolve();
         }
-
+    
         if (next === this.prev) return;
         this.prev = next;
-
+    
         try {
             await ListActions.prefetchGroupList(next);
         } catch (e) {
             console.log(e);
         }
+        
+    }
+
+    public onSave = async (groupId: string) => {
+        const { pinId, GroupActions } = this.props;
+        
+        try {
+            await GroupActions.groupAddPin(pinId, groupId);
+        } catch (e) {
+            console.log(e);
+        }
+
+        GroupActions.setGroupPin(false);
     }
 
     public onCancel = () => {
@@ -45,11 +58,16 @@ class GroupPinSettingContainer extends React.Component<GroupPinSettingContainerP
         GroupActions.setGroupPin(false);
     }
 
+    public onSelectTabActive = (visible: boolean) => {
+        const { GroupActions } = this.props;        
+        GroupActions.setNavActive(visible);
+    }
+
     public initialize = async () => {
-        const { ListActions } = this.props;
+        const { ListActions, active } = this.props;
 
         try {
-            await ListActions.getGroupsList();
+            await ListActions.getGroupsList(active);
         } catch (e) {
             console.log(e);
         }
@@ -68,20 +86,30 @@ class GroupPinSettingContainer extends React.Component<GroupPinSettingContainerP
         this.initialize();
     }
 
+    public componentDidUpdate(preProps: GroupPinSettingContainerProps) {
+        if (preProps.active !== this.props.active) {
+            this.initialize();
+        }
+    }
+
     public componentWillUnmount() {
         this.unlistenScroll();
     }
 
     public render() {
-        const { visible, url, body, tags, groups } = this.props;
-        const { onCancel } = this;
+        const { visible, url, body, tags, groups, active } = this.props;
+        const { onCancel, onSelectTabActive, onSave } = this;
         return (
+
             <GroupPinSettingModal
+                active={active}
                 url={url}
                 body={body}
                 groups={groups}
                 tags={tags}
                 onOpen={visible}
+                onSave={onSave}
+                onSelectTab={onSelectTabActive}
                 onCancel={onCancel}
             />
         )
@@ -93,9 +121,12 @@ const mapStateToProps = ({ group, pin, list }: StoreState) => ({
     url: pin.pin.urls[0],
     body: pin.pin.body,
     tags: pin.pin.tags,
+    pinId: pin.pin.pinId,
     groups: list.groups.groups.groups,
     prefetched: list.groups.groups.prefetched,
     next: list.groups.groups.next,
+    active: group.active.visible,
+    list: list.groups.active,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

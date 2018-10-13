@@ -1,12 +1,50 @@
 @import 'utils';
 
+.section-wrapper {
+    margin-bottom: 20px;
+    padding: 0.25rem;
+    justify-content: space-between!important;
+    flex-direction: row!important;
+    display: flex!important;
+
+    .section-tab {
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 0;
+        margin-bottom: 0;
+        list-style: none;
+        margin-top: 0;
+        .item {
+            display: list-item;
+            text-align: -webkit-match-parent;
+            font-weight: 600;
+            color: $oc-gray-6;
+            letter-spacing: -.4px;
+            cursor: pointer;
+            &:hover {
+                border-bottom: 1px solid $oc-red-6;
+                color: $oc-red-6;
+                font-weight: 600;
+            }
+
+            &.active {
+                border-bottom: 2px solid $oc-red-7;
+                color: $oc-red-7;
+                font-weight: 650;
+            }
+        }
+        .item + .item {
+            margin-left: 1.25rem;
+        }
+    }
+}
+
 .group-card-list {
     display: flex;
     flex-wrap: wrap;
     position: relative;
     margin-left: -0.875rem;
     margin-right: -0.875rem;
-    
     @include media("<medium") {
         margin-top: 0.5rem;
     }

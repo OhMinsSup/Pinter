@@ -14,18 +14,22 @@ type Props = {
     url: string,
     tags: string[],
     groups: any[],
+    active: boolean,
     onCancel(): void,
+    onSelectTab(visible: boolean): void,
+    onSave(groupId: string): Promise<void>,
 }
 
 const GroupItem: React.SFC<{
     title: string,
     groupId: string,
-}> = ({ title }) => {
+    onSave(groupId: string): Promise<void>
+}> = ({ title, groupId, onSave }) => {
     return (
         <div className={cx('item-wrapper')}>
             <div className={cx('text')}>
                 <span>{title}</span>
-                <Button theme="default">저장</Button>
+                <Button theme="default" onClick={() => onSave(groupId)}>저장</Button>
             </div>
         </div>
     )
@@ -38,6 +42,9 @@ const GroupPinSettingModal: React.SFC<Props> = ({
     body, 
     tags, 
     groups,
+    active,
+    onSelectTab,
+    onSave
 }) => {
     const tagList = tags.map((tag: string) => {
         return (
@@ -54,6 +61,7 @@ const GroupPinSettingModal: React.SFC<Props> = ({
             <GroupItem 
                 key={groupId}
                 title={title}
+                onSave={onSave}
                 groupId={groupId}
             />
         )
@@ -99,6 +107,12 @@ const GroupPinSettingModal: React.SFC<Props> = ({
                                         <div className={cx('wrapper')}>
                                             <div className={cx('groups')}>
                                                 <div className={cx('title-wrapper')}>그룹 리스트</div>
+                                                <div className={cx('section-wrapper')}>
+                                                    <ul className={cx('section-tab')}>
+                                                        <li className={cx('item', { active: active === false })} onClick={() => onSelectTab(false)}>공개</li>
+                                                        <li className={cx('item', { active: active === true })} onClick={() => onSelectTab(true)}>비공개</li>
+                                                    </ul>
+                                                </div>
                                                 {groupList}
                                             </div>
                                         </div>

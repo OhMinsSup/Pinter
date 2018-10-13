@@ -12,18 +12,23 @@ const GET_GROUPS_LIST_ERROR = 'list/GET_GROUPS_LIST_ERROR';
 const PREFETCH_GROUP_LIST = 'list/PREFETCH_GROUP_LIST';
 const PREFETCH_GROUP_LIST_SUCCESS = 'list/PREFETCH_GROUP_LIST_SUCCESS';
 
+const INITIALIZE_GROUP_LIST = 'list/INITIALIZE_GROUP_LIST';
+
 export const groupsCreators = {
     getGroupsList: createPromiseThunk(GET_GROUPS_LIST, groupAPI.groupListAPI),
     prefetchGroupList: createPromiseThunk(PREFETCH_GROUP_LIST, groupAPI.nextAPI),
     revealPrefetched: createAction(REVEAL_PREFETCHED),
+    initialize: createAction(INITIALIZE_GROUP_LIST, (active: boolean) => active),
 }
 
 type PrefetchGroupListAction = GenericResponseAction<{ 
     next: string,
     groupsWithData: GroupSubState[]
 }, string>;
+type InitializeAction = ReturnType<typeof groupsCreators.initialize>;
 type GetGroupsListAction = GenericResponseAction<{ 
     next: string,
+    active: boolean,
     groupsWithData: GroupSubState[]
 }, string>;
 
@@ -49,7 +54,8 @@ export interface ListingSetState {
 }
 
 export interface GroupsState {
-    groups: ListingSetState
+    groups: ListingSetState,
+    active: boolean,
 }
 
 const initialListingSet: ListingSetState = {
@@ -62,9 +68,24 @@ const initialListingSet: ListingSetState = {
 
 const initialState: GroupsState = {
     groups: initialListingSet,
+    active: false,
 }
 
 export default handleActions<GroupsState, any>({
+    [INITIALIZE_GROUP_LIST]: (state, action: InitializeAction) => {
+        return produce(state, (draft) => {
+            if (action.payload === undefined) return;
+            draft.groups = {
+                end: false,
+                groups: [],
+                prefetched: [],
+                next: '',
+                loading: false
+            };
+
+            draft.active = action.payload;
+        })
+    },
     [GET_GROUPS_LIST_PENDING]: (state) => {
         return produce(state, (draft) => {
             draft.groups.loading = true;
@@ -85,13 +106,14 @@ export default handleActions<GroupsState, any>({
         const { payload: { data } } = action;
         return produce(state, (draft) => {
             if (data === undefined) return;
+
             draft.groups = {
                 end: false,
                 groups: data.groupsWithData,
                 prefetched: [],
                 next: data.next,
                 loading: false
-            } 
+            }
         })
     },
     [REVEAL_PREFETCHED]: (state) => {
@@ -101,6 +123,7 @@ export default handleActions<GroupsState, any>({
                 groups.push(...prefetched);
                 draft.groups.prefetched = [];
             }
+             
         })
     },
     [PREFETCH_GROUP_LIST_SUCCESS]: (state, action: PrefetchGroupListAction) => {

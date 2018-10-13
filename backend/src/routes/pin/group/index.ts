@@ -4,6 +4,7 @@ import * as groupCtrl from './group.ctrl';
 const group = Router();
 
 group.post('/', groupCtrl.createGroup);
-group.get('/list', groupCtrl.groupList);
+group.get('/list/:active', groupCtrl.groupList);
+group.post('/pin/add', groupCtrl.groupAddPin);
 
 export default group;

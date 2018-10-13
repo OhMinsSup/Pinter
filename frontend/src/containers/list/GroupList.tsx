@@ -6,10 +6,13 @@ import { StoreState } from 'src/store/modules';
 import { bindActionCreators, Dispatch } from 'redux';
 import { getScrollBottom } from '../../lib/common';
 import { groupsCreators } from 'src/store/modules/list/groups';
+import { groupCreators } from 'src/store/modules/group';
+import { match } from 'react-router-dom';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type GroupListProps = StateProps & DispatchProps;
+type OwnProps = { match: match<{ displayName: string }> };
+type GroupListProps = StateProps & DispatchProps & OwnProps;
 
 class GroupList extends React.Component<GroupListProps> {
     public prev: string | null = null;
@@ -22,28 +25,37 @@ class GroupList extends React.Component<GroupListProps> {
     
     public prefetch = async () => {
         const { ListActions, groups, next } = this.props;
+
         if (!groups || groups.length === 0) return;
 
         if (this.props.prefetched) {
             ListActions.revealPrefetched();
             await Promise.resolve();
         }
-
+    
         if (next === this.prev) return;
         this.prev = next;
-
+    
         try {
             await ListActions.prefetchGroupList(next);
         } catch (e) {
             console.log(e);
         }
+
+    }
+
+    public onSelectTabActive = (visible: boolean) => {
+        const { GroupActions } = this.props;        
+        GroupActions.setNavActive(visible);
     }
 
     public initialize = async () => {
-        const { ListActions } = this.props;
+        const { ListActions, active } = this.props;
+        
+        ListActions.initialize(active);
 
         try {
-            await ListActions.getGroupsList();
+            await ListActions.getGroupsList(active);
         } catch (e) {
             console.log(e);
         }
@@ -62,33 +74,60 @@ class GroupList extends React.Component<GroupListProps> {
         this.initialize();
     }
 
+    public componentDidUpdate(preProps: GroupListProps) {
+        if ((preProps.active !== this.props.active) || 
+            (preProps.match.params.displayName !== this.props.match.params.displayName)) {
+            this.initialize();
+        }
+    }
+
     public componentWillUnmount() {
         this.unlistenScroll();
     }
 
     public render() {
-        const { groups } = this.props;
+        const { 
+            groups, 
+            active, 
+            commonDisplayName, 
+            commonUserName, 
+            ownDisplayName,
+            ownUsername,
+        } = this.props;
+        const { onSelectTabActive } = this;
 
         return (
+
             <GroupCardList 
+                commonDisplayName={commonDisplayName} 
+                commonUserName={commonUserName} 
+                ownDisplayName={ownDisplayName}
+                ownUsername={ownUsername}
+                onSelectTab={onSelectTabActive}
+                active={active}
                 groups={groups}
             />
         )
     }
 }
 
-const mapStateToProps = ({ list }: StoreState) => ({
+const mapStateToProps = ({ list, group, user, common }: StoreState) => ({
     groups: list.groups.groups.groups,
     prefetched: list.groups.groups.prefetched,
     next: list.groups.groups.next,
-    loading: list.groups.groups.loading,
+    active: group.active.visible,
+    ownUsername: user.user && user.user.username,
+    ownDisplayName: user.user && user.user.displayName,
+    commonUserName: common.profile.username,
+    commonDisplayName: common.profile.displayName,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+    GroupActions: bindActionCreators(groupCreators, dispatch),
     ListActions: bindActionCreators(groupsCreators, dispatch),
 });
 
-export default connect<StateProps, DispatchProps>(
+export default connect<StateProps, DispatchProps, OwnProps>(
     mapStateToProps,
     mapDispatchToProps
 )(GroupList);

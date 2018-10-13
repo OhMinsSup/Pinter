@@ -5,18 +5,16 @@ import NoticeModalContainer from '../common/NoticeMobalContainer';
 import MakePinGroupContainer from '../common/MakePinGroupContainer';
 import GroupPinSettingContainer from '../common/GroupPinSettingContainer';
 
-class EtcContainer extends React.Component<{}> {
-    public render() {
-        return (
-            <React.Fragment>
-                <SidebarContainer />
-                <GalleryContainer />
-                <NoticeModalContainer />
-                <MakePinGroupContainer />
-                <GroupPinSettingContainer />
-            </React.Fragment>
-        )
-    }
+const EtcContainer = () => {
+    return (
+        <React.Fragment>
+            <SidebarContainer />
+            <GalleryContainer />
+            <NoticeModalContainer />
+            <MakePinGroupContainer />
+            <GroupPinSettingContainer />
+        </React.Fragment>
+    ) 
 }
 
 export default EtcContainer;

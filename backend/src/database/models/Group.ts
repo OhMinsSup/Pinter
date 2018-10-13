@@ -9,7 +9,7 @@ export interface IGroup extends Document {
 }
 
 export interface IGroupModel extends Model<IGroup> {
-    groupList(userId: string, cursor?: string): Promise<any>;
+    groupList(userId: string,  active: boolean, cursor?: string): Promise<any>;
 }
 
 const Group = new Schema({
@@ -27,10 +27,10 @@ const Group = new Schema({
     }
 });
 
-Group.statics.groupList = function(userId: string, cursor?: string): Promise<any> {
+Group.statics.groupList = function(userId: string, active: boolean, cursor?: string): Promise<any> {
     const query = Object.assign(
         {},
-        cursor ? { _id: { $lt: cursor }, user: userId } : { user: userId },
+        cursor ? { _id: { $lt: cursor }, user: userId, activation: active } : { user: userId,  activation: active },
     )
 
     return this.find(query)

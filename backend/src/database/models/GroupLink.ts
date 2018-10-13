@@ -9,7 +9,7 @@ export interface IGroupLink extends Document {
 }
 
 export interface IGroupLinkModel extends Model<IGroupLink> {
-    Link(groupId: string, pinIds: string[]): Promise<any>;
+
 }
 
 const GroupLink = new Schema({
@@ -22,15 +22,6 @@ const GroupLink = new Schema({
         ref: 'Pin'
     }
 });
-
-GroupLink.statics.Link = function(groupId: string, pinIds: string[]): Promise<any> {
-    const promises = pinIds.map(pinId => this.create({
-        group: groupId,
-        pin: pinId
-    }));
-
-    return Promise.all(promises);
-}
 
 const GroupLinkModel = model<IGroupLink>('GroupLink', GroupLink) as IGroupLinkModel;
 

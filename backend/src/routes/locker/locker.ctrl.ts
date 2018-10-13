@@ -18,6 +18,7 @@ export const lockerPin = async (req: Request, res: Response): Promise<any> => {
         }
 
         const locker = await Locker.create({ user: userId, pin: pinId });
+
         res.json({
             locker: !!locker,
         });
@@ -47,7 +48,8 @@ export const unLockerPin = async (req: Request, res: Response): Promise<any> => 
                 },
             ],
         });
-        res.status(204).json({
+
+        res.json({
             locker: true,
         });
     } catch (e) {
@@ -70,7 +72,6 @@ export const getLockerPin = async (req: Request, res: Response): Promise<any> =>
         res.json({
             locker,
         });
-        
     } catch (e) {
         res.status(500).json(e);
     }

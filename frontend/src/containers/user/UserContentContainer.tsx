@@ -16,7 +16,7 @@ type OwnProps = { match: match<{ displayName: string }> };
 type UserContentContainerProps = StateProps & DispatchProps & OwnProps;
 
 class UserContentContainer extends React.Component<UserContentContainerProps> {
-    public onSelectTab = (value: string) => {
+    public onSelectTabFollow = (value: string) => {
         const { ListActions } = this.props;
         ListActions.selectTabFollow(value);
     }
@@ -54,7 +54,7 @@ class UserContentContainer extends React.Component<UserContentContainerProps> {
 
     public render() {
         const { tab, cursor, users } = this.props;
-        const { onSelectTab, onUserMore } = this;
+        const { onSelectTabFollow, onUserMore } = this;
         
         return (
             <UserContent
@@ -63,7 +63,7 @@ class UserContentContainer extends React.Component<UserContentContainerProps> {
                         tab={tab}
                         cursor={cursor}
                         followDatas={users}
-                        onSelectTab={onSelectTab}
+                        onSelectTab={onSelectTabFollow}
                         onUserMore={onUserMore}
                     />
                 }
@@ -86,7 +86,7 @@ const mapStateToProps = ({ list }: StoreState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    ListActions: bindActionCreators(followsCreators, dispatch)
+    ListActions: bindActionCreators(followsCreators, dispatch),
 });
 
 export default compose(

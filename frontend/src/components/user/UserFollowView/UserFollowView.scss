@@ -18,10 +18,13 @@
         cursor: pointer;
         margin-left: 0.75rem;        
         &:hover {
+          border-bottom: 1px solid $oc-red-5;
           color: $oc-red-5;
         }
 
         &.active {
+          font-weight: 600;
+          border-bottom: 2px solid $oc-red-7;
           color: $oc-red-7;
         }
       }

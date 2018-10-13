@@ -15,12 +15,28 @@ class MakePinGroupContainer extends React.Component<MakePinGroupContainerProps> 
         GroupActions.setMakeGroup(false)
     }
 
+    public onSubmit = async (value: string, active: boolean) => {
+        const { GroupActions } = this.props;
+
+        try {
+            await GroupActions.createSubmitGroup({
+                title: value,
+                activation: active,
+            })
+
+            GroupActions.setMakeGroup(false);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     public render() {
         const { visible } = this.props;
-        const { onClick } = this;
+        const { onClick, onSubmit } = this;
 
         return (
             <MakeGroupModal 
+                onSubmit={onSubmit}
                 onClick={onClick}
                 onOpen={visible}
             />

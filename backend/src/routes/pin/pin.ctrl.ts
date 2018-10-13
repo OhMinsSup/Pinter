@@ -137,7 +137,7 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
         await User.unpinCount(userId);
 
         res.json({
-            pin: true,
+            payload: true,
         });
     } catch (e) {
         res.status(500).json(e);

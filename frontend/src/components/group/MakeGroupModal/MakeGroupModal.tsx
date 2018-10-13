@@ -9,7 +9,8 @@ const cx = classNames.bind(styles);
 
 type Props = {
     onOpen: boolean,
-    onClick(): void
+    onClick(): void,
+    onSubmit(value: string, active: boolean): Promise<void>
 }
 
 type State = {
@@ -40,8 +41,8 @@ class MakeGroupModal extends React.Component<Props, State> {
     }
 
     public render() {
-        const { onClick, onOpen } = this.props;
-        const { visible } = this.state;
+        const { onClick, onOpen, onSubmit } = this.props;
+        const { visible, value } = this.state;
         const { onAction, onChange } = this;
         return (
             <ModalWrapper open={onOpen}>
@@ -94,7 +95,7 @@ class MakeGroupModal extends React.Component<Props, State> {
                         <div className={cx('form-footer')}>
                             <div className={cx('btn-wrapper')}>
                                 <Button theme="default" className={cx('btn')} onClick={onClick}>취소</Button>
-                                <Button theme="default" className={cx('btn')}>만들기</Button>
+                                <Button theme="default" className={cx('btn')} onClick={() => onSubmit(value, visible)}>만들기</Button>
                             </div>
                         </div>
                     </div>
