@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as joi from 'joi';
 import Group, { IGroup } from '../../../database/models/Group';
+import User, { IUser } from '../../../database/models/User';
 import Pin from '../../../database/models/Pin';
 import GroupLink from '../../../database/models/GroupLink';
 import { serializeGroups } from '../../../lib/serialize';
@@ -84,13 +85,20 @@ export const groupAddPin = async (req: Request, res: Response): Promise<any> => 
 }
 
 export const groupList = async (req: Request, res: Response): Promise<any> => {
-    const userId = req['user']._id;
-    const { active } = req.params;
+    const { active, displayName } = req.params;
     const { cursor } = req.query;
 
     try {
-        const groups: IGroup[] = await Group.groupList(userId, active, cursor);
-        const next = groups.length === 15 ? `/group/list/${active}?cursor=${groups[14]._id}` : null;
+        const user: IUser = await User.findByDisplayName(displayName);
+
+        if (!user) {
+            return res.status(404).json({
+                name: '유저가 존재하지 않습니다.'
+            });
+        }
+
+        const groups: IGroup[] = await Group.groupList(user._id, active, cursor);
+        const next = groups.length === 15 ? `/pin/groups/${displayName}/list/${active}?cursor=${groups[14]._id}` : null;
 
         res.json({
             next,

@@ -38,7 +38,6 @@ class GroupPinSettingContainer extends React.Component<GroupPinSettingContainerP
         } catch (e) {
             console.log(e);
         }
-        
     }
 
     public onSave = async (groupId: string) => {
@@ -64,10 +63,10 @@ class GroupPinSettingContainer extends React.Component<GroupPinSettingContainerP
     }
 
     public initialize = async () => {
-        const { ListActions, active } = this.props;
-
+        const { ListActions, active, displayName } = this.props;
+        
         try {
-            await ListActions.getGroupsList(active);
+            await ListActions.getGroupsList(active, displayName);
         } catch (e) {
             console.log(e);
         }
@@ -100,7 +99,6 @@ class GroupPinSettingContainer extends React.Component<GroupPinSettingContainerP
         const { visible, url, body, tags, groups, active } = this.props;
         const { onCancel, onSelectTabActive, onSave } = this;
         return (
-
             <GroupPinSettingModal
                 active={active}
                 url={url}
@@ -116,7 +114,7 @@ class GroupPinSettingContainer extends React.Component<GroupPinSettingContainerP
     }
 }
 
-const mapStateToProps = ({ group, pin, list }: StoreState) => ({
+const mapStateToProps = ({ group, pin, list, user }: StoreState) => ({
     visible: group.groupPinModal.visible,
     url: pin.pin.urls[0],
     body: pin.pin.body,
@@ -127,6 +125,7 @@ const mapStateToProps = ({ group, pin, list }: StoreState) => ({
     next: list.groups.groups.next,
     active: group.active.visible,
     list: list.groups.active,
+    displayName: user.user && user.user.displayName
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

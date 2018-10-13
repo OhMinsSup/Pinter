@@ -50,12 +50,13 @@ class GroupList extends React.Component<GroupListProps> {
     }
 
     public initialize = async () => {
-        const { ListActions, active } = this.props;
+        const { ListActions, active, match: { params: { displayName } } } = this.props;
+        console.log(displayName);
         
         ListActions.initialize(active);
-
+        
         try {
-            await ListActions.getGroupsList(active);
+            await ListActions.getGroupsList(active, displayName);
         } catch (e) {
             console.log(e);
         }
@@ -97,7 +98,6 @@ class GroupList extends React.Component<GroupListProps> {
         const { onSelectTabActive } = this;
 
         return (
-
             <GroupCardList 
                 commonDisplayName={commonDisplayName} 
                 commonUserName={commonUserName} 
