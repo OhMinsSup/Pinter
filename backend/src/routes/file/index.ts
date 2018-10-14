@@ -5,11 +5,16 @@ import needAuth from '../../lib/middleware/needAuth';
 
 const memoryStorage = multer.memoryStorage();
 const upload = multer({
-    storage: memoryStorage,
+  storage: memoryStorage,
 });
 
 const file = Router();
 
-file.post('/create-signed-url', needAuth, upload.single('file'), fileCtrl.createSignedUrl);
+file.post(
+  '/create-signed-url',
+  needAuth,
+  upload.single('file'),
+  fileCtrl.createSignedUrl
+);
 
 export default file;

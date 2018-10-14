@@ -1,75 +1,84 @@
-import { Schema, model, Model, Document } from "mongoose";
-import { IUser } from "./User";
+import { Schema, model, Model, Document } from 'mongoose';
+import { IUser } from './User';
 
 export interface IFollow extends Document {
-    _id: string;
-    following?: IUser;
-    follower?: IUser;
+  _id: string;
+  following?: IUser;
+  follower?: IUser;
 }
 
 export interface IFollowModel extends Model<IFollow> {
-    checkExists(userId: string, followId: string): Promise<any>;
-    followingList(followerId: string, cursor: boolean | null): Promise<any>;
-    followerList(followingId: string, cursor: boolean | null): Promise<any>;
+  checkExists(userId: string, followId: string): Promise<any>;
+  followingList(followerId: string, cursor: boolean | null): Promise<any>;
+  followerList(followingId: string, cursor: boolean | null): Promise<any>;
 }
 
 const Follow = new Schema({
-    following: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        index: true,
-    },
-    follower: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        index: true,
-    },
+  following: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+  },
+  follower: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+  },
 });
 
-Follow.statics.checkExists = function(userId: string, followId: string): Promise<any> {
-    return this.findOne({
-        $and: [
-            { following : followId },
-            { follower : userId },
-        ],
-    })
-    .lean();
+Follow.statics.checkExists = function(
+  userId: string,
+  followId: string
+): Promise<any> {
+  return this.findOne({
+    $and: [{ following: followId }, { follower: userId }],
+  }).lean();
 };
 
-Follow.statics.followingList = function(followerId: string, cursor: boolean | null): Promise<any> {
-    const data = cursor ? this.find({
-        follower: followerId
-    })
-    .populate("following")
-    .sort({ _id: -1 })
-    .lean() : this.find({
-        follower: followerId    
-    })
-    .populate("following")
-    .sort({ _id: -1 })
-    .limit(10)
-    .lean();
+Follow.statics.followingList = function(
+  followerId: string,
+  cursor: boolean | null
+): Promise<any> {
+  const data = cursor
+    ? this.find({
+        follower: followerId,
+      })
+        .populate('following')
+        .sort({ _id: -1 })
+        .lean()
+    : this.find({
+        follower: followerId,
+      })
+        .populate('following')
+        .sort({ _id: -1 })
+        .limit(10)
+        .lean();
 
-    return data;
+  return data;
 };
 
-Follow.statics.followerList = function(followingId: string, cursor: boolean | null): Promise<any> {
-    const data = cursor ? this.find({
-        following: followingId 
-    })
-    .populate("follower")
-    .sort({ _id: -1 })
-    .lean() : this.find({
-        following: followingId
-    })
-    .populate('follower')
-    .sort({ _id: -1 })
-    .limit(10)
-    .lean();
+Follow.statics.followerList = function(
+  followingId: string,
+  cursor: boolean | null
+): Promise<any> {
+  const data = cursor
+    ? this.find({
+        following: followingId,
+      })
+        .populate('follower')
+        .sort({ _id: -1 })
+        .lean()
+    : this.find({
+        following: followingId,
+      })
+        .populate('follower')
+        .sort({ _id: -1 })
+        .limit(10)
+        .lean();
 
-    return data;
+  return data;
 };
 
-const FollowModel = model<IFollow>("Follow", Follow) as IFollowModel;
+const FollowModel = model<IFollow>('Follow', Follow) as IFollowModel;
 
 export default FollowModel;

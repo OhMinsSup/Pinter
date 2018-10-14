@@ -1,5 +1,8 @@
 {
-    "extends": ["tslint:recommended"],
+    "extends": [
+        "tslint:recommended",
+        "tslint-config-prettier"
+    ],
     "rules":{
         "ordered-imports":false,
         "triple-equals":false,
@@ -18,5 +21,7 @@
         "member-ordering": false,
         "only-arrow-functions": false,
         "perfer-for-of": false,
-    }
+    },
+    "rulesDirectory": [],
+    "jsRules": {}
 }
