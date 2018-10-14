@@ -39,8 +39,6 @@ const NoticeMessage = new Schema({
     timestamps: true,
 })
 
-
-
 const NoticeMessageModel = model<INoticeMessage>('NoticeMessage', NoticeMessage) as INoticeMessageModel;
 
 export default NoticeMessageModel;

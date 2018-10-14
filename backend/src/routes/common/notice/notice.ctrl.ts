@@ -78,9 +78,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
             return m;
         }));
 
-        res.json({
-            payload: true,
-        });
+        res.status(204);
     } catch (e) {
         res.status(500).json,(e);
     }
@@ -95,7 +93,7 @@ export const getNoticeList = async (req: Request, res: Response): Promise<any> =
         .lean();
         
         if (!notice) {
-            return res.status(404).json({
+            res.status(404).json({
                 name: '알림방이 존재하지 않습니다'
             });
         }
@@ -105,7 +103,7 @@ export const getNoticeList = async (req: Request, res: Response): Promise<any> =
         .populate('sender')
         .sort({ _id: -1 })
         .lean();
-        
+                
         res.json({
             message: message.map(m => {
                 const { message, sender } = m;

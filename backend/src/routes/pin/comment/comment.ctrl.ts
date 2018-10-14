@@ -16,10 +16,10 @@ export const writeComment = async (req: Request, res: Response): Promise<any> =>
         tags: joi.array().items(joi.string()).required(),
     });
 
-    const result: any = joi.validate(req.body, schema);
+    const result = joi.validate(req.body, schema);
 
     if (result.error) {
-        return res.status(400).json({
+        res.status(400).json({
             name: 'WRONG_SCHEMA',
             payload: result.error,
         });
@@ -44,10 +44,6 @@ export const writeComment = async (req: Request, res: Response): Promise<any> =>
             has_tags: tagIds,
         });
         
-        if (!comment) {
-            return res.status(500);
-        }
-
         await Pin.comment(pinId);
         const commentWithData = await Comment.readComment(comment._id);
         res.json(serializeComment(commentWithData));
@@ -64,7 +60,7 @@ export const deleteComment = async (req: Request, res: Response): Promise<any> =
         const comment: IComment = await Comment.findById(commentId).lean();
 
         if (!comment) {
-            return res.status(404).json({
+            res.status(404).json({
                 name: '존재하지않는 댓글은 삭제할 수 없습니다.',
             });
         }
@@ -78,9 +74,8 @@ export const deleteComment = async (req: Request, res: Response): Promise<any> =
                 },
             ],
         }).lean();
-        res.json({
-            payload: true,
-        });
+        
+        res.status(204);
     } catch (e) {
         res.status(500).json(e);
     }

@@ -9,8 +9,9 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
     const { followName } = req.params;
 
     if (followName === username) {
-        return res.status(400).json({
-            name: '자기 자신을 팔로우 할 수 없습니다.',
+        res.status(400).json({
+            name: 'follow',
+            payload: '자기 자신을 팔로우 할 수 없습니다.',
         });
     }
 
@@ -18,8 +19,9 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
         const user: IUser = await User.findByDisplayName(followName);    
 
         if (!user) {
-            return res.status(404).json({
-                name: '존재하지 않는 유저입니다',
+            res.status(404).json({
+                name: '유저',
+                payload: '존재하지 않는 유저입니다',
             });
         }
 
@@ -27,8 +29,9 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
         const exists: IFollow = await Follow.checkExists(userId, followId);
 
         if (exists) {
-            return res.status(409).json({
-                name: '이미 팔로우 중입니다..',
+            res.status(409).json({
+                name: 'follow',
+                payload: '이미 팔로우 중입니다..',
             });
         }
 
@@ -49,8 +52,9 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
     const { followName } = req.params;
     
     if (followName === username) {
-        return res.status(400).json({
-            name: '자기 자신을 언팔로우 할 수 없습니다.',
+        res.status(400).json({
+            name: 'follow',
+            payload: '자기 자신을 언팔로우 할 수 없습니다.',
         });
     }
 
@@ -58,8 +62,9 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
         const user: IUser = await User.findByDisplayName(followName);    
         
         if (!user) {
-            return res.status(404).json({
-                name: '존재하지 않는 유저입니다',
+            res.status(404).json({
+                name: '유저',
+                payload: '존재하지 않는 유저입니다',
             });
         }
 
@@ -67,15 +72,13 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
         const exists: IFollow = await Follow.checkExists(userId, followId);
         
         if (!exists) {
-            return res.status(409).json({
-                name: '팔로우 상태가 아닙니다.',
+            res.status(409).json({
+                name: 'follow',
+                payload: '팔로우 상태가 아닙니다.',
             });
         }
 
-        await Follow.deleteOne({
-            following: followId, 
-            follower: userId,
-        }).lean();
+        await Follow.deleteOne({ following: followId, follower: userId }).lean();
         await User.unfollowerCount(userId);
         await User.unfollowingCount(followId);
 
@@ -97,7 +100,8 @@ export const getFollow = async (req: Request, res: Response): Promise<any> => {
         
         if (!following) {
             return res.status(404).json({
-                name: '존재하지 않는 유저입니다',
+                name: 'follow',
+                payload: '존재하지 않는 유저입니다',
             });
         }
 
@@ -122,12 +126,20 @@ export const getFollowing = async (req: Request, res: Response): Promise<any> =>
         const user: IUser = await User.findByDisplayName(displayName);
         
         if (!user) {
-            return res.status(404).json({
-                name: '존재하지 않는 유저입니다',
+            res.status(404).json({
+                name: '유저',
+                payload: '존재하지 않는 유저입니다',
             });
         }
 
         const following: IFollow[] = await Follow.followingList(user._id, cursor);
+
+        if (following.length === 0 || !following) {
+            return res.json({
+                usersWithData: [],
+            })
+        }
+        
         const usersWithData = following.map(serializeFollowing);
         res.json({
             usersWithData,
@@ -145,12 +157,20 @@ export const getFollower = async (req: Request, res: Response): Promise<any> => 
         const user: IUser = await User.findByDisplayName(displayName);
         
         if (!user) {
-            return res.status(404).json({
-                name: '존재하지 않는 유저입니다',
+            res.status(404).json({
+                name: '유저',
+                payload: '존재하지 않는 유저입니다',
             });
         }
 
         const follwer: IFollow[] = await Follow.followerList(user._id, cursor);
+
+        if (follwer.length === 0 || !follwer) {
+            return res.json({
+                usersWithData: [],
+            })
+        }
+        
         const usersWithData = follwer.map(serializeFollower);
         res.json({
             usersWithData,

@@ -31,7 +31,7 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
     const result = joi.validate(req.body, schema);
 
     if (result.error) {
-        return res.status(400).json({
+        res.status(400).json({
             name: 'WRONG_SCHEMA',
             payload: result.error,
         });
@@ -51,12 +51,18 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
             user: userId,
         }).save();
 
-        const pinId = pin._id;      
-        await TagLink.Link(pinId, tagIds);
+        if (!pin) {
+            res.status(500).json({
+                name: '핀',
+                payload: '핀이 만들어지지 않았습니다'
+            })
+        }
+
+        await TagLink.Link(pin._id, tagIds);
         await User.pinCount(userId);
 
         res.json({
-            pinId,
+            pinId: pin._id,
         });
     } catch (e) {
         res.status(500).json(e);
@@ -74,14 +80,14 @@ export const updatePin = async (req: Request, res: Response): Promise<any> => {
     const schema = joi.object().keys({
         relationUrl: joi.string(),
         body: joi.string(),
-        urls: joi.array().items(joi.string()).required(),
-        tags: joi.array().items(joi.string()).required(),
+        urls: joi.array().items(joi.string()),
+        tags: joi.array().items(joi.string()),
     });
 
-    const result: any = joi.validate(req.body, schema);
+    const result = joi.validate(req.body, schema);
 
     if (result.error) {
-        return res.status(400).json({
+        res.status(400).json({
             name: 'WRONG_SCHEMA',
             payload: result.error,
         });
@@ -109,6 +115,13 @@ export const updatePin = async (req: Request, res: Response): Promise<any> => {
                 new: true,
             }).lean();
 
+            if (!pin) {
+                res.status(500).json({
+                    name: '핀',
+                    payload: '핀이 업데이트되지 않았습니다'
+                })
+            }
+
             res.json({
                 pinId: pin._id,
             });
@@ -131,14 +144,10 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
             Locker.deleteMany({ pin: pinId }).lean(),
         ]);
 
-        await Pin.deleteOne({
-            _id: pinId,
-        }).lean();
+        await Pin.deleteOne({ _id: pinId }).lean();
         await User.unpinCount(userId);
 
-        res.json({
-            payload: true,
-        });
+        res.status(204);
     } catch (e) {
         res.status(500).json(e);
     }
@@ -170,6 +179,14 @@ export const listPin = async (req: Request, res: Response): Promise<any> => {
         }
         
         const pin: IPin[] = await Pin.readPinList(userId, cursor);
+
+        if (pin.length === 0 || !pin) {
+            res.json({
+                next: '',
+                pinWithData: [],
+            })
+        }
+
         const next = pin.length === 20 ? `/pin/${displayName ? `${displayName}/user` : '' }?cursor=${pin[19]._id}` : null;
         const pinWithData = pin.map(serializePinList)
         .map(pin => ({ ...pin, body: formatShortDescription(pin.body) }));

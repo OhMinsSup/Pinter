@@ -12,8 +12,9 @@ export const lockerPin = async (req: Request, res: Response): Promise<any> => {
         const exists: ILockerModel = await Locker.checkExists(userId, pinId);
 
         if (exists) {
-            return res.status(409).json({
-                name: '이미 보관중입니다',
+            res.status(409).json({
+                name: 'locker',
+                payload: '이미 보관중입니다',
             });
         }
 
@@ -35,8 +36,9 @@ export const unLockerPin = async (req: Request, res: Response): Promise<any> => 
         const exists: ILockerModel = await Locker.checkExists(userId, pinId);
         
         if (!exists) {
-            return res.status(409).json({
-                name: '보관하지 않은 핀입니다.',
+            res.status(409).json({
+                name: 'locker',
+                payload: '보관하지 않은 핀입니다.',
             });
         }
 
@@ -82,9 +84,16 @@ export const lockerList = async (req: Request, res: Response): Promise<any> => {
     const { displayName } = req.params;
 
     try {
-        const { _id }: IUser = await User.findByDisplayName(displayName);
+        const user: IUser = await User.findByDisplayName(displayName);
 
-        const locker: ILocker[] = await Locker.lockerList(_id, cursor);
+        if (!user) {
+            res.status(404).json({
+                name: '유저',
+                payload: '존재하지 않는 유저입니다',
+            });
+        }
+
+        const locker: ILocker[] = await Locker.lockerList(user._id, cursor);
         const next = locker.length === 10 ? `/pin/locker/private/list?cusor=${locker[9]._id}` : null;
         const pinWithData = locker.map(serializeLocker).map(pin => ({
             ...pin, body: formatShortDescription(pin.body)

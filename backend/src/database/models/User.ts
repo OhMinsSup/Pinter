@@ -138,60 +138,84 @@ User.statics.generate = function(profile: IUser): Promise<any> {
 
 User.statics.followerCount = function(userId: string): Promise<any> {
     return this.findByIdAndUpdate(userId, {
-        $inc: { follower: 1 },
+        $inc: { 
+            count: {
+                follower: 1,
+            }
+        },
     }, {
         new: true,
-        select: "follower",
+        select: "count.follower",
     })
     .lean();
 };
 
 User.statics.unfollowerCount = function(userId: string): Promise<any> {
     return this.findByIdAndUpdate(userId, {
-        $inc: { follower: -1 },
+        $inc: { 
+            count: {
+                follower: -1,
+            }
+        },
     }, {
         new: true,
-        select: "follower",
+        select: "count.follower",
     })
     .lean();
 };
 
 User.statics.followingCount = function(userId: string): Promise<any> {
     return this.findByIdAndUpdate(userId, {
-        $inc: { following: 1 },
+        $inc: { 
+            count: {
+                following: 1,
+            } 
+        },
     }, {
         new: true,
-        select: "following",
+        select: "count.following",
     })
     .lean();
 };
 
 User.statics.unfollowingCount = function(userId: string): Promise<any> {
     return this.findByIdAndUpdate(userId, {
-        $inc: { following: -1 },
+        $inc: { 
+            count: {
+                following: -1
+            } 
+        },
     }, {
         new: true,
-        select: "following",
+        select: "count.following",
     })
     .lean();
 };
 
 User.statics.pinCount = function(userId: string): Promise<any> {
     return this.findByIdAndUpdate(userId, {
-        $inc: { pin: 1 },
+        $inc: { 
+            count: {
+                pin: 1
+            } 
+        },
     }, {
         new: true,
-        select: "pin",
+        select: "count.pin",
     })
     .lean();
 },
 
 User.statics.unpinCount = function(userId: string): Promise<any> {
     return this.findByIdAndUpdate(userId, {
-        $inc: { pin: -1 },
+        $inc: { 
+            count: {
+                pin: -1
+            }     
+        },
     }, {
         new: true,
-        select: "pin",
+        select: "count.pin",
     })
     .lean();
 };

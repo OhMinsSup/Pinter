@@ -244,6 +244,30 @@ const serializeGroups = (data: any) => {
     }
 }
 
+const serializeGroupPin = (data: any) => {
+    const {
+        pin: {
+            pinId,
+            body,
+            relationUrl,
+            createdAt,
+            urls,
+            likes,
+            comments,
+        }
+    } = data;
+
+    return {
+        pinId,
+        body,
+        relationUrl,
+        createdAt,
+        urls: urls.map(url => url),
+        likes,
+        comments
+    }
+}
+
 export {
     serializePin,
     serializePinList,
@@ -256,5 +280,6 @@ export {
     serializeUsers,
     serializeNoticeRoom,
     serializeNoticeMessage,
-    serializeGroups
+    serializeGroups,
+    serializeGroupPin
 };

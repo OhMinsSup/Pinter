@@ -6,6 +6,15 @@ export const getUsers = async (req: Request, res: Response): Promise<any> => {
     const { cursor } = req.query;
     try {
         const user: IUser[] = await User.usersList(cursor);
+
+        if (user.length === 0 || !user) {
+            return res.json({
+                next: '',
+                usersWithData: [],
+            })
+        }
+        
+
         const next  = user.length === 15 ? `/common/users?cursor=${user[14]._id}` : null;
         
         res.json({

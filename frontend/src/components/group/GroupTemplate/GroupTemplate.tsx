@@ -13,7 +13,11 @@ const GroupTemplate: React.SFC<Props> = ({ children, header }) => {
     return (
         <div className={cx('group-template')}>
             <div>{header}</div>
-            <main>{children}</main>
+            <main>
+                <div className={cx('group-wrapper')}>
+                    <div className={cx('wrapper')}>{children}</div>
+                </div>
+            </main>
         </div>
     )
 }

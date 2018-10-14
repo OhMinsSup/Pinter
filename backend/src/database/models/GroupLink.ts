@@ -9,7 +9,7 @@ export interface IGroupLink extends Document {
 }
 
 export interface IGroupLinkModel extends Model<IGroupLink> {
-
+    groupPinList(groupId: string, cursor?: string): Promise<any>;
 }
 
 const GroupLink = new Schema({
@@ -22,6 +22,19 @@ const GroupLink = new Schema({
         ref: 'Pin'
     }
 });
+
+GroupLink.statics.groupPinList = function(groupId: string, cursor?: string): Promise<any> {
+    const query = Object.assign(
+        {},
+        cursor ? { _id: { $lt: cursor }, group: groupId } : { group: groupId },
+    );
+    
+    return this.find(query)
+    .populate("pin")
+    .sort({ _id: -1 })
+    .limit(20)
+    .lean()
+}
 
 const GroupLinkModel = model<IGroupLink>('GroupLink', GroupLink) as IGroupLinkModel;
 

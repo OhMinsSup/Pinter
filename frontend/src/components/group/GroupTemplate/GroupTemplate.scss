@@ -2,6 +2,28 @@
 
 .group-template {
     main {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        align-items: stretch;
+        box-sizing: border-box;
+        border: 0 solid black;
+        min-height: 100%;
+        overflow: hidden;
+        .group-wrapper {
+            flex-grow: 1;
+            order: 4;
+            .wrapper {
+                margin: 0 auto 30px;
+                max-width: 935px;
+                flex-grow: 1;
+                box-sizing: content-box;
+                padding: 60px 20px 0;
+                width: calc(100% - 40px);
+            }
+        }
     }
 }

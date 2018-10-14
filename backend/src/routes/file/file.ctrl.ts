@@ -15,7 +15,8 @@ export const createSignedUrl = async (req: Request, res: Response): Promise<any>
     
     if (!file) {
         return res.status(400).json({
-            name: '파일이 존재하지 않습니다.',
+            name: 'file',
+            payload: '파일이 존재하지 않습니다.',
         });
     }
     
@@ -24,7 +25,7 @@ export const createSignedUrl = async (req: Request, res: Response): Promise<any>
     const stats = filesize(file.size);
     // 10MB 크기 제한
     if (parseInt(stats, 10) > 10000) {
-        return res.status(413).json({
+        res.status(413).json({
             name: '파일 사이즈 초과',
             payload: '10MB',
         });

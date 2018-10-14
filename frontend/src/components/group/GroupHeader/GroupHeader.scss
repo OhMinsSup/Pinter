@@ -1,5 +1,54 @@
 @import 'utils';
 
 .group-header {
+    display: flex;
+    align-items: stretch;
+    border: 0 solid #000;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    flex-direction: row;
+    margin-bottom: 44px;
+    
+    section {
+        flex-shrink: 1;
+        min-width: 0;
+        color: #262626;
+        flex-basis: 30px;
+        flex-grow: 2;
+        .group-title {
+            align-items: center;
+            margin-bottom: 20px;
+            margin: 0;
+            box-sizing: border-box;
+            padding: 0;
+            position: relative;
+            .title {
+                font-size: 32px;
+                line-height: 40px;
+                font-weight: 200;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
 
+            .btn + .btn {
+                margin-left: 0.75rem;
+            }
+        }
+    }
+
+    .active {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        width: 75px;
+        height: 40px;
+        box-sizing: border-box;
+        border: 1px solid $oc-gray-5;
+        border-radius: 5px;
+        font-weight: 550;
+        color: #262626;
+    }
 }

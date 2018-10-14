@@ -18,7 +18,7 @@ const App = () => {
         <Route exact path="/search/(pin|user)?" component={Search} />
         <Route exact path='/@:displayName' component={User} />
         <Route exact path="/@:displayName/(pin|locker|group)" component={User} />
-        <Route exact path="/@:displayName/group/:id" component={Group} />
+        <Route exact path="/group/:id" component={Group} />
         <Route component={NotFound} />
       </Switch>
       <Core />
