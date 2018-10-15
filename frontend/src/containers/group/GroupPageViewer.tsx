@@ -10,9 +10,9 @@ import { groupCreators } from 'src/store/modules/group';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ id: string }> };
-type GroupPageViewerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class GroupPageViewer extends React.Component<GroupPageViewerProps> {
+class GroupPageViewer extends React.Component<Props> {
   public initialize = async () => {
     const {
       match: {

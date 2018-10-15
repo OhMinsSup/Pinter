@@ -10,9 +10,9 @@ import { commonCreators } from '../../store/modules/common';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type CoreProps = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
-class Core extends React.Component<CoreProps> {
+class Core extends React.Component<Props> {
   public checkUser = async () => {
     const storageUser = Storage.get('__pinter_user__');
     const { UserActions, CommonActions } = this.props;
@@ -40,11 +40,7 @@ class Core extends React.Component<CoreProps> {
 
   public render() {
     const { visible } = this.props;
-    return (
-      <React.Fragment>
-        <FullscreenLoader visible={visible} />
-      </React.Fragment>
-    );
+    return <FullscreenLoader visible={visible} />;
   }
 }
 

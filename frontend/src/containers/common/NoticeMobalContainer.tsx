@@ -8,9 +8,9 @@ import { noticeCreators } from '../../store/modules/notice';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type NoticeModalContainerProps = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
-class NoticeModalContainer extends React.Component<NoticeModalContainerProps> {
+class NoticeModalContainer extends React.Component<Props> {
   public onToggleNotice = () => {
     const { NoticeActions } = this.props;
     NoticeActions.noticeCancel();
@@ -27,10 +27,11 @@ class NoticeModalContainer extends React.Component<NoticeModalContainerProps> {
   };
 
   public componentDidMount() {
+    if (!this.props.user || this.props.user === null) return;
     this.initialize();
   }
 
-  public componentDidUpdate(preProps: NoticeModalContainerProps) {
+  public componentDidUpdate(preProps: Props) {
     if (preProps.visible !== this.props.visible) {
       this.initialize();
     }
@@ -39,6 +40,7 @@ class NoticeModalContainer extends React.Component<NoticeModalContainerProps> {
   public render() {
     const { visible, messages } = this.props;
     const { onToggleNotice } = this;
+
     if (!visible) return null;
 
     return (
@@ -49,9 +51,10 @@ class NoticeModalContainer extends React.Component<NoticeModalContainerProps> {
   }
 }
 
-const mapStateToProps = ({ notice }: StoreState) => ({
+const mapStateToProps = ({ notice, user }: StoreState) => ({
   visible: notice.notice.visible,
   messages: notice.messages,
+  user: user.user && user.user,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

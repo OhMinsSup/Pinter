@@ -100,6 +100,13 @@ export const getCommentList = async (
 
   try {
     const comment: IComment[] = await Comment.getCommentList(pinId);
+
+    if (comment.length === 0 || !comment) {
+      return res.json({
+        commentWithData: [],
+      });
+    }
+
     const commentWithData = comment.map(serializeComment);
     return res.json({
       commentWithData,

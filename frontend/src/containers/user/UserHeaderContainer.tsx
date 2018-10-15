@@ -14,9 +14,9 @@ import { groupCreators } from 'src/store/modules/group';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ displayName: string }> };
-type UserHeadContainerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class UserHeadContainer extends React.Component<UserHeadContainerProps> {
+class UserHeadContainer extends React.Component<Props> {
   public onSetting = () => {
     const { BaseActions } = this.props;
     BaseActions.setProfile(true);
@@ -30,6 +30,7 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
   public onToggleFollow = async () => {
     const {
       FollowActions,
+      CommonActions,
       follow,
       match: {
         params: { displayName },
@@ -39,8 +40,10 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     try {
       if (follow) {
         await FollowActions.unfollow(displayName);
+        await CommonActions.sendMessage('unfollow를');
       } else {
         await FollowActions.follow(displayName);
+        await CommonActions.sendMessage('follow를');
       }
     } catch (e) {
       console.log(e);
@@ -50,18 +53,19 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
   public initialize = async () => {
     const { CommonActions, FollowActions } = this.props;
     const { displayName } = this.props.match.params;
+
     if (!displayName) return;
+    CommonActions.initializeProfile();
 
     try {
-      CommonActions.initializeProfile();
-      CommonActions.getProfile(displayName);
+      await CommonActions.getProfile(displayName);
       await FollowActions.checkExistsUserFollow(displayName);
     } catch (e) {
       console.log(e);
     }
   };
 
-  public componentDidUpdate(preProps: UserHeadContainerProps) {
+  public componentDidUpdate(preProps: Props) {
     if (
       preProps.visible !== this.props.visible ||
       preProps.match.params.displayName !== this.props.match.params.displayName
@@ -86,6 +90,7 @@ class UserHeadContainer extends React.Component<UserHeadContainerProps> {
     const { onSetting, onToggleFollow, onGruop } = this;
 
     if (loading) return <FullscreenLoader visible={loading} />;
+
     return (
       <React.Fragment>
         <UserHeader

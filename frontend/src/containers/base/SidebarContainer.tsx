@@ -10,9 +10,9 @@ import { noticeCreators } from '../../store/modules/notice';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type SidebarContainerProps = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
-class SidebarContainer extends React.Component<SidebarContainerProps> {
+class SidebarContainer extends React.Component<Props> {
   public onClose = () => {
     const { BaseActions } = this.props;
     BaseActions.setSidebar(false);
@@ -37,6 +37,7 @@ class SidebarContainer extends React.Component<SidebarContainerProps> {
 
   public render() {
     const { visible, displayName, size } = this.props;
+
     if (!visible) return null;
 
     return (

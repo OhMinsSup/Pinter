@@ -17,10 +17,9 @@ import { commonCreators } from '../../store/modules/common';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { id: string; history: History };
+type Props = StateProps & DispatchProps & OwnProps;
 
-type PinViewerProps = StateProps & DispatchProps & OwnProps;
-
-class PinViewer extends React.Component<PinViewerProps> {
+class PinViewer extends React.Component<Props> {
   public initialize = async () => {
     const {
       PinActions,
@@ -53,7 +52,8 @@ class PinViewer extends React.Component<PinViewerProps> {
 
     try {
       await WriteActions.getPinData(id);
-      this.props.history.push('/write');
+      const { history } = this.props;
+      history.push('/write');
     } catch (e) {
       console.log(e);
     }
@@ -80,13 +80,15 @@ class PinViewer extends React.Component<PinViewerProps> {
   };
 
   public onToggleFollow = async (displayName: string) => {
-    const { FollowActions, follow } = this.props;
+    const { FollowActions, follow, CommonActions } = this.props;
 
     try {
       if (follow) {
         await FollowActions.unfollow(displayName);
+        await CommonActions.sendMessage('unfollow를');
       } else {
         await FollowActions.follow(displayName);
+        await CommonActions.sendMessage('follow를');
       }
     } catch (e) {
       console.log(e);
@@ -129,6 +131,7 @@ class PinViewer extends React.Component<PinViewerProps> {
       onClickUpdate,
       onAskRemove,
     } = this;
+
     if (loading) return <FakePin />;
 
     return (

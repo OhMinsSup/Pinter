@@ -14,10 +14,9 @@ import FakePinCards from '../../components/common/FakePinCards/FakePinCards';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ displayName: string }> };
+type Props = StateProps & DispatchProps & OwnProps;
 
-type LockerPinListProps = StateProps & DispatchProps & OwnProps;
-
-class LockerPinList extends React.Component<LockerPinListProps> {
+class LockerPinList extends React.Component<Props> {
   public prev: string | null = null;
 
   public onScroll = throttle(() => {
@@ -83,7 +82,7 @@ class LockerPinList extends React.Component<LockerPinListProps> {
     this.listenScroll();
   }
 
-  public componentDidUpdate(preProps: LockerPinListProps) {
+  public componentDidUpdate(preProps: Props) {
     if (
       preProps.match.params.displayName !== this.props.match.params.displayName
     ) {

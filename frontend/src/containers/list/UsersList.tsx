@@ -9,10 +9,9 @@ import UsersBox from '../../components/users/UsersBox';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type Props = StateProps & DispatchProps;
 
-type UsersListProps = StateProps & DispatchProps;
-
-class UsersList extends React.Component<UsersListProps> {
+class UsersList extends React.Component<Props> {
   public prev: string | null = null;
 
   public onScroll = throttle(() => {

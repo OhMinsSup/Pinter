@@ -7,9 +7,9 @@ import Gallery from '../../components/common/Gallery';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type GalleryContainerProps = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
-class GalleryContainer extends React.Component<GalleryContainerProps> {
+class GalleryContainer extends React.Component<Props> {
   public onClose = () => {
     const { BaseActions } = this.props;
     BaseActions.setPinImage(false);
@@ -18,7 +18,9 @@ class GalleryContainer extends React.Component<GalleryContainerProps> {
   public render() {
     const { onClose } = this;
     const { image, urls } = this.props;
+
     if (!image) return null;
+
     return <Gallery urls={urls} onClose={onClose} />;
   }
 }

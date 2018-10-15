@@ -43,17 +43,13 @@ export const createGroup = async (
   }
 
   try {
-    const group = await new Group({
+    await new Group({
       title,
       user: userId,
       activation,
     }).save();
 
-    return res.json({
-      groupId: group._id,
-      title: group.title,
-      activation: group.activation,
-    });
+    return res.status(204);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -76,8 +72,8 @@ export const deleteGroup = async (
     }
 
     await Promise.all([GroupLink.deleteMany({ group: groupId }).lean()]);
-
     await Group.deleteOne({ _id: groupId }).lean();
+
     return res.status(204);
   } catch (e) {
     res.status(500).json(e);
@@ -262,8 +258,6 @@ export const groupPinList = async (
 
     if (pins.length === 0 || !pins) {
       return res.json({
-        title: group.title,
-        activation: group.activation,
         next: '',
         pinsWithData: [],
       });

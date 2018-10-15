@@ -11,16 +11,10 @@ import { commonCreators } from '../../store/modules/common';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ id: string }> };
-type PinCommentContainerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
+type State = { visible: boolean };
 
-type OwnState = {
-  visible: boolean;
-};
-
-class PinCommentContainer extends React.Component<
-  PinCommentContainerProps,
-  OwnState
-> {
+class PinCommentContainer extends React.Component<Props, State> {
   public state = {
     visible: false,
   };
@@ -33,10 +27,15 @@ class PinCommentContainer extends React.Component<
   };
 
   public onSubmit = async () => {
-    const { PinActions, CommonActions, match, value, tags } = this.props;
     const {
-      params: { id },
-    } = match;
+      PinActions,
+      CommonActions,
+      match: {
+        params: { id },
+      },
+      value,
+      tags,
+    } = this.props;
 
     try {
       await PinActions.writeComment(id, value, tags);
@@ -46,7 +45,7 @@ class PinCommentContainer extends React.Component<
     }
   };
 
-  public onChangeComment = (e: any) => {
+  public onChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     const { PinActions } = this.props;
     PinActions.changeInputComment({ value, name });
@@ -81,10 +80,12 @@ class PinCommentContainer extends React.Component<
   };
 
   public initialize = async () => {
-    const { PinActions, match } = this.props;
     const {
-      params: { id },
-    } = match;
+      PinActions,
+      match: {
+        params: { id },
+      },
+    } = this.props;
 
     try {
       await PinActions.listComment(id);
@@ -93,7 +94,7 @@ class PinCommentContainer extends React.Component<
     }
   };
 
-  public componentDidUpdate(prevProps: PinCommentContainerProps) {
+  public componentDidUpdate(prevProps: Props) {
     if (prevProps.value !== this.props.value) {
       this.initialize();
     }

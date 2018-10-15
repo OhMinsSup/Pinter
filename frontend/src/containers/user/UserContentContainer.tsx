@@ -13,9 +13,9 @@ import GroupList from '../list/GroupList';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ displayName: string }> };
-type UserContentContainerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class UserContentContainer extends React.Component<UserContentContainerProps> {
+class UserContentContainer extends React.Component<Props> {
   public onSelectTabFollow = (value: string) => {
     const { ListActions } = this.props;
     ListActions.selectTabFollow(value);
@@ -52,7 +52,7 @@ class UserContentContainer extends React.Component<UserContentContainerProps> {
     this.initialize();
   }
 
-  public componentDidUpdate(preProps: UserContentContainerProps) {
+  public componentDidUpdate(preProps: Props) {
     if (
       preProps.match.url != this.props.match.url ||
       preProps.tab != this.props.tab ||

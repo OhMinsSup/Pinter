@@ -12,9 +12,9 @@ import { match } from 'react-router-dom';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ displayName: string }> };
-type GroupListProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class GroupList extends React.Component<GroupListProps> {
+class GroupList extends React.Component<Props> {
   public prev: string | null = null;
 
   public onScroll = throttle(() => {
@@ -77,14 +77,16 @@ class GroupList extends React.Component<GroupListProps> {
 
   public componentDidMount() {
     this.initialize();
+    this.listenScroll();
   }
 
-  public componentDidUpdate(preProps: GroupListProps) {
+  public componentDidUpdate(preProps: Props) {
     if (
       preProps.active !== this.props.active ||
       preProps.match.params.displayName !== this.props.match.params.displayName
     ) {
       this.initialize();
+      this.listenScroll();
     }
   }
 

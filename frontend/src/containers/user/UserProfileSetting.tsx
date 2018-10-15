@@ -32,15 +32,11 @@ class UserProfileSetting extends React.Component<UserProfileSettingProps> {
   public uploadImage = async (file: any) => {
     const { WriteActions } = this.props;
 
-    WriteActions.setUploadStatus(true);
-
     try {
       await WriteActions.createUploadUrl(file);
     } catch (e) {
       console.log(e);
     }
-
-    WriteActions.setUploadStatus(false);
   };
 
   public onUploadClick = () => {

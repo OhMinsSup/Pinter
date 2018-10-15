@@ -11,11 +11,9 @@ import { writeCreators } from '../../store/modules/write';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type GroupPinSettingContainerProps = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
-class GroupPinSettingContainer extends React.Component<
-  GroupPinSettingContainerProps
-> {
+class GroupPinSettingContainer extends React.Component<Props> {
   public prev: string | null = null;
 
   public onScroll = throttle(() => {
@@ -46,8 +44,9 @@ class GroupPinSettingContainer extends React.Component<
   public onSave = async (groupId: string) => {
     const { pinId, GroupActions } = this.props;
 
+    GroupActions.setGroupPin(false);
+
     try {
-      GroupActions.setGroupPin(false);
       await GroupActions.groupAddPin(pinId, groupId);
     } catch (e) {
       console.log(e);
@@ -89,7 +88,7 @@ class GroupPinSettingContainer extends React.Component<
     this.initialize();
   }
 
-  public componentDidUpdate(preProps: GroupPinSettingContainerProps) {
+  public componentDidUpdate(preProps: Props) {
     if (preProps.active !== this.props.active) {
       this.initialize();
     }

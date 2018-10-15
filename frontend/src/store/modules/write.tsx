@@ -8,7 +8,6 @@ const INITIAL_STATE = 'write/INITIAL_STATE';
 const CHANGE_INPUT = 'write/CHANGE_INPUT';
 const INSERT_TAG = 'write/INSERT_TAG';
 const REMOVE_TAG = 'write/REMOVE_TAG';
-const SET_UPLOAD_STATUS = 'write/SET_UPLOAD_STATUS';
 const REMOVE_UPLOAD_URL = 'write/REMOVE_UPLOAD_URL';
 const SET_PIN_ID = 'write/SET_PIN_ID';
 
@@ -36,10 +35,6 @@ export const writeCreators = {
   ),
   insertTag: createAction(INSERT_TAG, (tag: string) => tag),
   removeTag: createAction(REMOVE_TAG, (tag: string) => tag),
-  setUploadStatus: createAction(
-    SET_UPLOAD_STATUS,
-    (uploading: boolean) => uploading
-  ),
   createUploadUrl: createPromiseThunk(
     CREATE_UPLOAD_URL,
     WriteAPI.createSignedUrl
@@ -55,7 +50,6 @@ export const writeCreators = {
 type ChangeInputAction = ReturnType<typeof writeCreators.changeInput>;
 type InsertTagAction = ReturnType<typeof writeCreators.insertTag>;
 type RemoveTagAction = ReturnType<typeof writeCreators.removeTag>;
-type SetUploadStatusAction = ReturnType<typeof writeCreators.setUploadStatus>;
 type CreateSignedUrlAction = GenericResponseAction<
   { url: string; path: string },
   string
@@ -93,7 +87,6 @@ export interface WriteState {
   upload: {
     url: string;
     path: string;
-    uploading: boolean;
   };
   pinId: string;
 }
@@ -108,7 +101,6 @@ const initialState: WriteState = {
   upload: {
     url: '',
     path: '',
-    uploading: false,
   },
   pinId: '',
 };
@@ -126,7 +118,6 @@ export default handleActions<WriteState, any>(
         draft.upload = {
           url: '',
           path: '',
-          uploading: false,
         };
         draft.pinId = '';
       });
@@ -156,18 +147,11 @@ export default handleActions<WriteState, any>(
         draft.form.tags = draft.form.tags.filter(t => t !== action.payload);
       });
     },
-    [SET_UPLOAD_STATUS]: (state, action: SetUploadStatusAction) => {
-      return produce(state, draft => {
-        if (action.payload === undefined) return;
-        draft.upload.uploading = action.payload;
-      });
-    },
     [CREATE_UPLOAD_URL_ERROR]: state => {
       return produce(state, draft => {
         (draft.upload = {
           url: '',
           path: '',
-          uploading: false,
         }),
           (draft.form.urls = []);
       });
@@ -181,7 +165,6 @@ export default handleActions<WriteState, any>(
         draft.upload = {
           url: data.url,
           path: data.path,
-          uploading: false,
         };
         draft.form.urls.push(data.url);
       });

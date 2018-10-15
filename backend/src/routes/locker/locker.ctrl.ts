@@ -100,6 +100,14 @@ export const lockerList = async (req: Request, res: Response): Promise<any> => {
     }
 
     const locker: ILocker[] = await Locker.lockerList(user._id, cursor);
+
+    if (locker.length === 0 || !locker) {
+      return res.json({
+        next: '',
+        pinWithData: [],
+      });
+    }
+
     const next =
       locker.length === 10
         ? `/pin/locker/private/list?cusor=${locker[9]._id}`

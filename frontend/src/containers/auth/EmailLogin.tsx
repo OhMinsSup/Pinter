@@ -16,9 +16,9 @@ type OwnProps = {
   history: History;
 };
 
-type EmailLoginContainerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class EmailLoginContainer extends React.Component<EmailLoginContainerProps> {
+class EmailLoginContainer extends React.Component<Props> {
   public initialize = async () => {
     const { search } = this.props.location;
     const { code } = queryString.parse(search);

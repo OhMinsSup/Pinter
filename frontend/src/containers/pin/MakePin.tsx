@@ -14,10 +14,9 @@ import { groupCreators } from 'src/store/modules/group';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { history: History; location: Location };
+type Props = StateProps & DispatchProps & OwnProps;
 
-type MakePinProps = StateProps & DispatchProps & OwnProps;
-
-class MakePin extends React.Component<MakePinProps> {
+class MakePin extends React.Component<Props> {
   public onSubmit = async () => {
     const {
       WriteActions,
@@ -65,14 +64,11 @@ class MakePin extends React.Component<MakePinProps> {
   public OnUploadUrl = async (file: any) => {
     const { WriteActions } = this.props;
 
-    WriteActions.setUploadStatus(true);
-
     try {
       await WriteActions.createUploadUrl(file);
     } catch (e) {
       console.log(e);
     }
-    WriteActions.setUploadStatus(false);
   };
 
   public onRemoveUrl = (url: string) => {

@@ -16,9 +16,9 @@ type OwnProps = {
   history: History;
 };
 
-type AuthFormContainerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class AuthFormContainer extends React.Component<AuthFormContainerProps> {
+class AuthFormContainer extends React.Component<Props> {
   public onEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       this.onSendVerification();
@@ -80,7 +80,6 @@ class AuthFormContainer extends React.Component<AuthFormContainerProps> {
         AuthActions.autoRegisterForm({ email, username });
         history.push('/email-register');
       }
-      console.log('test');
     } catch (e) {
       history.push('/');
     }

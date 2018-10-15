@@ -10,13 +10,10 @@ import FakePinCards from '../../components/common/FakePinCards/FakePinCards';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = {
-  tag: string;
-};
+type OwnProps = { tag: string };
+type Props = StateProps & DispatchProps & OwnProps;
 
-type TagPinsCardProps = StateProps & DispatchProps & OwnProps;
-
-class TagPinList extends React.Component<TagPinsCardProps> {
+class TagPinList extends React.Component<Props> {
   public onOpen = async (id: string) => {
     const { BaseActions, PinActions } = this.props;
     BaseActions.setPinImage(true);

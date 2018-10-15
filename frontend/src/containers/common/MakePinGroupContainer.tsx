@@ -7,11 +7,9 @@ import { groupCreators } from '../../store/modules/group';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type MakePinGroupContainerProps = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
-class MakePinGroupContainer extends React.Component<
-  MakePinGroupContainerProps
-> {
+class MakePinGroupContainer extends React.Component<Props> {
   public onClick = () => {
     const { GroupActions } = this.props;
     GroupActions.setMakeGroup(false);
@@ -35,6 +33,8 @@ class MakePinGroupContainer extends React.Component<
   public render() {
     const { visible } = this.props;
     const { onClick, onSubmit } = this;
+
+    if (!visible) return null;
 
     return (
       <MakeGroupModal onSubmit={onSubmit} onClick={onClick} onOpen={visible} />

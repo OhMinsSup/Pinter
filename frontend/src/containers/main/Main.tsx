@@ -11,10 +11,9 @@ import { Recent, Tags, Users } from '../../page';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { location: Location };
+type Props = OwnProps & StateProps & DispatchProps;
 
-type MainProps = OwnProps & StateProps & DispatchProps;
-
-class Main extends React.Component<MainProps> {
+class Main extends React.Component<Props> {
   public render() {
     const { location, sidebar, user, size } = this.props;
 

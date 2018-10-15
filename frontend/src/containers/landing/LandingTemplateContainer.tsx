@@ -8,11 +8,9 @@ type OwnProps = {
   form: React.ReactNode;
 };
 
-type LandingTemplateContainerProps = StateProps & OwnProps;
+type Props = StateProps & OwnProps;
 
-class LandingTemplateContainer extends React.Component<
-  LandingTemplateContainerProps
-> {
+class LandingTemplateContainer extends React.Component<Props> {
   public render() {
     if (this.props.user) return null;
 

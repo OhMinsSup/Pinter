@@ -8,10 +8,9 @@ import TagCurrent from '../../components/tag/TagCurrent';
 type OwnProps = { tag: string };
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & StateProps & DispatchProps;
 
-type TagCurrentContainerProps = OwnProps & StateProps & DispatchProps;
-
-class TagCurrentContainer extends React.Component<TagCurrentContainerProps> {
+class TagCurrentContainer extends React.Component<Props> {
   public initialize = () => {
     const { tag, TagActions } = this.props;
     return TagActions.getTagInfo(tag);
@@ -21,7 +20,7 @@ class TagCurrentContainer extends React.Component<TagCurrentContainerProps> {
     this.initialize();
   }
 
-  public componentDidUpdate(prevProps: TagCurrentContainerProps) {
+  public componentDidUpdate(prevProps: Props) {
     if (prevProps.tag !== this.props.tag) {
       this.initialize();
     }

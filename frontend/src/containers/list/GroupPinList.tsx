@@ -13,9 +13,9 @@ import FakePinCards from 'src/components/common/FakePinCards/FakePinCards';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { id: string };
-type GroupPinListProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class GroupPinList extends React.Component<GroupPinListProps> {
+class GroupPinList extends React.Component<Props> {
   public prev: string | null = null;
 
   public onScroll = throttle(() => {
@@ -76,7 +76,7 @@ class GroupPinList extends React.Component<GroupPinListProps> {
     this.listenScroll();
   }
 
-  public componentDidUpdate(preProps: GroupPinListProps) {
+  public componentDidUpdate(preProps: Props) {
     if (preProps.id !== this.props.id) {
       this.initialize();
       this.listenScroll();

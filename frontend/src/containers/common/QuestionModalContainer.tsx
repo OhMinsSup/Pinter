@@ -12,11 +12,9 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { history: History };
 
-type QuestionModalContainerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class QuestionModalContainer extends React.Component<
-  QuestionModalContainerProps
-> {
+class QuestionModalContainer extends React.Component<Props> {
   public onCancel = () => {
     const { BaseActions } = this.props;
     BaseActions.setModal(false);
@@ -38,6 +36,9 @@ class QuestionModalContainer extends React.Component<
   public render() {
     const { modalVisible } = this.props;
     const { onConfirm, onCancel } = this;
+
+    if (!modalVisible) return null;
+
     return (
       <QuestionModal
         open={modalVisible}

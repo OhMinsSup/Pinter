@@ -8,10 +8,9 @@ import TagItemList from '../../components/tag/TagItemList';
 type OwnProps = { sort: string };
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & StateProps & DispatchProps;
 
-type TagItemListContainerProps = OwnProps & StateProps & DispatchProps;
-
-class TagItemListContainer extends React.Component<TagItemListContainerProps> {
+class TagItemListContainer extends React.Component<Props> {
   public onSelectTag = (info: TagDataSubState) => {
     const { TagActions } = this.props;
     TagActions.setTagInfo(info);
@@ -22,7 +21,7 @@ class TagItemListContainer extends React.Component<TagItemListContainerProps> {
     TagActions.getTags(sort);
   };
 
-  public componentDidUpdate(prevProps: TagItemListContainerProps) {
+  public componentDidUpdate(prevProps: Props) {
     if (prevProps.sort !== this.props.sort) {
       this.initialize();
     }

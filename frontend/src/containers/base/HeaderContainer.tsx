@@ -13,15 +13,15 @@ import { noticeCreators } from '../../store/modules/notice';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { location: Location };
-type HeaderContainerProps = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
-class HeaderContainer extends React.Component<HeaderContainerProps> {
+class HeaderContainer extends React.Component<Props> {
   public onResize = throttle(() => {
     const { BaseActions } = this.props;
     BaseActions.getbowserSize(document.body.scrollWidth);
   }, 250);
 
-  public constructor(props: HeaderContainerProps) {
+  public constructor(props: Props) {
     super(props);
     this.props.BaseActions.getbowserSize(document.body.scrollWidth);
   }

@@ -12,24 +12,16 @@ import storage from '../../lib/storage';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = {
-  location: Location;
-  history: History;
-};
-type RegisterFormContainerProps = StateProps & DispatchProps & OwnProps;
+type OwnProps = { location: Location; history: History };
+type Props = StateProps & DispatchProps & OwnProps;
 
-class RegisterFormContainer extends React.Component<
-  RegisterFormContainerProps
-> {
+class RegisterFormContainer extends React.Component<Props> {
   public initialize = async () => {
     const { search } = this.props.location;
     const { AuthActions } = this.props;
     const { code } = queryString.parse(search);
 
-    if (!code) {
-      console.log('code가 없습니다.');
-      return;
-    }
+    if (!code) return;
 
     try {
       await AuthActions.getCode(code);
