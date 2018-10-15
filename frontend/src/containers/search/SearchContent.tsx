@@ -13,25 +13,20 @@ type SearchContentProps = StateProps & DispatchProps;
 class SearchContent extends React.Component<SearchContentProps> {
   public onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { CommonActions } = this.props;
-    const { value } = e.target
+    const { value } = e.target;
     CommonActions.changeSearchValue(value);
-  } 
+  };
 
-  public render () {
+  public render() {
     const { value } = this.props;
     const { onChange } = this;
-    
-    return (
-      <SearchInput
-        value={value}
-        onChange={onChange}
-      />
-    );
+
+    return <SearchInput value={value} onChange={onChange} />;
   }
 }
 
 const mapStateToProps = ({ common }: StoreState) => ({
-  value: common.value
+  value: common.value,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -42,7 +37,6 @@ export default connect<StateProps, DispatchProps>(
   mapStateToProps,
   mapDispatchToProps
 )(SearchContent);
-
 
 /*
   public onSearchPin = throttle(async(value: string) => {

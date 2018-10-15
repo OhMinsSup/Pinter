@@ -4,13 +4,11 @@ import HeaderContainer from 'src/containers/base/HeaderContainer';
 import GroupPageViewer from 'src/containers/group/GroupPageViewer';
 
 const Group = () => {
-    return (
-        <GroupTemplate
-            header={<HeaderContainer />}
-        >
-            <GroupPageViewer />
-        </GroupTemplate>
-    )
-}
+  return (
+    <GroupTemplate header={<HeaderContainer />}>
+      <GroupPageViewer />
+    </GroupTemplate>
+  );
+};
 
 export default Group;

@@ -5,15 +5,15 @@ const styles = require('./ListTemplate.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 const ListTemplate: React.SFC<Props> = ({ children }) => {
-    return (
-        <div className={cx('list-template')}>
-            <main>{children}</main>
-        </div>
-    )
-}
+  return (
+    <div className={cx('list-template')}>
+      <main>{children}</main>
+    </div>
+  );
+};
 
 export default ListTemplate;

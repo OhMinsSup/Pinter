@@ -5,23 +5,18 @@ import MakePin from '../containers/pin/MakePin';
 import { History } from 'history';
 
 type Props = {
-    history: History,
-    location: Location,
-}
+  history: History;
+  location: Location;
+};
 
 const Write: React.SFC<Props> = ({ history, location }) => {
-    return (
-        <React.Fragment>
-            <WriteTemplate
-                header={<HeaderContainer/>}
-            >
-                <MakePin 
-                    history={history}
-                    location={location}
-                />
-            </WriteTemplate>
-        </React.Fragment>
-    );
-}
+  return (
+    <React.Fragment>
+      <WriteTemplate header={<HeaderContainer />}>
+        <MakePin history={history} location={location} />
+      </WriteTemplate>
+    </React.Fragment>
+  );
+};
 
 export default Write;

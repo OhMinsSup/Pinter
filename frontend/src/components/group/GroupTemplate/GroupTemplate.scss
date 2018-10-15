@@ -18,11 +18,9 @@
             order: 4;
             .wrapper {
                 margin: 0 auto 30px;
-                max-width: 935px;
                 flex-grow: 1;
                 box-sizing: content-box;
                 padding: 60px 20px 0;
-                width: calc(100% - 40px);
             }
         }
     }

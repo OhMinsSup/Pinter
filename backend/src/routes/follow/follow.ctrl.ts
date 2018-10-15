@@ -9,7 +9,7 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
   const { followName } = req.params;
 
   if (followName === username) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'follow',
       payload: '자기 자신을 팔로우 할 수 없습니다.',
     });
@@ -19,7 +19,7 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
     const user: IUser = await User.findByDisplayName(followName);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '유저',
         payload: '존재하지 않는 유저입니다',
       });
@@ -29,7 +29,7 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
     const exists: IFollow = await Follow.checkExists(userId, followId);
 
     if (exists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: 'follow',
         payload: '이미 팔로우 중입니다..',
       });
@@ -38,7 +38,7 @@ export const follow = async (req: Request, res: Response): Promise<any> => {
     await Follow.create({ following: followId, follower: userId });
     await User.followerCount(userId);
     await User.followingCount(followId);
-    res.json({
+    return res.json({
       follow: true,
     });
   } catch (e) {
@@ -52,7 +52,7 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
   const { followName } = req.params;
 
   if (followName === username) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'follow',
       payload: '자기 자신을 언팔로우 할 수 없습니다.',
     });
@@ -62,7 +62,7 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
     const user: IUser = await User.findByDisplayName(followName);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '유저',
         payload: '존재하지 않는 유저입니다',
       });
@@ -72,7 +72,7 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
     const exists: IFollow = await Follow.checkExists(userId, followId);
 
     if (!exists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: 'follow',
         payload: '팔로우 상태가 아닙니다.',
       });
@@ -82,7 +82,7 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
     await User.unfollowerCount(userId);
     await User.unfollowingCount(followId);
 
-    res.json({
+    return res.json({
       follow: false,
     });
   } catch (e) {
@@ -110,7 +110,7 @@ export const getFollow = async (req: Request, res: Response): Promise<any> => {
       follow = !!exists;
     }
 
-    res.json({
+    return res.json({
       follow,
     });
   } catch (e) {
@@ -129,7 +129,7 @@ export const getFollowing = async (
     const user: IUser = await User.findByDisplayName(displayName);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '유저',
         payload: '존재하지 않는 유저입니다',
       });
@@ -144,7 +144,7 @@ export const getFollowing = async (
     }
 
     const usersWithData = following.map(serializeFollowing);
-    res.json({
+    return res.json({
       usersWithData,
     });
   } catch (e) {
@@ -163,7 +163,7 @@ export const getFollower = async (
     const user: IUser = await User.findByDisplayName(displayName);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '유저',
         payload: '존재하지 않는 유저입니다',
       });
@@ -178,7 +178,7 @@ export const getFollower = async (
     }
 
     const usersWithData = follwer.map(serializeFollower);
-    res.json({
+    return res.json({
       usersWithData,
     });
   } catch (e) {

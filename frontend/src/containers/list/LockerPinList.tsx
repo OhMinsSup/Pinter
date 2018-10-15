@@ -18,107 +18,108 @@ type OwnProps = { match: match<{ displayName: string }> };
 type LockerPinListProps = StateProps & DispatchProps & OwnProps;
 
 class LockerPinList extends React.Component<LockerPinListProps> {
-    public prev: string | null = null;
+  public prev: string | null = null;
 
-    public onScroll = throttle(() => {
-        const scrollButton = getScrollBottom();
-        if (scrollButton > 1000) return;
-        this.prefetch();
-    }, 250);
+  public onScroll = throttle(() => {
+    const scrollButton = getScrollBottom();
+    if (scrollButton > 1000) return;
+    this.prefetch();
+  }, 250);
 
-    public prefetch = async () => {
-        const { ListActions, pins, next } = this.props;
-        if (!pins || pins.length === 0) return;
+  public prefetch = async () => {
+    const { ListActions, pins, next } = this.props;
+    if (!pins || pins.length === 0) return;
 
-        if (this.props.prefetched) {
-            ListActions.revealLockerPrefetched();
-            await Promise.resolve();
-        }
-
-        if (next === this.prev) return;
-        this.prev = next;
-
-        try {
-            await ListActions.prefetchLockerList(next);
-        } catch (e) {
-            console.log(e);
-        }
+    if (this.props.prefetched) {
+      ListActions.revealLockerPrefetched();
+      await Promise.resolve();
     }
 
-    public onOpen = async (id: string) => {
-        const { BaseActions, PinActions } = this.props;
-        BaseActions.setPinImage(true);
+    if (next === this.prev) return;
+    this.prev = next;
 
-        try {
-            await PinActions.getPin(id);
-        } catch (e) {
-            console.log(e);
-        }
+    try {
+      await ListActions.prefetchLockerList(next);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public initialize = async () => {
-        const { ListActions, match: { params: { displayName } } } = this.props;
-        try {
-            await ListActions.getLockerList(displayName);
-        } catch (e) {
-            console.log(e);
-        }
+  public onOpen = async (id: string) => {
+    const { BaseActions, PinActions } = this.props;
+    BaseActions.setPinImage(true);
+
+    try {
+      await PinActions.getPin(id);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public listenScroll = () => {
-        window.addEventListener('scroll', this.onScroll);
-    };
-    
-    public unlistenScroll = () => {
-        window.removeEventListener('scroll', this.onScroll);
-    };
-
-    public componentDidMount() {
-        this.initialize();
-        this.listenScroll();
+  public initialize = async () => {
+    const {
+      ListActions,
+      match: {
+        params: { displayName },
+      },
+    } = this.props;
+    try {
+      await ListActions.getLockerList(displayName);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public componentDidUpdate(preProps: LockerPinListProps) {
-        if (preProps.match.params.displayName !== this.props.match.params.displayName) {
-            this.initialize();
-            this.listenScroll();
-        }
+  public listenScroll = () => {
+    window.addEventListener('scroll', this.onScroll);
+  };
+
+  public unlistenScroll = () => {
+    window.removeEventListener('scroll', this.onScroll);
+  };
+
+  public componentDidMount() {
+    this.initialize();
+    this.listenScroll();
+  }
+
+  public componentDidUpdate(preProps: LockerPinListProps) {
+    if (
+      preProps.match.params.displayName !== this.props.match.params.displayName
+    ) {
+      this.initialize();
+      this.listenScroll();
     }
+  }
 
-    public componentWillUnmount() {
-        this.unlistenScroll();
-    }
+  public componentWillUnmount() {
+    this.unlistenScroll();
+  }
 
-    public render() {
-        const { pins, loading } = this.props;
-        const { onOpen } = this;
+  public render() {
+    const { pins, loading } = this.props;
+    const { onOpen } = this;
 
-        if (loading) return <FakePinCards pins={pins} />;
+    if (loading) return <FakePinCards pins={pins} />;
 
-        return (
-            <CommonCardList
-                pins={pins} 
-                onOpen={onOpen}
-                theme="user"
-            />
-        )
-    }
+    return <CommonCardList pins={pins} onOpen={onOpen} theme="user" />;
+  }
 }
 
 const mapStateToProps = ({ list }: StoreState) => ({
-    pins: list.lockers.locker.pins,
-    prefetched: list.lockers.locker.prefetched,
-    next: list.lockers.locker.next,
-    loading: list.lockers.locker.loading
-})
+  pins: list.lockers.locker.pins,
+  prefetched: list.lockers.locker.prefetched,
+  next: list.lockers.locker.next,
+  loading: list.lockers.locker.loading,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    BaseActions: bindActionCreators(baseCreators, dispatch),
-    ListActions: bindActionCreators(lockersCreators, dispatch),
-    PinActions: bindActionCreators(pinCreators, dispatch),
-})
+  BaseActions: bindActionCreators(baseCreators, dispatch),
+  ListActions: bindActionCreators(lockersCreators, dispatch),
+  PinActions: bindActionCreators(pinCreators, dispatch),
+});
 
 export default connect<StateProps, DispatchProps, OwnProps>(
-    mapStateToProps,
-    mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(LockerPinList);

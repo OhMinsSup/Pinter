@@ -5,15 +5,11 @@ const styles = require('./UserSettingTemplate.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 const UserSettingTemplate: React.SFC<Props> = ({ children }) => {
-    return (
-        <div className={cx('user-setting-template')}>
-            {children}
-        </div>
-    );
-}
+  return <div className={cx('user-setting-template')}>{children}</div>;
+};
 
 export default UserSettingTemplate;

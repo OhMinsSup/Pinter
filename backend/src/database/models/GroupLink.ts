@@ -33,7 +33,15 @@ GroupLink.statics.groupPinList = function(
   );
 
   return this.find(query)
-    .populate('pin')
+    .populate({
+      path: 'pin',
+      populate: [
+        {
+          path: 'user',
+          model: 'User',
+        },
+      ],
+    })
     .sort({ _id: -1 })
     .limit(20)
     .lean();

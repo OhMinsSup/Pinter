@@ -5,13 +5,13 @@ const styles = require('./ModalWrapper.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-  children: React.ReactNode,
-  className?: string,
-  open: boolean,
+  children: React.ReactNode;
+  className?: string;
+  open: boolean;
 };
 
 type State = {
-  animate: boolean,
+  animate: boolean;
 };
 
 class ModalWrapper extends React.Component<Props, State> {
@@ -30,7 +30,7 @@ class ModalWrapper extends React.Component<Props, State> {
     }, 150);
   }
 
-   public componentDidUpdate(prevProps: Props) {
+  public componentDidUpdate(prevProps: Props) {
     if (prevProps.open !== this.props.open) {
       this.animate();
     }

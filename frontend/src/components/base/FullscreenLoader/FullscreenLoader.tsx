@@ -6,10 +6,10 @@ const styles = require('./FullscreenLoader.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-  visible: boolean | undefined
+  visible: boolean | undefined;
 };
 
-const FullscreenLoader: React.SFC<Props> = ({ visible }) => {  
+const FullscreenLoader: React.SFC<Props> = ({ visible }) => {
   if (!visible) return null;
   return (
     <div className={cx('full-screen-loader')}>

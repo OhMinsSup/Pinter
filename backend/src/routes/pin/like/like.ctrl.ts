@@ -10,7 +10,7 @@ export const like = async (req: Request, res: Response): Promise<any> => {
     const exists: ILike = await Like.checkExists(userId, pinId);
 
     if (exists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: 'like',
         payload: '이미 like 중입니다',
       });
@@ -25,13 +25,13 @@ export const like = async (req: Request, res: Response): Promise<any> => {
     const pin = await Pin.findById(pinId).lean();
 
     if (!pin) {
-      res.status(500).json({
+      return res.status(500).json({
         name: '핀',
         payload: '핀이 존재하지 않았습니다.',
       });
     }
 
-    res.json({
+    return res.json({
       liked: true,
       likes: pin.likes,
     });
@@ -47,7 +47,7 @@ export const unlike = async (req: Request, res: Response): Promise<any> => {
   const exists: ILike = await Like.checkExists(userId, pinId);
 
   if (!exists) {
-    res.status(409).json({
+    return res.status(409).json({
       name: 'like',
       payload: 'like를 하지 않았습니다',
     });
@@ -65,13 +65,13 @@ export const unlike = async (req: Request, res: Response): Promise<any> => {
   const pin = await Pin.findById(pinId).lean();
 
   if (!pin) {
-    res.status(500).json({
+    return res.status(500).json({
       name: '핀',
       payload: '핀이 존재하지 않았습니다.',
     });
   }
 
-  res.json({
+  return res.json({
     liked: false,
     likes: pin.likes,
   });
@@ -92,13 +92,13 @@ export const getLike = async (req: Request, res: Response): Promise<any> => {
     const pin = await Pin.findById(pinId).lean();
 
     if (!pin) {
-      res.status(500).json({
+      return res.status(500).json({
         name: '핀',
         payload: '핀이 존재하지 않았습니다.',
       });
     }
 
-    res.json({
+    return res.json({
       liked,
       likes: pin.likes,
     });

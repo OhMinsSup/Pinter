@@ -35,7 +35,7 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
   const result = joi.validate(req.body, schema);
 
   if (result.error) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'WRONG_SCHEMA',
       payload: result.error,
     });
@@ -58,8 +58,8 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
     }).save();
 
     if (!pin) {
-      res.status(500).json({
-        name: '핀',
+      return res.status(500).json({
+        name: 'Pin',
         payload: '핀이 만들어지지 않았습니다',
       });
     }
@@ -67,7 +67,7 @@ export const writePin = async (req: Request, res: Response): Promise<any> => {
     await TagLink.Link(pin._id, tagIds);
     await User.pinCount(userId);
 
-    res.json({
+    return res.json({
       pinId: pin._id,
     });
   } catch (e) {
@@ -93,7 +93,7 @@ export const updatePin = async (req: Request, res: Response): Promise<any> => {
   const result = joi.validate(req.body, schema);
 
   if (result.error) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'WRONG_SCHEMA',
       payload: result.error,
     });
@@ -130,13 +130,13 @@ export const updatePin = async (req: Request, res: Response): Promise<any> => {
       ).lean();
 
       if (!pin) {
-        res.status(500).json({
+        return res.status(500).json({
           name: '핀',
           payload: '핀이 업데이트되지 않았습니다',
         });
       }
 
-      res.json({
+      return res.json({
         pinId: pin._id,
       });
     } catch (e) {
@@ -160,7 +160,7 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
     await Pin.deleteOne({ _id: pinId }).lean();
     await User.unpinCount(userId);
 
-    res.status(204);
+    return res.status(204);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -172,7 +172,7 @@ export const readPin = async (req: Request, res: Response): Promise<any> => {
   try {
     const pinData: IPin = await Pin.readPinById(id);
     const tagData: ITag = await TagLink.getTagNames(id);
-    res.json(serializePin(pinData, tagData));
+    return res.json(serializePin(pinData, tagData));
   } catch (e) {
     res.status(500).json(e);
   }
@@ -194,7 +194,7 @@ export const listPin = async (req: Request, res: Response): Promise<any> => {
     const pin: IPin[] = await Pin.readPinList(userId, cursor);
 
     if (pin.length === 0 || !pin) {
-      res.json({
+      return res.json({
         next: '',
         pinWithData: [],
       });
@@ -210,7 +210,7 @@ export const listPin = async (req: Request, res: Response): Promise<any> => {
       .map(serializePinList)
       .map(pin => ({ ...pin, body: formatShortDescription(pin.body) }));
 
-    res.json({
+    return res.json({
       next,
       pinWithData,
     });

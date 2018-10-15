@@ -148,9 +148,7 @@ User.statics.followerCount = function(userId: string): Promise<any> {
     userId,
     {
       $inc: {
-        count: {
-          follower: 1,
-        },
+        'count.follower': 1,
       },
     },
     {
@@ -165,9 +163,7 @@ User.statics.unfollowerCount = function(userId: string): Promise<any> {
     userId,
     {
       $inc: {
-        count: {
-          follower: -1,
-        },
+        'count.follower': -1,
       },
     },
     {
@@ -182,9 +178,7 @@ User.statics.followingCount = function(userId: string): Promise<any> {
     userId,
     {
       $inc: {
-        count: {
-          following: 1,
-        },
+        'count.following': 1,
       },
     },
     {
@@ -199,9 +193,7 @@ User.statics.unfollowingCount = function(userId: string): Promise<any> {
     userId,
     {
       $inc: {
-        count: {
-          following: -1,
-        },
+        'count.following': -1,
       },
     },
     {
@@ -211,14 +203,12 @@ User.statics.unfollowingCount = function(userId: string): Promise<any> {
   ).lean();
 };
 
-(User.statics.pinCount = function(userId: string): Promise<any> {
+User.statics.pinCount = function(userId: string): Promise<any> {
   return this.findByIdAndUpdate(
     userId,
     {
       $inc: {
-        count: {
-          pin: 1,
-        },
+        'count.pin': 1,
       },
     },
     {
@@ -226,23 +216,22 @@ User.statics.unfollowingCount = function(userId: string): Promise<any> {
       select: 'count.pin',
     }
   ).lean();
-}),
-  (User.statics.unpinCount = function(userId: string): Promise<any> {
-    return this.findByIdAndUpdate(
-      userId,
-      {
-        $inc: {
-          count: {
-            pin: -1,
-          },
-        },
+};
+
+User.statics.unpinCount = function(userId: string): Promise<any> {
+  return this.findByIdAndUpdate(
+    userId,
+    {
+      $inc: {
+        'count.pin': -1,
       },
-      {
-        new: true,
-        select: 'count.pin',
-      }
-    ).lean();
-  });
+    },
+    {
+      new: true,
+      select: 'count.pin',
+    }
+  ).lean();
+};
 
 const UserModel = model<IUser>('User', User) as IUserModel;
 

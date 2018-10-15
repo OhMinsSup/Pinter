@@ -5,17 +5,15 @@ const styles = require('./UsersTemplate.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 const UsersTemplate: React.SFC<Props> = ({ children }) => {
-    return (
-        <div className={cx('users-template')}>
-            <div className={cx('wrapper')}>
-                {children}
-            </div>
-        </div>
-    )
-}
+  return (
+    <div className={cx('users-template')}>
+      <div className={cx('wrapper')}>{children}</div>
+    </div>
+  );
+};
 
 export default UsersTemplate;

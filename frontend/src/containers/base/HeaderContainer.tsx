@@ -16,78 +16,78 @@ type OwnProps = { location: Location };
 type HeaderContainerProps = StateProps & DispatchProps & OwnProps;
 
 class HeaderContainer extends React.Component<HeaderContainerProps> {
-    public onResize = throttle(() => {
-        const { BaseActions } = this.props;
-        BaseActions.getbowserSize(document.body.scrollWidth);
-    }, 250);
+  public onResize = throttle(() => {
+    const { BaseActions } = this.props;
+    BaseActions.getbowserSize(document.body.scrollWidth);
+  }, 250);
 
-    public constructor(props: HeaderContainerProps) {
-        super(props);
-        this.props.BaseActions.getbowserSize(document.body.scrollWidth);
-    } 
+  public constructor(props: HeaderContainerProps) {
+    super(props);
+    this.props.BaseActions.getbowserSize(document.body.scrollWidth);
+  }
 
-    public onSidebar = () => {
-        const { BaseActions, visible } = this.props;
-        visible ? BaseActions.setSidebar(false) : BaseActions.setSidebar(true);
+  public onSidebar = () => {
+    const { BaseActions, visible } = this.props;
+    visible ? BaseActions.setSidebar(false) : BaseActions.setSidebar(true);
+  };
+
+  public onNotice = () => {
+    const { NoticeActions } = this.props;
+    NoticeActions.noticeConfirm();
+  };
+
+  public onLogout = async () => {
+    const { UserActions } = this.props;
+    try {
+      await UserActions.logout();
+    } catch (e) {
+      console.log(e);
     }
+    Storage.remove('__pinter_user__');
+    window.location.href = '/';
+  };
 
-    public onNotice = () => {
-        const { NoticeActions } = this.props;
-        NoticeActions.noticeConfirm();
-    }
+  public componentDidMount() {
+    window.addEventListener('resize', this.onResize);
+  }
 
-    public onLogout = async () => {
-        const { UserActions } = this.props;
-        try {
-          await UserActions.logout();
-        } catch (e) {
-          console.log(e);
-        }
-        Storage.remove('__pinter_user__');
-        window.location.href = '/';
-    }
+  public render() {
+    const { thumbnail, displayName, size, message } = this.props;
+    const { onLogout, onSidebar, onNotice } = this;
 
-    public componentDidMount() {
-        window.addEventListener('resize', this.onResize);
-    }
-
-    public render() {
-        const { thumbnail, displayName, size, message } = this.props;
-        const { onLogout, onSidebar, onNotice } = this;
-        
-        return (
-            <Header 
-                thumbnail={thumbnail}
-                displayName={displayName}
-                onLogout={onLogout}
-                onSidebar={onSidebar}
-                onNotice={onNotice}
-                count={message.length}
-                size={size}
-            />
-        )
-    }
+    return (
+      <Header
+        thumbnail={thumbnail}
+        displayName={displayName}
+        onLogout={onLogout}
+        onSidebar={onSidebar}
+        onNotice={onNotice}
+        count={message.length}
+        size={size}
+      />
+    );
+  }
 }
 
 const mapStateToProps = ({ user, base, notice }: StoreState) => ({
-    visible: base.sidebar.visible,
-    user: user.user && user.user,
-    displayName: user.user && user.user.displayName,
-    thumbnail: user.user && user.user.thumbnail,
-    size: base.size,
-    message: notice.messages
+  visible: base.sidebar.visible,
+  user: user.user && user.user,
+  displayName: user.user && user.user.displayName,
+  thumbnail: user.user && user.user.thumbnail,
+  size: base.size,
+  message: notice.messages,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    UserActions: bindActionCreators(userCreators, dispatch),
-    BaseActions: bindActionCreators(baseCreators, dispatch),
-    NoticeActions: bindActionCreators(noticeCreators, dispatch),
+  UserActions: bindActionCreators(userCreators, dispatch),
+  BaseActions: bindActionCreators(baseCreators, dispatch),
+  NoticeActions: bindActionCreators(noticeCreators, dispatch),
 });
 
 export default compose(
-    withRouter, 
-    connect<StateProps, DispatchProps, OwnProps>(
-        mapStateToProps,
-        mapDispatchToProps
-    )
+  withRouter,
+  connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(HeaderContainer);

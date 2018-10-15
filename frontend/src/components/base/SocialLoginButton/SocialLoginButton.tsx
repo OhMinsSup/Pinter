@@ -7,9 +7,9 @@ const styles = require('./SocialLoginButton.scss');
 const cx = classNames.bind(styles);
 
 interface Props {
-  type: 'facebook' | 'google' ;
+  type: 'facebook' | 'google';
   onSocialLogin(provider: string): void;
-};
+}
 
 const providers = {
   facebook: {
@@ -20,12 +20,15 @@ const providers = {
   },
 };
 
-const SocialLoginButton: React.SFC<Props> = (props) => {
+const SocialLoginButton: React.SFC<Props> = props => {
   const { type, onSocialLogin } = props;
   const { icon: Icon } = providers[type];
 
   return (
-    <div className={cx('SocialLoginButton', type)} onClick={() => onSocialLogin(type)}>
+    <div
+      className={cx('SocialLoginButton', type)}
+      onClick={() => onSocialLogin(type)}
+    >
       <div className={cx('icon')}>
         <Icon />
       </div>

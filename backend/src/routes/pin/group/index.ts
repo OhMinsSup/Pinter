@@ -6,6 +6,7 @@ const group = Router();
 group.post('/', groupCtrl.createGroup);
 group.delete('/:groupId', groupCtrl.deleteGroup);
 group.put('/:groupId', groupCtrl.updateGroup);
+group.get('/:groupId', groupCtrl.readGroup);
 
 group.post('/pin/add', groupCtrl.groupAddPin);
 group.delete('/:groupId/pin/delete/:pinId', groupCtrl.groupDeletePin);

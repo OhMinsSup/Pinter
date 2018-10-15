@@ -219,7 +219,7 @@ const serializeGroups = (data: any) => {
 
 const serializeGroupPin = (data: any) => {
   const {
-    pin: { pinId, body, relationUrl, createdAt, urls, likes, comments },
+    pin: { pinId, body, relationUrl, createdAt, urls, likes, comments, user },
   } = data;
 
   return {
@@ -230,6 +230,10 @@ const serializeGroupPin = (data: any) => {
     urls: urls.map(url => url),
     likes,
     comments,
+    user: {
+      ...pick(user, ['_id', 'username']),
+      ...pick(user.profile, ['displayName', 'thumbnail']),
+    },
   };
 };
 

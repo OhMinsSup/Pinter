@@ -13,31 +13,31 @@ import notice, { NoticeState } from './notice';
 import group, { GroupState } from './group';
 
 export default combineReducers({
-    auth: auth,
-    user: user,
-    base: base,
-    pin: pin,
-    write: write,
-    locker: locker,
-    list: list,
-    common: common,
-    follow: follow,
-    tag: tag,
-    notice: notice,
-    group: group,
+  auth: auth,
+  user: user,
+  base: base,
+  pin: pin,
+  write: write,
+  locker: locker,
+  list: list,
+  common: common,
+  follow: follow,
+  tag: tag,
+  notice: notice,
+  group: group,
 });
 
-export interface StoreState { 
-    auth: AuthState,
-    user: UserState,
-    base: BaseState,
-    write: WriteState,
-    pin: PinState,
-    locker: LockerState,
-    list: ListState,
-    common: CommonState,
-    follow: FollowState,
-    tag: TagState,
-    group: GroupState,
-    notice: NoticeState,
+export interface StoreState {
+  auth: AuthState;
+  user: UserState;
+  base: BaseState;
+  write: WriteState;
+  pin: PinState;
+  locker: LockerState;
+  list: ListState;
+  common: CommonState;
+  follow: FollowState;
+  tag: TagState;
+  group: GroupState;
+  notice: NoticeState;
 }

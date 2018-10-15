@@ -26,7 +26,7 @@ export const createGroup = async (
   const result = joi.validate(req.body, shcema);
 
   if (result.error) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'WRONG_SCHEMA',
       payload: result.error,
     });
@@ -36,7 +36,7 @@ export const createGroup = async (
   const userId: string = req['user']._id;
 
   if (!title) {
-    res.status(409).json({
+    return res.status(409).json({
       name: 'group',
       payload: '제목을 입력하지 않아 그룹을 생성할 수 없습니다',
     });
@@ -49,7 +49,7 @@ export const createGroup = async (
       activation,
     }).save();
 
-    res.json({
+    return res.json({
       groupId: group._id,
       title: group.title,
       activation: group.activation,
@@ -69,7 +69,7 @@ export const deleteGroup = async (
     const groupExists = await Group.findById(groupId).lean();
 
     if (!groupExists) {
-      res.status(404).json({
+      return res.status(404).json({
         name: 'group',
         payload: '존재하지 않는 그룹',
       });
@@ -78,7 +78,7 @@ export const deleteGroup = async (
     await Promise.all([GroupLink.deleteMany({ group: groupId }).lean()]);
 
     await Group.deleteOne({ _id: groupId }).lean();
-    res.status(204);
+    return res.status(204);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -125,7 +125,7 @@ export const updateGroup = async (
       }
     ).lean();
 
-    res.json({
+    return res.json({
       groupId: group._id,
     });
   } catch (e) {
@@ -157,12 +157,20 @@ export const groupAddPin = async (
       });
     }
 
+    const exists = await GroupLink.findOne({
+      $and: [{ group: groupExists._id }, { pin: pinExists._id }],
+    });
+
+    if (exists) {
+      return res.status(204);
+    }
+
     await new GroupLink({
       group: groupId,
       pin: pinId,
     }).save();
 
-    res.status(204);
+    return res.status(204);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -192,7 +200,7 @@ export const groupDeletePin = async (
       pin: pinId,
     }).lean();
 
-    res.status(204);
+    return res.status(204);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -225,7 +233,7 @@ export const groupList = async (req: Request, res: Response): Promise<any> => {
         ? `/pin/groups/${displayName}/list/${active}?cursor=${groups[14]._id}`
         : null;
 
-    res.json({
+    return res.json({
       next,
       groupsWithData: groups.map(serializeGroups),
     });
@@ -254,6 +262,8 @@ export const groupPinList = async (
 
     if (pins.length === 0 || !pins) {
       return res.json({
+        title: group.title,
+        activation: group.activation,
         next: '',
         pinsWithData: [],
       });
@@ -264,11 +274,32 @@ export const groupPinList = async (
         ? `/pin/groups/${groupId}/list?cursor=${pins[19]._id}`
         : null;
 
-    res.json({
-      title: group.title,
-      activation: group.activation,
+    return res.json({
       next,
       pinsWithData: pins.map(serializeGroupPin),
+    });
+  } catch (e) {
+    res.status(500).json(e);
+  }
+};
+
+export const readGroup = async (req: Request, res: Response): Promise<any> => {
+  const { groupId } = req.params;
+
+  try {
+    const group: IGroup = await Group.findById(groupId).lean();
+
+    if (!group) {
+      return res.status(404).json({
+        name: 'Group',
+        payload: '그룹이 존재하지 않습니다',
+      });
+    }
+
+    return res.json({
+      title: group.title,
+      activation: group.activation,
+      groupId: group._id,
     });
   } catch (e) {
     res.status(500).json(e);

@@ -12,7 +12,7 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type CoreProps = StateProps & DispatchProps;
 
-class Core extends React.Component<CoreProps>{
+class Core extends React.Component<CoreProps> {
   public checkUser = async () => {
     const storageUser = Storage.get('__pinter_user__');
     const { UserActions, CommonActions } = this.props;
@@ -21,18 +21,18 @@ class Core extends React.Component<CoreProps>{
       return;
     }
     UserActions.setUser(storageUser);
-    
+
     try {
       await UserActions.checkUser();
       await CommonActions.createNotice();
     } catch (e) {
       Storage.remove('__pinter_user__');
     }
-  }
+  };
 
   public initialize = () => {
     this.checkUser();
-  }
+  };
 
   public componentDidMount() {
     this.initialize();
@@ -42,21 +42,21 @@ class Core extends React.Component<CoreProps>{
     const { visible } = this.props;
     return (
       <React.Fragment>
-        <FullscreenLoader visible={visible}/>
+        <FullscreenLoader visible={visible} />
       </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = ({ base, user }: StoreState) => ({
-    visible: base.fullscreenLoader,
-    user: user.user,
+  visible: base.fullscreenLoader,
+  user: user.user,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    UserActions: bindActionCreators(userCreators, dispatch),
-    BaseActions: bindActionCreators(baseCreators, dispatch),
-    CommonActions: bindActionCreators(commonCreators, dispatch),
+  UserActions: bindActionCreators(userCreators, dispatch),
+  BaseActions: bindActionCreators(baseCreators, dispatch),
+  CommonActions: bindActionCreators(commonCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps>(

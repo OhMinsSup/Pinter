@@ -12,7 +12,7 @@ export const lockerPin = async (req: Request, res: Response): Promise<any> => {
     const exists: ILockerModel = await Locker.checkExists(userId, pinId);
 
     if (exists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: 'locker',
         payload: '이미 보관중입니다',
       });
@@ -20,7 +20,7 @@ export const lockerPin = async (req: Request, res: Response): Promise<any> => {
 
     const locker = await Locker.create({ user: userId, pin: pinId });
 
-    res.json({
+    return res.json({
       locker: !!locker,
     });
   } catch (e) {
@@ -39,7 +39,7 @@ export const unLockerPin = async (
     const exists: ILockerModel = await Locker.checkExists(userId, pinId);
 
     if (!exists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: 'locker',
         payload: '보관하지 않은 핀입니다.',
       });
@@ -54,7 +54,7 @@ export const unLockerPin = async (
       ],
     });
 
-    res.json({
+    return res.json({
       locker: true,
     });
   } catch (e) {
@@ -77,7 +77,7 @@ export const getLockerPin = async (
   }
 
   try {
-    res.json({
+    return res.json({
       locker,
     });
   } catch (e) {
@@ -93,7 +93,7 @@ export const lockerList = async (req: Request, res: Response): Promise<any> => {
     const user: IUser = await User.findByDisplayName(displayName);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '유저',
         payload: '존재하지 않는 유저입니다',
       });
@@ -108,7 +108,7 @@ export const lockerList = async (req: Request, res: Response): Promise<any> => {
       ...pin,
       body: formatShortDescription(pin.body),
     }));
-    res.json({
+    return res.json({
       next,
       pinWithData,
     });

@@ -15,119 +15,125 @@ type OwnProps = { match: match<{ displayName: string }> };
 type GroupListProps = StateProps & DispatchProps & OwnProps;
 
 class GroupList extends React.Component<GroupListProps> {
-    public prev: string | null = null;
+  public prev: string | null = null;
 
-    public onScroll = throttle(() => {
-        const scrollButton = getScrollBottom();
-        if (scrollButton > 1000) return;
-        this.prefetch();
-    }, 250);
-    
-    public prefetch = async () => {
-        const { ListActions, groups, next } = this.props;
+  public onScroll = throttle(() => {
+    const scrollButton = getScrollBottom();
+    if (scrollButton > 1000) return;
+    this.prefetch();
+  }, 250);
 
-        if (!groups || groups.length === 0) return;
+  public prefetch = async () => {
+    const { ListActions, groups, next } = this.props;
 
-        if (this.props.prefetched) {
-            ListActions.revealPrefetched();
-            await Promise.resolve();
-        }
-    
-        if (next === this.prev) return;
-        this.prev = next;
-    
-        try {
-            await ListActions.prefetchGroupList(next);
-        } catch (e) {
-            console.log(e);
-        }
+    if (!groups || groups.length === 0) return;
 
+    if (this.props.prefetched) {
+      ListActions.groupRevealPrefetched();
+      await Promise.resolve();
     }
 
-    public onSelectTabActive = (visible: boolean) => {
-        const { GroupActions } = this.props;        
-        GroupActions.setNavActive(visible);
+    if (next === this.prev) return;
+    this.prev = next;
+
+    try {
+      await ListActions.prefetchGroupList(next);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public initialize = async () => {
-        const { ListActions, active, match: { params: { displayName } } } = this.props;
-        console.log(displayName);
-        
-        ListActions.initialize(active);
-        
-        try {
-            await ListActions.getGroupsList(active, displayName);
-        } catch (e) {
-            console.log(e);
-        }
+  public onSelectTabActive = (visible: boolean) => {
+    const { GroupActions } = this.props;
+    GroupActions.setNavActive(visible);
+  };
+
+  public initialize = async () => {
+    const {
+      ListActions,
+      active,
+      match: {
+        params: { displayName },
+      },
+    } = this.props;
+    console.log(displayName);
+
+    ListActions.initialize(active);
+
+    try {
+      await ListActions.getGroupsList(active, displayName);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public listenScroll = () => {
-        window.addEventListener('scroll', this.onScroll);
-    };
-    
-    public unlistenScroll = () => {
-        window.removeEventListener('scroll', this.onScroll);
-    };
+  public listenScroll = () => {
+    window.addEventListener('scroll', this.onScroll);
+  };
 
-    
-    public componentDidMount() {
-        this.initialize();
+  public unlistenScroll = () => {
+    window.removeEventListener('scroll', this.onScroll);
+  };
+
+  public componentDidMount() {
+    this.initialize();
+  }
+
+  public componentDidUpdate(preProps: GroupListProps) {
+    if (
+      preProps.active !== this.props.active ||
+      preProps.match.params.displayName !== this.props.match.params.displayName
+    ) {
+      this.initialize();
     }
+  }
 
-    public componentDidUpdate(preProps: GroupListProps) {
-        if ((preProps.active !== this.props.active) || 
-            (preProps.match.params.displayName !== this.props.match.params.displayName)) {
-            this.initialize();
-        }
-    }
+  public componentWillUnmount() {
+    this.unlistenScroll();
+  }
 
-    public componentWillUnmount() {
-        this.unlistenScroll();
-    }
+  public render() {
+    const {
+      groups,
+      active,
+      commonDisplayName,
+      commonUserName,
+      ownDisplayName,
+      ownUsername,
+    } = this.props;
+    const { onSelectTabActive } = this;
 
-    public render() {
-        const { 
-            groups, 
-            active, 
-            commonDisplayName, 
-            commonUserName, 
-            ownDisplayName,
-            ownUsername,
-        } = this.props;
-        const { onSelectTabActive } = this;
-
-        return (
-            <GroupCardList 
-                commonDisplayName={commonDisplayName} 
-                commonUserName={commonUserName} 
-                ownDisplayName={ownDisplayName}
-                ownUsername={ownUsername}
-                onSelectTab={onSelectTabActive}
-                active={active}
-                groups={groups}
-            />
-        )
-    }
+    return (
+      <GroupCardList
+        commonDisplayName={commonDisplayName}
+        commonUserName={commonUserName}
+        ownDisplayName={ownDisplayName}
+        ownUsername={ownUsername}
+        onSelectTab={onSelectTabActive}
+        active={active}
+        groups={groups}
+      />
+    );
+  }
 }
 
 const mapStateToProps = ({ list, group, user, common }: StoreState) => ({
-    groups: list.groups.groups.groups,
-    prefetched: list.groups.groups.prefetched,
-    next: list.groups.groups.next,
-    active: group.active.visible,
-    ownUsername: user.user && user.user.username,
-    ownDisplayName: user.user && user.user.displayName,
-    commonUserName: common.profile.username,
-    commonDisplayName: common.profile.displayName,
+  groups: list.groups.groups.groups,
+  prefetched: list.groups.groups.prefetched,
+  next: list.groups.groups.next,
+  active: group.active.visible,
+  ownUsername: user.user && user.user.username,
+  ownDisplayName: user.user && user.user.displayName,
+  commonUserName: common.profile.username,
+  commonDisplayName: common.profile.displayName,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    GroupActions: bindActionCreators(groupCreators, dispatch),
-    ListActions: bindActionCreators(groupsCreators, dispatch),
+  GroupActions: bindActionCreators(groupCreators, dispatch),
+  ListActions: bindActionCreators(groupsCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps, OwnProps>(
-    mapStateToProps,
-    mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(GroupList);

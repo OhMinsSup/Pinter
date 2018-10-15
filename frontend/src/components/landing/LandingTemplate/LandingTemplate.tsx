@@ -5,19 +5,17 @@ const styles = require('./LandingTemplate.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-    form: React.ReactNode
-}
+  form: React.ReactNode;
+};
 
 const LandingTemplate: React.SFC<Props> = ({ form }) => {
-    return (
-        <div className={cx('Landing')}>
-            <div className={cx('LandingTemplate')}>
-                <div className={cx('FormBox')}>
-                    { form }
-                </div>
-            </div>
-        </div>
-    );
-}
+  return (
+    <div className={cx('Landing')}>
+      <div className={cx('LandingTemplate')}>
+        <div className={cx('FormBox')}>{form}</div>
+      </div>
+    </div>
+  );
+};
 
 export default LandingTemplate;

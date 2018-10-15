@@ -10,34 +10,29 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type GalleryContainerProps = StateProps & DispatchProps;
 
 class GalleryContainer extends React.Component<GalleryContainerProps> {
-    public onClose = () => {
-        const { BaseActions } = this.props;
-        BaseActions.setPinImage(false);
-    }
+  public onClose = () => {
+    const { BaseActions } = this.props;
+    BaseActions.setPinImage(false);
+  };
 
-    public render() {
-        const { onClose } = this;
-        const { image, urls } = this.props;
-        if (!image) return null;
-        return (
-            <Gallery 
-                urls={urls}
-                onClose={onClose}
-            />
-        )
-    };
-} 
+  public render() {
+    const { onClose } = this;
+    const { image, urls } = this.props;
+    if (!image) return null;
+    return <Gallery urls={urls} onClose={onClose} />;
+  }
+}
 
 const mapStateToProps = ({ base, pin }: StoreState) => ({
-    image: base.image.visible,
-    urls: pin.pin.urls,
-})
+  image: base.image.visible,
+  urls: pin.pin.urls,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    BaseActions: bindActionCreators(baseCreators, dispatch),
-})
+  BaseActions: bindActionCreators(baseCreators, dispatch),
+});
 
 export default connect<StateProps, DispatchProps>(
-    mapStateToProps,
-    mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(GalleryContainer);

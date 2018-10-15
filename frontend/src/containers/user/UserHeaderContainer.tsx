@@ -14,111 +14,122 @@ import { groupCreators } from 'src/store/modules/group';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { match: match<{ displayName: string }> };
-type UserHeadContainerProps = StateProps & DispatchProps & OwnProps
+type UserHeadContainerProps = StateProps & DispatchProps & OwnProps;
 
 class UserHeadContainer extends React.Component<UserHeadContainerProps> {
-    public onSetting = () => {
-        const { BaseActions } = this.props;
-        BaseActions.setProfile(true);
+  public onSetting = () => {
+    const { BaseActions } = this.props;
+    BaseActions.setProfile(true);
+  };
+
+  public onGruop = () => {
+    const { GroupActions } = this.props;
+    GroupActions.setMakeGroup(true);
+  };
+
+  public onToggleFollow = async () => {
+    const {
+      FollowActions,
+      follow,
+      match: {
+        params: { displayName },
+      },
+    } = this.props;
+
+    try {
+      if (follow) {
+        await FollowActions.unfollow(displayName);
+      } else {
+        await FollowActions.follow(displayName);
+      }
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public onGruop = () => {
-        const { GroupActions } = this.props;
-        GroupActions.setMakeGroup(true);
+  public initialize = async () => {
+    const { CommonActions, FollowActions } = this.props;
+    const { displayName } = this.props.match.params;
+    if (!displayName) return;
+
+    try {
+      CommonActions.initializeProfile();
+      CommonActions.getProfile(displayName);
+      await FollowActions.checkExistsUserFollow(displayName);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public onToggleFollow = async () => {
-        const { 
-            FollowActions, 
-            follow, 
-            match: { 
-                params: { 
-                    displayName 
-                } 
-            } 
-        } = this.props;
-        
-        try {
-            if (follow) {
-                await FollowActions.unfollow(displayName);
-            } else {
-                await FollowActions.follow(displayName);
-            }
-        } catch (e) {
-            console.log(e);
-        }
+  public componentDidUpdate(preProps: UserHeadContainerProps) {
+    if (
+      preProps.visible !== this.props.visible ||
+      preProps.match.params.displayName !== this.props.match.params.displayName
+    ) {
+      this.initialize();
     }
+  }
 
-    public initialize = async () => {
-        const { CommonActions, FollowActions } = this.props;
-        const { displayName } = this.props.match.params;
-        if (!displayName) return;
+  public componentDidMount() {
+    this.initialize();
+  }
 
-        try {
-            CommonActions.initializeProfile();
-            CommonActions.getProfile(displayName);
-            await FollowActions.checkExistsUserFollow(displayName);
-        } catch (e) {
-            console.log(e);
-        }
-    }
+  public render() {
+    const {
+      match: { url },
+      profile,
+      loading,
+      follow,
+      username,
+      displayName,
+    } = this.props;
+    const { onSetting, onToggleFollow, onGruop } = this;
 
-    public componentDidUpdate(preProps: UserHeadContainerProps) {
-        if ((preProps.visible !== this.props.visible) || (preProps.match.params.displayName !== this.props.match.params.displayName)) {
-            this.initialize();
-        }
-    }
-
-    public componentDidMount() {
-        this.initialize();
-    }
-
-    public render() {
-        const { match: { url }, profile, loading, follow, username, displayName } = this.props;
-        const { onSetting, onToggleFollow, onGruop } = this;
-
-        if (loading) return <FullscreenLoader visible={loading}/>
-        return (
-            <React.Fragment>
-                <UserHeader
-                    displayName={displayName}
-                    username={username}
-                    profile={profile}
-                    follow={follow}
-                    onSetting={onSetting}
-                    onGroup={onGruop}
-                    onFollow={onToggleFollow}
-                />
-                <UserNav
-                    url={url}
-                    displayName={profile.displayName}
-                />
-            </React.Fragment>
-        )
-    }
+    if (loading) return <FullscreenLoader visible={loading} />;
+    return (
+      <React.Fragment>
+        <UserHeader
+          displayName={displayName}
+          username={username}
+          profile={profile}
+          follow={follow}
+          onSetting={onSetting}
+          onGroup={onGruop}
+          onFollow={onToggleFollow}
+        />
+        <UserNav url={url} displayName={profile.displayName} />
+      </React.Fragment>
+    );
+  }
 }
 
-const mapStateToProps = ({ base, common, follow, user, group }: StoreState) => ({
-    profile: common.profile,
-    loading: common.profile.loading,
-    visible: base.profile.visible,
-    follow: follow.user.follow,
-    group: group.MakeModal.visible,
-    username: user.user && user.user.username,
-    displayName: user.user && user.user.displayName,
+const mapStateToProps = ({
+  base,
+  common,
+  follow,
+  user,
+  group,
+}: StoreState) => ({
+  profile: common.profile,
+  loading: common.profile.loading,
+  visible: base.profile.visible,
+  follow: follow.user.follow,
+  group: group.MakeModal.visible,
+  username: user.user && user.user.username,
+  displayName: user.user && user.user.displayName,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    BaseActions: bindActionCreators(baseCreators, dispatch),
-    CommonActions: bindActionCreators(commonCreators, dispatch),
-    FollowActions: bindActionCreators(followCreators, dispatch),
-    GroupActions: bindActionCreators(groupCreators, dispatch),
+  BaseActions: bindActionCreators(baseCreators, dispatch),
+  CommonActions: bindActionCreators(commonCreators, dispatch),
+  FollowActions: bindActionCreators(followCreators, dispatch),
+  GroupActions: bindActionCreators(groupCreators, dispatch),
 });
 
 export default compose(
-    withRouter,
-    connect<StateProps, DispatchProps, OwnProps>(
-        mapStateToProps,
-        mapDispatchToProps
-    )
+  withRouter,
+  connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(UserHeadContainer);

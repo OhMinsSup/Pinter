@@ -13,115 +13,111 @@ import FakePinCards from '../../components/common/FakePinCards/FakePinCards';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = { match: match<{ id: string, displayName: string }> };
+type OwnProps = { match: match<{ id: string; displayName: string }> };
 
 type RecentPinListProps = StateProps & DispatchProps & OwnProps;
 
 class RecentPinList extends React.Component<RecentPinListProps> {
-    public prev: string | null = null;
+  public prev: string | null = null;
 
-    public onScroll = throttle(() => {
-        const scrollButton = getScrollBottom();
-        if (scrollButton > 1000) return;
-        this.prefetch();
-    }, 250);
+  public onScroll = throttle(() => {
+    const scrollButton = getScrollBottom();
+    if (scrollButton > 1000) return;
+    this.prefetch();
+  }, 250);
 
-    public prefetch = async () => {
-        const { ListActions, pins, next } = this.props;
-        if (!pins || pins.length === 0) return;
+  public prefetch = async () => {
+    const { ListActions, pins, next } = this.props;
+    if (!pins || pins.length === 0) return;
 
-        if (this.props.prefetched) {
-            ListActions.revealPrefetched();
-            await Promise.resolve();
-        }
-
-        if (next === this.prev) return;
-        this.prev = next;
-
-        try {
-            await ListActions.prefetchPinList(next);
-        } catch (e) {
-            console.log(e);
-        }
+    if (this.props.prefetched) {
+      ListActions.revealPrefetched();
+      await Promise.resolve();
     }
 
-    public onOpen = async (id: string) => {
-        const { BaseActions, PinActions } = this.props;
-        BaseActions.setPinImage(true);
+    if (next === this.prev) return;
+    this.prev = next;
 
-        try {
-            await PinActions.getPin(id);
-        } catch (e) {
-            console.log(e);
-        }
+    try {
+      await ListActions.prefetchPinList(next);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public initialize = async () => {
-        const { ListActions } = this.props;
-        try {
-            await ListActions.getPinList();
-        } catch (e) {
-            console.log(e);
-        }
+  public onOpen = async (id: string) => {
+    const { BaseActions, PinActions } = this.props;
+    BaseActions.setPinImage(true);
+
+    try {
+      await PinActions.getPin(id);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public listenScroll = () => {
-        window.addEventListener('scroll', this.onScroll);
-    };
-    
-    public unlistenScroll = () => {
-        window.removeEventListener('scroll', this.onScroll);
-    };
-
-    public componentDidMount() {
-        this.initialize();
-        this.listenScroll();
+  public initialize = async () => {
+    const { ListActions } = this.props;
+    try {
+      await ListActions.getPinList();
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public componentDidUpdate(preProps: RecentPinListProps) {
-        if (preProps.match.params.displayName !== this.props.match.params.displayName) {
-            this.initialize();
-            this.listenScroll();
-        }
+  public listenScroll = () => {
+    window.addEventListener('scroll', this.onScroll);
+  };
+
+  public unlistenScroll = () => {
+    window.removeEventListener('scroll', this.onScroll);
+  };
+
+  public componentDidMount() {
+    this.initialize();
+    this.listenScroll();
+  }
+
+  public componentDidUpdate(preProps: RecentPinListProps) {
+    if (
+      preProps.match.params.displayName !== this.props.match.params.displayName
+    ) {
+      this.initialize();
+      this.listenScroll();
     }
+  }
 
-    public componentWillUnmount() {
-        this.unlistenScroll();
-    }
+  public componentWillUnmount() {
+    this.unlistenScroll();
+  }
 
-    public render() {
-        const { pins, loading } = this.props;
-        const { onOpen } = this;
+  public render() {
+    const { pins, loading } = this.props;
+    const { onOpen } = this;
 
-        if (loading) return <FakePinCards pins={pins}/>
-        
-        return (
-            <CommonCardList
-                pins={pins} 
-                onOpen={onOpen}
-                theme="user"
-            />
-        )
-    }
+    if (loading) return <FakePinCards pins={pins} />;
+
+    return <CommonCardList pins={pins} onOpen={onOpen} theme="user" />;
+  }
 }
 
 const mapStateToProps = ({ list }: StoreState) => ({
-    pins: list.recent.recent.pins,
-    prefetched: list.recent.recent.prefetched,
-    next: list.recent.recent.next,
-    loading: list.recent.recent.loading
-})
+  pins: list.recent.recent.pins,
+  prefetched: list.recent.recent.prefetched,
+  next: list.recent.recent.next,
+  loading: list.recent.recent.loading,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    BaseActions: bindActionCreators(baseCreators, dispatch),
-    ListActions: bindActionCreators(recentCreators, dispatch),
-    PinActions: bindActionCreators(pinCreators, dispatch),
-})
+  BaseActions: bindActionCreators(baseCreators, dispatch),
+  ListActions: bindActionCreators(recentCreators, dispatch),
+  PinActions: bindActionCreators(pinCreators, dispatch),
+});
 
 export default compose(
-    withRouter,
-    connect<StateProps, DispatchProps, OwnProps>(
-        mapStateToProps,
-        mapDispatchToProps
-    )
+  withRouter,
+  connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(RecentPinList);

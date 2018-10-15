@@ -24,7 +24,7 @@ export const sendAuthEmail = async (
   const result = joi.validate(req.body, schema);
 
   if (result.error) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'WRONG_SCHEMA',
       payload: result.error,
     });
@@ -70,7 +70,7 @@ export const sendAuthEmail = async (
       }</a></div><br/><div>이 링크는 24시간동안 유효합니다. </div></div>`,
     });
 
-    res.json({
+    return res.json({
       isUser: !!auth,
     });
   } catch (e) {
@@ -105,7 +105,7 @@ export const localRegister = async (
   const result = joi.validate(req.body, schema);
 
   if (result.error) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'WRONG_SCHEMA',
       payload: result.error,
     });
@@ -131,11 +131,10 @@ export const localRegister = async (
     ]);
 
     if (emailExists || usernameExists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '중복된 계정',
         payload: emailExists ? 'email' : 'username',
       });
-      return;
     }
 
     const auth: IUser = await new User({
@@ -149,7 +148,7 @@ export const localRegister = async (
     const token: string = await User.generate(auth);
 
     if (!token) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '토큰 발급',
         payload: '토큰이 만들어지지 않았습니다',
       });
@@ -160,7 +159,7 @@ export const localRegister = async (
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.json({
+    return res.json({
       user: {
         id: auth._id,
         username: auth.username,
@@ -182,7 +181,7 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
   const { code }: BodySchema = req.body;
 
   if (typeof code !== 'string' || !code) {
-    res.status(400).json({
+    return res.status(400).json({
       name: '유효성',
       payload: '코드의 타입및 코드의 값이 존재하지 않습니다',
     });
@@ -192,7 +191,7 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
     const auth: IEmailAuth = await EmailAuth.findCode(code);
 
     if (!auth) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '코드',
         payload: '코드의 타입및 코드의 값이 존재하지 않습니다',
       });
@@ -202,7 +201,7 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
     const user: IUser = await User.findByEmailOrUsername('email', email);
 
     if (!user) {
-      res.status(401).json({
+      return res.status(401).json({
         name: '계정 체크',
         payload: '유저가 존재하지 않았습니다',
       });
@@ -211,7 +210,7 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
     const token: string = await User.generate(user);
 
     if (!token) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '토큰 발급',
         payload: '토큰이 만들어지지 않았습니다',
       });
@@ -222,7 +221,7 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.json({
+    return res.json({
       user: {
         id: user.id,
         username: user.username,
@@ -240,7 +239,7 @@ export const code = async (req: Request, res: Response): Promise<any> => {
   const { code } = req.params;
 
   if (!code) {
-    res.status(400).json({
+    return res.status(400).json({
       name: '유효성',
       payload: '코드의 값이 존재하지 않습니다',
     });
@@ -250,7 +249,7 @@ export const code = async (req: Request, res: Response): Promise<any> => {
     const auth: IEmailAuth = await EmailAuth.findCode(code);
 
     if (!auth) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '코드',
         payload: '코드의 타입및 코드의 값이 존재하지 않습니다',
       });
@@ -263,7 +262,7 @@ export const code = async (req: Request, res: Response): Promise<any> => {
     );
 
     if (!registerToken) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '토큰 발급',
         payload: '토큰이 만들어지지 않았습니다',
       });
@@ -271,7 +270,7 @@ export const code = async (req: Request, res: Response): Promise<any> => {
 
     await EmailAuth.use(emailCode);
 
-    res.json({
+    return res.json({
       email,
       registerToken,
     });
@@ -284,13 +283,13 @@ export const check = async (req: Request, res: Response): Promise<any> => {
   const user = req['user'];
 
   if (!user) {
-    res.status(401).json({
+    return res.status(401).json({
       name: '로그인',
       payload: '로그인을 하지않았습니다.',
     });
   }
 
-  res.json({
+  return res.json({
     user,
   });
 };
@@ -301,7 +300,7 @@ export const logout = async (res: Response): Promise<any> => {
     maxAge: 0,
   });
 
-  res.status(204);
+  return res.status(204);
 };
 
 export const socialRegister = async (
@@ -330,7 +329,7 @@ export const socialRegister = async (
   const result = joi.validate(req.body, schema);
 
   if (result.error) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'WRONG_SCHEMA',
       payload: result.error,
     });
@@ -348,7 +347,7 @@ export const socialRegister = async (
   }
 
   if (!profile) {
-    res.status(401).json({
+    return res.status(401).json({
       name: '소셜 프로필',
       payload: '소셜 프로필을 가져오지 못했습니다',
     });
@@ -363,7 +362,7 @@ export const socialRegister = async (
     ]);
 
     if (emailExists || usernameExists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '중복된 계정',
         payload: emailExists ? 'email' : 'username',
       });
@@ -372,7 +371,7 @@ export const socialRegister = async (
     const socialExists: IUser = await User.findBySocial(provider, socialId);
 
     if (socialExists) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '소셜 계정',
         payload: '이미 가입한 소셜 계정',
       });
@@ -396,7 +395,7 @@ export const socialRegister = async (
     const token: string = await User.generate(auth);
 
     if (!token) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '토큰 발급',
         payload: '토큰이 만들어지지 않았습니다',
       });
@@ -407,7 +406,7 @@ export const socialRegister = async (
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.json({
+    return res.json({
       user: {
         id: auth._id,
         username: auth.username,
@@ -441,7 +440,7 @@ export const socialLogin = async (
   }
 
   if (!profile) {
-    res.status(401).json({
+    return res.status(401).json({
       name: '소셜 프로필',
       payload: '소셜 프로필을 가져오지 못했습니다',
     });
@@ -456,7 +455,7 @@ export const socialLogin = async (
       user = await User.findByEmailOrUsername('email', profile.email);
 
       if (!user) {
-        res.status(404).json({
+        return res.status(404).json({
           name: '계정',
           payload: '등록되어 있지 않습니다.',
         });
@@ -475,7 +474,7 @@ export const socialLogin = async (
     const token: string = await User.generate(user);
 
     if (!token) {
-      res.status(409).json({
+      return res.status(409).json({
         name: '토큰 발급',
         payload: '토큰이 만들어지지 않았습니다',
       });
@@ -520,7 +519,7 @@ export const verifySocial = async (
   }
 
   if (!profile) {
-    res.status(401).json({
+    return res.status(401).json({
       name: '소셜 프로필',
       payload: '소셜 프로필을 가져오지 못했습니다',
     });
@@ -532,7 +531,7 @@ export const verifySocial = async (
       User.findByEmailOrUsername('email', profile.email),
     ]);
 
-    res.json({
+    return res.json({
       profile,
       exists: !!(socialAuth || user),
     });

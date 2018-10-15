@@ -9,7 +9,7 @@ export const getTags = async (req: Request, res: Response): Promise<any> => {
   const availableSort = ['latest', 'name'];
 
   if (availableSort.indexOf(sort) === -1) {
-    return res.status(400).json({
+    res.status(400).json({
       name: '존재하지 않는 정렬입니다',
     });
   }
@@ -39,7 +39,7 @@ export const getTags = async (req: Request, res: Response): Promise<any> => {
       { $unwind: '$tag_docs' },
     ]).sort(sortBy);
 
-    res.json(tagData.map(serializeTag));
+    return res.json(tagData.map(serializeTag));
   } catch (e) {
     res.status(500).json(e);
   }
@@ -59,7 +59,7 @@ export const getTagInfo = async (req: Request, res: Response): Promise<any> => {
       })
       .lean();
 
-    res.json({
+    return res.json({
       pinWithData: pinData
         .map(serializeTagPin)
         .map(pin => ({ ...pin, body: formatShortDescription(pin.body) })),

@@ -7,21 +7,21 @@ import users, { UsersState } from './users';
 import groups, { GroupsState } from './groups';
 
 const list = combineReducers({
-    recent: recent,
-    follows: follows,
-    lockers: lockers,
-    tags: tags,
-    users: users,
-    groups: groups,
+  recent: recent,
+  follows: follows,
+  lockers: lockers,
+  tags: tags,
+  users: users,
+  groups: groups,
 });
 
 export interface ListState {
-    recent: RecentState;
-    follows: FollowsState;
-    lockers: LockersState;
-    tags: TagsState;
-    users: UsersState;
-    groups: GroupsState;
+  recent: RecentState;
+  follows: FollowsState;
+  lockers: LockersState;
+  tags: TagsState;
+  users: UsersState;
+  groups: GroupsState;
 }
 
 export default list;

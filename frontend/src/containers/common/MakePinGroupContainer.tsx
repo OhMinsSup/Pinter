@@ -1,58 +1,56 @@
 import * as React from 'react';
 import MakeGroupModal from 'src/components/group/MakeGroupModal';
 import { connect } from 'react-redux';
-import { StoreState } from 'src/store/modules';
+import { StoreState } from '../../store/modules';
 import { bindActionCreators, Dispatch } from 'redux';
-import { groupCreators } from 'src/store/modules/group';
+import { groupCreators } from '../../store/modules/group';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type MakePinGroupContainerProps = StateProps & DispatchProps;
 
-class MakePinGroupContainer extends React.Component<MakePinGroupContainerProps> {
-    public onClick = () => {
-        const { GroupActions } = this.props;
-        GroupActions.setMakeGroup(false)
+class MakePinGroupContainer extends React.Component<
+  MakePinGroupContainerProps
+> {
+  public onClick = () => {
+    const { GroupActions } = this.props;
+    GroupActions.setMakeGroup(false);
+  };
+
+  public onSubmit = async (value: string, active: boolean) => {
+    const { GroupActions } = this.props;
+
+    try {
+      await GroupActions.createSubmitGroup({
+        title: value,
+        activation: active,
+      });
+
+      GroupActions.setMakeGroup(false);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public onSubmit = async (value: string, active: boolean) => {
-        const { GroupActions } = this.props;
+  public render() {
+    const { visible } = this.props;
+    const { onClick, onSubmit } = this;
 
-        try {
-            await GroupActions.createSubmitGroup({
-                title: value,
-                activation: active,
-            })
-
-            GroupActions.setMakeGroup(false);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    public render() {
-        const { visible } = this.props;
-        const { onClick, onSubmit } = this;
-
-        return (
-            <MakeGroupModal 
-                onSubmit={onSubmit}
-                onClick={onClick}
-                onOpen={visible}
-            />
-        )
-    }
+    return (
+      <MakeGroupModal onSubmit={onSubmit} onClick={onClick} onOpen={visible} />
+    );
+  }
 }
 
 const mapStateToProps = ({ group }: StoreState) => ({
-    visible: group.MakeModal.visible
-})
+  visible: group.MakeModal.visible,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    GroupActions: bindActionCreators(groupCreators, dispatch),
-})
+  GroupActions: bindActionCreators(groupCreators, dispatch),
+});
 
 export default connect<StateProps, DispatchProps>(
-    mapStateToProps,
-    mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(MakePinGroupContainer);

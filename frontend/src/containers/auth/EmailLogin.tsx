@@ -12,58 +12,62 @@ import storage from '../../lib/storage';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = {
-    location: Location,
-    history: History,
-}
+  location: Location;
+  history: History;
+};
 
 type EmailLoginContainerProps = StateProps & DispatchProps & OwnProps;
 
 class EmailLoginContainer extends React.Component<EmailLoginContainerProps> {
-    public initialize = async () => {
-        const { search } = this.props.location;
-        const { code } = queryString.parse(search);
-        const { AuthActions, UserActions } = this.props;
-        try {
-            await AuthActions.localLogin(code);
-            const { authResult } = this.props;
-            
-            if (authResult.user.displayName === "" || authResult.user.id === "" || authResult.user.username === "") { 
-                return this.props.history.push('/');
-            }
-        
-            const { user } = authResult;            
-            UserActions.setUser(user);
-            storage.set('__pinter_user__', user);
-        } catch (e) {
-            console.log(e);
-        }
+  public initialize = async () => {
+    const { search } = this.props.location;
+    const { code } = queryString.parse(search);
+    const { AuthActions, UserActions } = this.props;
+    try {
+      await AuthActions.localLogin(code);
+      const { authResult } = this.props;
 
-        const { history } = this.props;
-        history.push('/');
-    };
+      if (
+        authResult.user.displayName === '' ||
+        authResult.user.id === '' ||
+        authResult.user.username === ''
+      ) {
+        return this.props.history.push('/');
+      }
 
-    public componentDidMount() {
-        this.initialize();
+      const { user } = authResult;
+      UserActions.setUser(user);
+      storage.set('__pinter_user__', user);
+    } catch (e) {
+      console.log(e);
     }
-    
-    public render() {
-        return null;
-    }
+
+    const { history } = this.props;
+    history.push('/');
+  };
+
+  public componentDidMount() {
+    this.initialize();
+  }
+
+  public render() {
+    return null;
+  }
 }
 
 const mapStateToProps = ({ auth }: StoreState) => ({
-    authResult: auth.authResult
+  authResult: auth.authResult,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    AuthActions: bindActionCreators(authCreators, dispatch),
-    UserActions: bindActionCreators(userCreators, dispatch)
+  AuthActions: bindActionCreators(authCreators, dispatch),
+  UserActions: bindActionCreators(userCreators, dispatch),
 });
 
 export default compose(
-    withRouter,
-    connect<StateProps, DispatchProps, OwnProps>(
-        mapStateToProps,
-        mapDispatchToProps
-    )
+  withRouter,
+  connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(EmailLoginContainer);

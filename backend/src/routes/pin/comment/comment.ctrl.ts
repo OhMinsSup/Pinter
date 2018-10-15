@@ -25,7 +25,7 @@ export const writeComment = async (
   const result = joi.validate(req.body, schema);
 
   if (result.error) {
-    res.status(400).json({
+    return res.status(400).json({
       name: 'WRONG_SCHEMA',
       payload: result.error,
     });
@@ -71,7 +71,7 @@ export const deleteComment = async (
     const comment: IComment = await Comment.findById(commentId).lean();
 
     if (!comment) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '존재하지않는 댓글은 삭제할 수 없습니다.',
       });
     }
@@ -86,7 +86,7 @@ export const deleteComment = async (
       ],
     }).lean();
 
-    res.status(204);
+    return res.status(204);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -101,7 +101,7 @@ export const getCommentList = async (
   try {
     const comment: IComment[] = await Comment.getCommentList(pinId);
     const commentWithData = comment.map(serializeComment);
-    res.json({
+    return res.json({
       commentWithData,
     });
   } catch (e) {

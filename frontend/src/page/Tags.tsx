@@ -8,29 +8,29 @@ import TagPinList from '../containers/list/TagPinList';
 import TagsTemplate from '../components/tag/TagTemplate/TagTemplate';
 
 type Props = {
-    location: Location,
-    match: match<{ tag: string }> 
-}
+  location: Location;
+  match: match<{ tag: string }>;
+};
 
 const Tags: React.SFC<Props> = ({ location, match }) => {
-    const { sort } = queryString.parse(location.search);
-    const { tag } = match.params;
-    
-    return (
-        <TagsTemplate>
-            {tag ? (
-                <React.Fragment>
-                    <TagCurrentContainer tag={tag}/>
-                    <TagPinList tag={tag} />
-                </React.Fragment>
-            ) : (
-                <React.Fragment>
-                    <TagsTab sort={sort} />
-                    <TagItemListContainer sort={sort}/>
-                </React.Fragment>
-            )}
-        </TagsTemplate>
-    )
-}
+  const { sort } = queryString.parse(location.search);
+  const { tag } = match.params;
+
+  return (
+    <TagsTemplate>
+      {tag ? (
+        <React.Fragment>
+          <TagCurrentContainer tag={tag} />
+          <TagPinList tag={tag} />
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <TagsTab sort={sort} />
+          <TagItemListContainer sort={sort} />
+        </React.Fragment>
+      )}
+    </TagsTemplate>
+  );
+};
 
 export default Tags;

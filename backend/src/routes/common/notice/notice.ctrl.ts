@@ -40,7 +40,7 @@ export const createNoticeRoom = async (
       })
       .lean();
 
-    res.json({
+    return res.json({
       noticeWithData: serializeNoticeRoom(noticeData),
     });
   } catch (e) {
@@ -70,6 +70,12 @@ export const sendMessage = async (
       following: userId,
     }).lean();
 
+    if (
+      (!followingUsers || followingUsers.length === 0) &&
+      (!followerUsers || followerUsers.length === 0)
+    ) {
+      return res.status(204);
+    }
     // 팔로우, 팔로잉 유저의 아이디를 가져와 userIds에 저장
     followingUsers.map(user => userIds.push(user.following as any));
     followerUsers.map(user => userIds.push(user.follower as any));
@@ -103,7 +109,7 @@ export const sendMessage = async (
       })
     );
 
-    res.status(204);
+    return res.status(204);
   } catch (e) {
     res.status(500).json, e;
   }
@@ -119,7 +125,7 @@ export const getNoticeList = async (
     const notice: INotice = await Notice.findOne({ creator: userId }).lean();
 
     if (!notice) {
-      res.status(404).json({
+      return res.status(404).json({
         name: '알림방이 존재하지 않습니다',
       });
     }
@@ -131,7 +137,7 @@ export const getNoticeList = async (
       .sort({ _id: -1 })
       .lean();
 
-    res.json({
+    return res.json({
       message: message.map(m => {
         const { message, sender } = m;
         return {

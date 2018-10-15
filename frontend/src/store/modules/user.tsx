@@ -11,55 +11,58 @@ const PROCESS = 'user/PROCESS';
 const LOGOUT = 'user/LOGOUT';
 
 export const userCreators = {
-    checkUser: createPromiseThunk(CHECK_USER, UserAPI.checkAPI),
-    setUser: createAction(SET_USER, (payload: UserSubState) => payload),
-    process: createAction(PROCESS),
-    logout: createAction(LOGOUT)
-}
+  checkUser: createPromiseThunk(CHECK_USER, UserAPI.checkAPI),
+  setUser: createAction(SET_USER, (payload: UserSubState) => payload),
+  process: createAction(PROCESS),
+  logout: createAction(LOGOUT),
+};
 
 type CheckUserAction = GenericResponseAction<{ user: UserSubState }, string>;
 type SetUserAction = ReturnType<typeof userCreators.setUser>;
 
 export interface UserSubState {
-    id: string;
-    username: string;
-    displayName: string;
-    thumbnail: string | null;
+  id: string;
+  username: string;
+  displayName: string;
+  thumbnail: string | null;
 }
 
 export interface UserState {
-    user: UserSubState | null;
-    processed: boolean;
+  user: UserSubState | null;
+  processed: boolean;
 }
 
 const initialState: UserState = {
-    user: null,
-    processed: false
-}
+  user: null,
+  processed: false,
+};
 
-export default handleActions<UserState, any>({
-    [SET_USER]: (state, action: SetUserAction) => {        
-        return produce(state, (draft) => {
-            if (action.payload === undefined) return;
-            draft.user = action.payload;
-        });
+export default handleActions<UserState, any>(
+  {
+    [SET_USER]: (state, action: SetUserAction) => {
+      return produce(state, draft => {
+        if (action.payload === undefined) return;
+        draft.user = action.payload;
+      });
     },
-    [PROCESS]: (state) => {
-        return produce(state, (draft) => {
-            draft.processed = true;
-        });
+    [PROCESS]: state => {
+      return produce(state, draft => {
+        draft.processed = true;
+      });
     },
     [CHECK_USER_SUCCESS]: (state, action: CheckUserAction) => {
-        return produce(state, (draft) => {
-            if (action.payload === undefined) return;
-            draft.user = action.payload.data.user;
-            draft.processed = true;
-        });
+      return produce(state, draft => {
+        if (action.payload === undefined) return;
+        draft.user = action.payload.data.user;
+        draft.processed = true;
+      });
     },
-    [CHECK_USER_ERROR]: (state) => {
-        return produce(state, (draft) => {
-            draft.user = null;
-            draft.processed = true;
-        });
-    }
-}, initialState);
+    [CHECK_USER_ERROR]: state => {
+      return produce(state, draft => {
+        draft.user = null;
+        draft.processed = true;
+      });
+    },
+  },
+  initialState
+);

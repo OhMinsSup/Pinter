@@ -4,13 +4,13 @@ import * as classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import { escapeForUrl } from '../../../lib/common';
 
-const styles = require('./TagItem.scss')
+const styles = require('./TagItem.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-  name: string,
-  count: number,
-  onClick: (info: any) => void
+  name: string;
+  count: number;
+  onClick: (info: any) => void;
 };
 
 const TagItem: React.SFC<Props> = ({ name, count, onClick }) => (

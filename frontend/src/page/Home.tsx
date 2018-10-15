@@ -5,12 +5,12 @@ import AuthFormContainer from '../containers/landing/AuthFormContainer';
 import Main from '../containers/main/Main';
 
 const Home: React.SFC<{}> = () => {
-    return (
-        <PageTemplate>
-            <LandingTemplateContainer form={<AuthFormContainer/>} />
-            <Main/>
-        </PageTemplate>
-    )
-}
+  return (
+    <PageTemplate>
+      <LandingTemplateContainer form={<AuthFormContainer />} />
+      <Main />
+    </PageTemplate>
+  );
+};
 
 export default Home;

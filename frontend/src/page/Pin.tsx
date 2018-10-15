@@ -8,24 +8,19 @@ import QuestionModalContainer from '../containers/common/QuestionModalContainer'
 import { History } from 'history';
 
 type Props = {
-    history: History,
-    match: match<{ id: string }>
-}
+  history: History;
+  match: match<{ id: string }>;
+};
 
 const Pin: React.SFC<Props> = ({ match, history }) => {
-    const { id } = match.params;
-    return (
-        <PinTemplate
-            header={<HeaderContainer/>}
-        >
-            <PinViewer 
-                id={id}
-                history={history}
-            />
-            <PinCommentContainer />
-            <QuestionModalContainer/>
-        </PinTemplate>
-    )
-}
+  const { id } = match.params;
+  return (
+    <PinTemplate header={<HeaderContainer />}>
+      <PinViewer id={id} history={history} />
+      <PinCommentContainer />
+      <QuestionModalContainer />
+    </PinTemplate>
+  );
+};
 
 export default Pin;

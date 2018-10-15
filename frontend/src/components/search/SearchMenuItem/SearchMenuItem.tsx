@@ -6,9 +6,9 @@ const styles = require('./SearchMenuItem.scss');
 const cx = classNames.bind(styles);
 
 type Props = {
-  text: string,
-  to: string,
-  active?: boolean,
+  text: string;
+  to: string;
+  active?: boolean;
 };
 
 const SearchMenuItem: React.SFC<Props> = ({ text, to, active }) => {

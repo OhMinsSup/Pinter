@@ -22,6 +22,4 @@
         "only-arrow-functions": false,
         "perfer-for-of": false,
     },
-    "rulesDirectory": [],
-    "jsRules": {}
 }

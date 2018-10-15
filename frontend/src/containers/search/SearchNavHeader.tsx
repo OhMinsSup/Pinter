@@ -12,24 +12,15 @@ type OwnProps = { match: match<string> };
 type SearchNavHeaderProps = StateProps & DispatchProps & OwnProps;
 
 class SearchNavHeader extends React.Component<SearchNavHeaderProps> {
-   public render () {
+  public render() {
     const { match } = this.props;
-    return (
-        <SearchHeader
-          url={match.url}
-        />
-    );
+    return <SearchHeader url={match.url} />;
   }
 }
 
-const mapStateToProps = ({  }: StoreState) => ({
+const mapStateToProps = ({  }: StoreState) => ({});
 
-});
-
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-
-});
+const mapDispatchToProps = (dispatch: Dispatch) => ({});
 
 export default compose(
   withRouter,

@@ -13,78 +13,99 @@ import storage from '../../lib/storage';
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = {
-  location: Location,
-  history: History,
-}
-type RegisterFormContainerProps = StateProps & DispatchProps & OwnProps; 
+  location: Location;
+  history: History;
+};
+type RegisterFormContainerProps = StateProps & DispatchProps & OwnProps;
 
-class RegisterFormContainer extends React.Component<RegisterFormContainerProps> {
-    public initialize = async () => { 
-      const { search } = this.props.location;
-     const { AuthActions } = this.props;
-      const { code } = queryString.parse(search);
-      
-      if (!code) {
-        console.log('code가 없습니다.');
+class RegisterFormContainer extends React.Component<
+  RegisterFormContainerProps
+> {
+  public initialize = async () => {
+    const { search } = this.props.location;
+    const { AuthActions } = this.props;
+    const { code } = queryString.parse(search);
+
+    if (!code) {
+      console.log('code가 없습니다.');
+      return;
+    }
+
+    try {
+      await AuthActions.getCode(code);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  public onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { AuthActions } = this.props;
+    const { value, name } = e.target;
+    AuthActions.changeRegisterForm({
+      name,
+      value,
+    });
+  };
+
+  public onRegister = async (): Promise<void> => {
+    const {
+      displayName,
+      username,
+      registerToken,
+      AuthActions,
+      isSocial,
+      UserActions,
+      history,
+    } = this.props;
+
+    try {
+      if (isSocial) {
+        const { socialAuthResult } = this.props;
+        if (
+          socialAuthResult.accessToken === '' ||
+          socialAuthResult.provider === ''
+        )
+          return;
+        const { accessToken, provider } = socialAuthResult;
+        await AuthActions.socialRegister({
+          accessToken,
+          provider,
+          displayName,
+          username,
+        });
+      } else {
+        await AuthActions.localRegister({
+          registerToken,
+          username,
+          displayName,
+        });
+      }
+
+      const { authResult } = this.props;
+
+      if (
+        authResult.user.id === '' ||
+        authResult.user.username === '' ||
+        authResult.user.displayName === ''
+      )
         return;
-      }
 
-      try {
-       await AuthActions.getCode(code);
-      } catch (e) {
-        console.log(e);
-      }
+      const { user } = authResult;
+      UserActions.setUser(user);
+      storage.set('__pinter_user__', user);
+      history.push('/');
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    public onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-      const { AuthActions } = this.props;
-      const { value, name } = e.target;
-      AuthActions.changeRegisterForm({
-        name, value
-      });
-    }
+  public componentDidMount() {
+    this.initialize();
+  }
 
-    public onRegister = async (): Promise<void> => {
-      const {
-        displayName,
-        username,
-        registerToken,
-        AuthActions,
-        isSocial,
-        UserActions,
-        history
-      } = this.props;
-      
-      try {
-        if (isSocial) {
-          const { socialAuthResult } = this.props;
-          if (socialAuthResult.accessToken === "" || socialAuthResult.provider === "") return;
-          const { accessToken, provider } = socialAuthResult;
-          await AuthActions.socialRegister({ accessToken, provider, displayName, username });
-        } else {
-          await AuthActions.localRegister({ registerToken, username, displayName });
-        }
-
-        const { authResult } = this.props;
-
-        if (authResult.user.id === "" || authResult.user.username === "" || authResult.user.displayName === "") return;
-
-        const { user } = authResult;
-        UserActions.setUser(user);
-        storage.set('__pinter_user__', user);
-        history.push('/');
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    public componentDidMount() {
-      this.initialize();
-    }
-
-    public render() {
-      const {onChange, onRegister} = this;
-      const { displayName, email, username, isSocial, socialEmail } = this.props;
+  public render() {
+    const { onChange, onRegister } = this;
+    const { displayName, email, username, isSocial, socialEmail } = this.props;
     return (
       <RegisterForm
         onChange={onChange}
@@ -114,7 +135,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   UserActions: bindActionCreators(userCreators, dispatch),
 });
 
-export default compose( 
+export default compose(
   withRouter,
   connect<StateProps, DispatchProps, OwnProps>(
     mapStateToProps,

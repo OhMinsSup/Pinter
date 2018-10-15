@@ -12,47 +12,47 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 type OwnProps = { location: Location };
 
-type MainProps = OwnProps & StateProps & DispatchProps; 
+type MainProps = OwnProps & StateProps & DispatchProps;
 
 class Main extends React.Component<MainProps> {
-    public render() {       
-        const { location, sidebar, user, size } = this.props; 
+  public render() {
+    const { location, sidebar, user, size } = this.props;
 
-        if (!user) return null;
+    if (!user) return null;
 
-        return(
-            <MainTemplate
-                path={location.pathname}
-                header={<HeaderContainer />}
-                sidebar={sidebar}
-                size={size}
-                displayName={user.displayName}
-            >
-                <Switch>
-                    <Route exact path="/" component={Recent} />
-                    <Route exact path="/Recent" component={Recent} />
-                    <Route exact path='/tags/:tag?' component={Tags}/>
-                    <Route exact path='/users' component={Users} />
-                </Switch>
-            </MainTemplate>
-        )
-    }
+    return (
+      <MainTemplate
+        path={location.pathname}
+        header={<HeaderContainer />}
+        sidebar={sidebar}
+        size={size}
+        displayName={user.displayName}
+      >
+        <Switch>
+          <Route exact path="/" component={Recent} />
+          <Route exact path="/Recent" component={Recent} />
+          <Route exact path="/tags/:tag?" component={Tags} />
+          <Route exact path="/users" component={Users} />
+        </Switch>
+      </MainTemplate>
+    );
+  }
 }
 
 const mapStateToProps = ({ base, user }: StoreState) => ({
-    sidebar: base.sidebar.visible,
-    user: user.user && user.user,
-    size: base.size,
-})
+  sidebar: base.sidebar.visible,
+  user: user.user && user.user,
+  size: base.size,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    BaseActions: bindActionCreators(baseCreators, dispatch)
-})
+  BaseActions: bindActionCreators(baseCreators, dispatch),
+});
 
 export default compose(
-    withRouter,
-    connect<StateProps, DispatchProps, OwnProps>(
-        mapStateToProps,
-        mapDispatchToProps
-    )
+  withRouter,
+  connect<StateProps, DispatchProps, OwnProps>(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(Main);

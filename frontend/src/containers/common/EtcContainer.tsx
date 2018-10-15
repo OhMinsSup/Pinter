@@ -6,15 +6,15 @@ import MakePinGroupContainer from '../common/MakePinGroupContainer';
 import GroupPinSettingContainer from '../common/GroupPinSettingContainer';
 
 const EtcContainer = () => {
-    return (
-        <React.Fragment>
-            <SidebarContainer />
-            <GalleryContainer />
-            <NoticeModalContainer />
-            <MakePinGroupContainer />
-            <GroupPinSettingContainer />
-        </React.Fragment>
-    ) 
-}
+  return (
+    <React.Fragment>
+      <SidebarContainer />
+      <GalleryContainer />
+      <NoticeModalContainer />
+      <MakePinGroupContainer />
+      <GroupPinSettingContainer />
+    </React.Fragment>
+  );
+};
 
 export default EtcContainer;

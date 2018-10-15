@@ -3,7 +3,6 @@
 .group-header {
     display: flex;
     align-items: stretch;
-    border: 0 solid #000;
     flex-shrink: 0;
     margin: 0;
     padding: 0;
@@ -23,6 +22,8 @@
             margin: 0;
             box-sizing: border-box;
             padding: 0;
+            display: flex;
+            flex-direction: column;
             position: relative;
             .title {
                 font-size: 32px;
@@ -33,22 +34,21 @@
                 white-space: nowrap;
             }
 
-            .btn + .btn {
-                margin-left: 0.75rem;
+            .active {
+                align-items: center;
+                justify-content: center;
+                display: flex;
+                width: 75px;
+                height: 40px;
+                box-sizing: border-box;
+                border: 1px solid $oc-gray-5;
+                border-radius: 5px;
+                font-weight: 550;
+                color: #262626;
             }
         }
-    }
-
-    .active {
-        align-items: center;
-        justify-content: center;
-        display: flex;
-        width: 75px;
-        height: 40px;
-        box-sizing: border-box;
-        border: 1px solid $oc-gray-5;
-        border-radius: 5px;
-        font-weight: 550;
-        color: #262626;
+        .btn + .btn {
+            margin-left: 0.75rem;
+        }
     }
 }
