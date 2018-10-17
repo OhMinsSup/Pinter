@@ -28,7 +28,7 @@ const Sidebar: React.SFC<Props> = ({
 }) => {
   return (
     <React.Fragment>
-      {size > 790 ? null : (
+      {size > 799 ? null : (
         <React.Fragment>
           <div className={cx('dimmer')} onClick={onClose} />
           <div className={cx('sidebar')}>

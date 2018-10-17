@@ -300,7 +300,7 @@ export const logout = async (res: Response): Promise<any> => {
     maxAge: 0,
   });
 
-  return res.status(204);
+  return res.status(204).json();
 };
 
 export const socialRegister = async (

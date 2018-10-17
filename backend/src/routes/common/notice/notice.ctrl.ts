@@ -74,8 +74,9 @@ export const sendMessage = async (
       (!followingUsers || followingUsers.length === 0) &&
       (!followerUsers || followerUsers.length === 0)
     ) {
-      return res.status(204);
+      return res.status(204).json();
     }
+
     // 팔로우, 팔로잉 유저의 아이디를 가져와 userIds에 저장
     followingUsers.map(user => userIds.push(user.following as any));
     followerUsers.map(user => userIds.push(user.follower as any));
@@ -109,9 +110,9 @@ export const sendMessage = async (
       })
     );
 
-    return res.status(204);
+    return res.status(204).json();
   } catch (e) {
-    res.status(500).json, e;
+    res.status(500).json(e);
   }
 };
 

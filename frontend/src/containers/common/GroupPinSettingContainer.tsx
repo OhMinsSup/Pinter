@@ -8,6 +8,7 @@ import { getScrollBottom } from '../../lib/common';
 import { groupCreators } from '../../store/modules/group';
 import { groupsCreators } from '../..//store/modules/list/groups';
 import { writeCreators } from '../../store/modules/write';
+import { baseCreators } from 'src/store/modules/base';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -136,6 +137,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   GroupActions: bindActionCreators(groupCreators, dispatch),
   WriteActions: bindActionCreators(writeCreators, dispatch),
   ListActions: bindActionCreators(groupsCreators, dispatch),
+  BaseActions: bindActionCreators(baseCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps>(

@@ -49,7 +49,7 @@ export const createGroup = async (
       activation,
     }).save();
 
-    return res.status(204);
+    return res.status(204).json();
   } catch (e) {
     res.status(500).json(e);
   }
@@ -74,7 +74,7 @@ export const deleteGroup = async (
     await Promise.all([GroupLink.deleteMany({ group: groupId }).lean()]);
     await Group.deleteOne({ _id: groupId }).lean();
 
-    return res.status(204);
+    return res.status(204).json();
   } catch (e) {
     res.status(500).json(e);
   }
@@ -158,7 +158,7 @@ export const groupAddPin = async (
     });
 
     if (exists) {
-      return res.status(204);
+      return res.status(204).json();
     }
 
     await new GroupLink({
@@ -166,7 +166,7 @@ export const groupAddPin = async (
       pin: pinId,
     }).save();
 
-    return res.status(204);
+    return res.status(204).json();
   } catch (e) {
     res.status(500).json(e);
   }
@@ -196,7 +196,7 @@ export const groupDeletePin = async (
       pin: pinId,
     }).lean();
 
-    return res.status(204);
+    return res.status(204).json();
   } catch (e) {
     res.status(500).json(e);
   }
@@ -211,7 +211,8 @@ export const groupList = async (req: Request, res: Response): Promise<any> => {
 
     if (!user) {
       return res.status(404).json({
-        name: '유저가 존재하지 않습니다.',
+        name: 'User',
+        payload: '유저가 존재하지 않습니다.',
       });
     }
 
@@ -250,7 +251,8 @@ export const groupPinList = async (
 
     if (!group) {
       return res.status(404).json({
-        name: '그룹이 존재하지 않습니다.',
+        name: 'Group',
+        payload: '그룹이 존재하지 않습니다.',
       });
     }
 

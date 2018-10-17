@@ -48,6 +48,16 @@ class GroupList extends React.Component<Props> {
     GroupActions.setNavActive(visible);
   };
 
+  public onDelete = async (groupId: string) => {
+    const { GroupActions } = this.props;
+
+    try {
+      await GroupActions.deleteGroup(groupId);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   public initialize = async () => {
     const {
       ListActions,
@@ -56,7 +66,6 @@ class GroupList extends React.Component<Props> {
         params: { displayName },
       },
     } = this.props;
-    console.log(displayName);
 
     ListActions.initialize(active);
 
@@ -103,7 +112,7 @@ class GroupList extends React.Component<Props> {
       ownDisplayName,
       ownUsername,
     } = this.props;
-    const { onSelectTabActive } = this;
+    const { onSelectTabActive, onDelete } = this;
 
     return (
       <GroupCardList
@@ -112,6 +121,7 @@ class GroupList extends React.Component<Props> {
         ownDisplayName={ownDisplayName}
         ownUsername={ownUsername}
         onSelectTab={onSelectTabActive}
+        onDelete={onDelete}
         active={active}
         groups={groups}
       />

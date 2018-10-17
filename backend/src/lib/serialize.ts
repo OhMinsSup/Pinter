@@ -219,7 +219,7 @@ const serializeGroups = (data: any) => {
 
 const serializeGroupPin = (data: any) => {
   const {
-    pin: { pinId, body, relationUrl, createdAt, urls, likes, comments, user },
+    pin: { _id: pinId , body, relationUrl, createdAt, urls, likes, comments, user },
   } = data;
 
   return {

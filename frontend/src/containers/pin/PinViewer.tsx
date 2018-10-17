@@ -5,7 +5,6 @@ import PinHeader from '../../components/pin/PinHeader';
 import PinContent from '../../components/pin/PinContent';
 import { bindActionCreators } from 'redux';
 import { pinCreators } from '../../store/modules/pin';
-import FakePin from '../../components/pin/FakePin';
 import { lockerCreators } from '../../store/modules/locker';
 import { followCreators } from '../../store/modules/follow';
 import PinMenu from '../../components/pin/PinMenu';
@@ -13,6 +12,7 @@ import { baseCreators } from '../../store/modules/base';
 import { writeCreators } from '../../store/modules/write';
 import { History } from 'history';
 import { commonCreators } from '../../store/modules/common';
+import FullscreenLoader from 'src/components/base/FullscreenLoader';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -42,13 +42,15 @@ class PinViewer extends React.Component<Props> {
 
   public onAskRemove = (id: string) => {
     const { BaseActions, WriteActions } = this.props;
+    BaseActions.setMenu(false);
     BaseActions.setModal(true);
     WriteActions.setpinId(id);
   };
 
   public onClickUpdate = async (id: string) => {
-    const { WriteActions } = this.props;
+    const { WriteActions, BaseActions } = this.props;
     WriteActions.setpinId(id);
+    BaseActions.setMenu(false);
 
     try {
       await WriteActions.getPinData(id);
@@ -61,7 +63,12 @@ class PinViewer extends React.Component<Props> {
 
   public onClick = () => {
     const { BaseActions, menuVisible } = this.props;
-    menuVisible ? BaseActions.setMenu(false) : BaseActions.setMenu(true);
+
+    if (menuVisible) {
+      BaseActions.setMenu(false);
+    } else {
+      BaseActions.setMenu(true);
+    }
   };
 
   public onToggleLike = async () => {
@@ -132,7 +139,7 @@ class PinViewer extends React.Component<Props> {
       onAskRemove,
     } = this;
 
-    if (loading) return <FakePin />;
+    if (loading) return <FullscreenLoader visible={loading} />;
 
     return (
       <React.Fragment>

@@ -10,6 +10,7 @@ type Props = {
   title: string;
   displayName: string;
   thumbnail: string;
+  onDelete(groupId: string): Promise<void>;
 };
 
 const GroupCard: React.SFC<Props> = ({
@@ -17,6 +18,7 @@ const GroupCard: React.SFC<Props> = ({
   displayName,
   thumbnail,
   groupId,
+  onDelete,
 }) => {
   return (
     <div className={cx('group-card')}>
@@ -28,6 +30,7 @@ const GroupCard: React.SFC<Props> = ({
           <Link to={`/@${displayName}`} className={cx('displayName')}>
             {displayName}
           </Link>
+          <button onClick={() => onDelete(groupId)}>삭제</button>
           <h3>
             <Link to={`/@${displayName}/group/${groupId}`}>{title}</Link>
           </h3>

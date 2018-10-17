@@ -13,6 +13,7 @@ type Props = {
   active: boolean;
   groups: any[];
   onSelectTab(visible: boolean): void;
+  onDelete(groupId: string): Promise<void>;
 };
 
 const GroupCardList: React.SFC<Props> = ({
@@ -23,6 +24,7 @@ const GroupCardList: React.SFC<Props> = ({
   commonUserName,
   ownDisplayName,
   ownUsername,
+  onDelete,
 }) => {
   const groupList = groups.map(group => {
     const {
@@ -35,6 +37,7 @@ const GroupCardList: React.SFC<Props> = ({
       <GroupCard
         key={groupId}
         groupId={groupId}
+        onDelete={onDelete}
         title={title}
         displayName={displayName}
         thumbnail={thumbnail}

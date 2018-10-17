@@ -13,6 +13,17 @@ type OwnProps = { match: match<{ id: string }> };
 type Props = StateProps & DispatchProps & OwnProps;
 
 class GroupPageViewer extends React.Component<Props> {
+  public onSetDelete = () => {
+    const { GroupActions, visible } = this.props;
+    console.log(visible);
+
+    if (visible) {
+      GroupActions.setDeletePin(false);
+    } else {
+      GroupActions.setDeletePin(true);
+    }
+  };
+
   public initialize = async () => {
     const {
       match: {
@@ -33,11 +44,26 @@ class GroupPageViewer extends React.Component<Props> {
   }
 
   public render() {
-    const { title, activation, groupId } = this.props;
+    const {
+      title,
+      activation,
+      match: {
+        params: { id },
+        url,
+      },
+      visible,
+    } = this.props;
+    const { onSetDelete } = this;
+
     return (
       <React.Fragment>
-        <GroupHeader title={title} activation={activation} />
-        <GroupPinList id={groupId} />
+        <GroupHeader
+          title={title}
+          activation={activation}
+          onSetDelete={onSetDelete}
+          visible={visible}
+        />
+        <GroupPinList id={id} url={url} />
       </React.Fragment>
     );
   }
@@ -46,7 +72,7 @@ class GroupPageViewer extends React.Component<Props> {
 const mapStateToProps = ({ group }: StoreState) => ({
   title: group.group.title,
   activation: group.group.activation,
-  groupId: group.group.groupId,
+  visible: group.deletePin.visible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

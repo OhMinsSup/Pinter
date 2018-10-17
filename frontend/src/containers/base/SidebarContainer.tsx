@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Sidebar from '../../components/base/Sidebar';
 import { StoreState } from '../../store/modules';
-import { Dispatch, bindActionCreators, compose } from 'redux';
+import { Dispatch, bindActionCreators } from 'redux';
 import { baseCreators } from '../../store/modules/base';
 import { connect } from 'react-redux';
 import { userCreators } from '../../store/modules/user';
@@ -64,9 +64,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   NoticeActions: bindActionCreators(noticeCreators, dispatch),
 });
 
-export default compose(
-  connect<StateProps, DispatchProps>(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+export default connect<StateProps, DispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
 )(SidebarContainer);

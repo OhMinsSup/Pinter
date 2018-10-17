@@ -40,13 +40,8 @@ const PinMenu: React.SFC<Props> = ({
                   수정
                 </PinMenuItem>
                 <PinMenuItem onClick={() => onAskRemove(id)}>삭제</PinMenuItem>
-                <PinMenuItem>공유</PinMenuItem>
               </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <PinMenuItem>공유</PinMenuItem>
-              </React.Fragment>
-            )}
+            ) : null}
             <div className={cx('separator')} />
             <PinMenuItem onClick={onClick}>메뉴 닫기</PinMenuItem>
           </div>

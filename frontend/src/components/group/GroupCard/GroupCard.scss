@@ -59,6 +59,19 @@
         margin-bottom: 0.5rem;
         color: $oc-red-5;
       }
+      button {
+        margin-left: 0.5rem;
+        border: 0;
+        background-color: white;
+        border-radius: 5px;
+        border: 1px solid $oc-red-5;
+        cursor: pointer;
+        &:hover {
+          background-color: $oc-red-5;
+          color: white;
+        }
+      }
+
       h3 {
         display: block;
         margin: 0;

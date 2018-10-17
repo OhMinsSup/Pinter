@@ -160,7 +160,7 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
     await Pin.deleteOne({ _id: pinId }).lean();
     await User.unpinCount(userId);
 
-    return res.status(204);
+    return res.status(204).json();
   } catch (e) {
     res.status(500).json(e);
   }

@@ -8,9 +8,16 @@ const cx = classNames.bind(styles);
 type Props = {
   title: string;
   activation: boolean;
+  visible: boolean;
+  onSetDelete(): void;
 };
 
-const GroupHeader: React.SFC<Props> = ({ title, activation }) => {
+const GroupHeader: React.SFC<Props> = ({
+  title,
+  activation,
+  onSetDelete,
+  visible,
+}) => {
   return (
     <div className={cx('group-header')}>
       <section>
@@ -24,8 +31,8 @@ const GroupHeader: React.SFC<Props> = ({ title, activation }) => {
         <Button theme="default" className={cx('btn')}>
           핀 추가
         </Button>
-        <Button theme="default" className={cx('btn')}>
-          핀 삭제
+        <Button theme="default" className={cx('btn')} onClick={onSetDelete}>
+          {visible ? '취소' : '핀 삭제'}
         </Button>
       </section>
     </div>

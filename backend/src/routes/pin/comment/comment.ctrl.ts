@@ -86,7 +86,7 @@ export const deleteComment = async (
       ],
     }).lean();
 
-    return res.status(204);
+    return res.status(204).json();
   } catch (e) {
     res.status(500).json(e);
   }

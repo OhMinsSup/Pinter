@@ -10,6 +10,9 @@ const SET_NAV_ACTIVE = 'group/SET_NAV_ACTIVE';
 const GROUP_APP_PIN_SAVE = 'group/GROUP_APP_PIN_SAVE';
 const GET_GROUP = 'group/GET_GROUP';
 const GET_GROUP_SUCCESS = 'group/GET_GROUP_SUCCESS';
+const DELETE_GROUP = 'group/DELETE_GROUP';
+const DELETE_GROUP_PIN = 'group/DELETE_GROUP_PIN';
+const SET_DELETE_PIN = 'group/SET_DELETE_PIN';
 
 export const groupCreators = {
   createSubmitGroup: createAction(CREATE_SUBMI_GROUP, groupAPI.createGroupAPI),
@@ -18,6 +21,9 @@ export const groupCreators = {
   setNavActive: createAction(SET_NAV_ACTIVE, (visible: boolean) => visible),
   groupAddPin: createAction(GROUP_APP_PIN_SAVE, groupAPI.groupAddPinAPI),
   getGroup: createPromiseThunk(GET_GROUP, groupAPI.getGroupAPI),
+  deleteGroup: createAction(DELETE_GROUP, groupAPI.deleteGroupAPI),
+  deleteGroupPin: createAction(DELETE_GROUP_PIN, groupAPI.groupDeletePinAPI),
+  setDeletePin: createAction(SET_DELETE_PIN, (visible: boolean) => visible),
 };
 
 type GetGroupAction = GenericResponseAction<
@@ -27,6 +33,7 @@ type GetGroupAction = GenericResponseAction<
 type SetMakeGroupAction = ReturnType<typeof groupCreators.setMakeGroup>;
 type SetGroupPinAction = ReturnType<typeof groupCreators.setGroupPin>;
 type SetNavActiveAction = ReturnType<typeof groupCreators.setNavActive>;
+type SetDeletePinAction = ReturnType<typeof groupCreators.setDeletePin>;
 
 export interface GroupState {
   MakeModal: {
@@ -36,6 +43,9 @@ export interface GroupState {
     visible: boolean;
   };
   active: {
+    visible: boolean;
+  };
+  deletePin: {
     visible: boolean;
   };
   group: {
@@ -53,6 +63,9 @@ const initialState: GroupState = {
     visible: false,
   },
   active: {
+    visible: false,
+  },
+  deletePin: {
     visible: false,
   },
   group: {
@@ -89,6 +102,12 @@ export default handleActions<GroupState, any>(
       return porduce(state, draft => {
         if (data === undefined) return;
         draft.group = data;
+      });
+    },
+    [SET_DELETE_PIN]: (state, action: SetDeletePinAction) => {
+      return porduce(state, draft => {
+        if (action.payload === undefined) return;
+        draft.deletePin.visible = action.payload;
       });
     },
   },

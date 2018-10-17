@@ -4,15 +4,17 @@ import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import { getScrollBottom } from '../../lib/common';
-import CommonCardList from 'src/components/common/CommonCardList';
 import { baseCreators } from 'src/store/modules/base';
 import { pinCreators } from 'src/store/modules/pin';
 import { groupsCreators } from 'src/store/modules/list/groups';
 import FakePinCards from 'src/components/common/FakePinCards/FakePinCards';
+import { groupCreators } from 'src/store/modules/group';
+import CommonCardList from 'src/components/common/CommonCardList';
+import CommonScreenCard from 'src/components/group/CommonScreenCard';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type OwnProps = { id: string };
+type OwnProps = { id: string; url: string };
 type Props = StateProps & DispatchProps & OwnProps;
 
 class GroupPinList extends React.Component<Props> {
@@ -54,6 +56,16 @@ class GroupPinList extends React.Component<Props> {
     }
   };
 
+  public onDelete = async (pinId: string) => {
+    const { GroupActions, id } = this.props;
+
+    try {
+      await GroupActions.deleteGroupPin(id, pinId);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   public initialize = async () => {
     const { ListActions, id } = this.props;
     try {
@@ -88,26 +100,29 @@ class GroupPinList extends React.Component<Props> {
   }
 
   public render() {
-    const { pins, loading } = this.props;
-    const { onOpen } = this;
-
+    const { pins, loading, visible } = this.props;
+    const { onOpen, onDelete } = this;
     if (loading) return <FakePinCards pins={pins} />;
+
+    if (visible) return <CommonScreenCard pins={pins} onDelete={onDelete} />;
 
     return <CommonCardList pins={pins} onOpen={onOpen} theme="user" />;
   }
 }
 
-const mapStateToProps = ({ list }: StoreState) => ({
+const mapStateToProps = ({ list, group }: StoreState) => ({
   pins: list.groups.pins.pins,
   prefetched: list.groups.pins.prefetched,
   next: list.groups.pins.next,
   loading: list.groups.pins.loading,
+  visible: group.deletePin.visible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   ListActions: bindActionCreators(groupsCreators, dispatch),
   BaseActions: bindActionCreators(baseCreators, dispatch),
   PinActions: bindActionCreators(pinCreators, dispatch),
+  GroupActions: bindActionCreators(groupCreators, dispatch),
 });
 
 export default connect<StateProps, DispatchProps, OwnProps>(
