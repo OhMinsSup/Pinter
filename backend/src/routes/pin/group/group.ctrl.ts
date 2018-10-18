@@ -62,7 +62,9 @@ export const deleteGroup = async (
   const { groupId } = req.params;
 
   try {
-    const groupExists: IGroup = await Group.findById(groupId).lean();
+    const groupExists: IGroup = await Group.findById(groupId)
+      .lean()
+      .exec();
 
     if (!groupExists) {
       return res.status(404).json({
@@ -71,8 +73,14 @@ export const deleteGroup = async (
       });
     }
 
-    await Promise.all([GroupLink.deleteMany({ group: groupId }).lean()]);
-    await Group.deleteOne({ _id: groupId }).lean();
+    await Promise.all([
+      GroupLink.deleteMany({ group: groupId })
+        .lean()
+        .exec(),
+    ]);
+    await Group.deleteOne({ _id: groupId })
+      .lean()
+      .exec();
 
     return res.status(204).json();
   } catch (e) {
@@ -109,7 +117,7 @@ export const updateGroup = async (
   const { title, activation }: BodySchema = req.body;
   const { groupId } = req.params;
   console.log(title, activation, groupId);
-  
+
   try {
     const group: IGroup = await Group.findByIdAndUpdate(
       groupId,
@@ -120,7 +128,9 @@ export const updateGroup = async (
       {
         new: true,
       }
-    ).lean();
+    )
+      .lean()
+      .exec();
 
     if (!group) {
       return res.status(404).json({
@@ -150,8 +160,12 @@ export const groupAddPin = async (
 
   try {
     const [pinExists, groupExists]: [IPin, IGroup] = await Promise.all([
-      Pin.findById(pinId).lean(),
-      Group.findById(groupId).lean(),
+      Pin.findById(pinId)
+        .lean()
+        .exec(),
+      Group.findById(groupId)
+        .lean()
+        .exec(),
     ]);
 
     if (!pinExists || !groupExists) {
@@ -163,7 +177,9 @@ export const groupAddPin = async (
 
     const exists: IGroupLink = await GroupLink.findOne({
       $and: [{ group: groupExists._id }, { pin: pinExists._id }],
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     if (exists) {
       return res.status(204).json();
@@ -188,8 +204,12 @@ export const groupDeletePin = async (
 
   try {
     const [pinExists, groupExists]: [IPin, IGroup] = await Promise.all([
-      Pin.findById(pinId).lean(),
-      Group.findById(groupId).lean(),
+      Pin.findById(pinId)
+        .lean()
+        .exec(),
+      Group.findById(groupId)
+        .lean()
+        .exec(),
     ]);
 
     if (!pinExists || !groupExists) {
@@ -202,7 +222,9 @@ export const groupDeletePin = async (
     await GroupLink.deleteOne({
       group: groupId,
       pin: pinId,
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     return res.status(204).json();
   } catch (e) {
@@ -255,7 +277,9 @@ export const groupPinList = async (
   const { cursor } = req.query;
 
   try {
-    const group: IGroup = await Group.findById(groupId).lean();
+    const group: IGroup = await Group.findById(groupId)
+      .lean()
+      .exec();
 
     if (!group) {
       return res.status(404).json({
@@ -291,7 +315,9 @@ export const readGroup = async (req: Request, res: Response): Promise<any> => {
   const { groupId } = req.params;
 
   try {
-    const group: IGroup = await Group.findById(groupId).lean();
+    const group: IGroup = await Group.findById(groupId)
+      .lean()
+      .exec();
 
     if (!group) {
       return res.status(404).json({

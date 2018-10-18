@@ -72,7 +72,8 @@ Pin.statics.readPinList = function(
     .populate('user')
     .sort({ _id: -1 })
     .limit(20)
-    .lean();
+    .lean()
+    .exec();
 };
 
 Pin.statics.like = function(pinId: string): Promise<any> {
@@ -82,7 +83,9 @@ Pin.statics.like = function(pinId: string): Promise<any> {
       $inc: { likes: 1 },
     },
     { new: true }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 Pin.statics.unlike = function(pinId: string): Promise<any> {
@@ -92,7 +95,9 @@ Pin.statics.unlike = function(pinId: string): Promise<any> {
       $inc: { likes: -1 },
     },
     { new: true }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 Pin.statics.comment = function(pinId: string): Promise<any> {
@@ -102,7 +107,9 @@ Pin.statics.comment = function(pinId: string): Promise<any> {
       $inc: { comments: 1 },
     },
     { new: true }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 Pin.statics.uncomment = function(pinId: string): Promise<any> {
@@ -112,7 +119,9 @@ Pin.statics.uncomment = function(pinId: string): Promise<any> {
       $inc: { comments: -1 },
     },
     { new: true }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 const PinModel = model<IPin>('Pin', Pin) as IPinModel;

@@ -95,13 +95,17 @@ User.statics.findByEmailOrUsername = function(
 ): Promise<any> {
   return this.findOne({
     [type]: value,
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 User.statics.findByDisplayName = function(value: string): Promise<any> {
   return this.findOne({
     'profile.displayName': value,
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 User.statics.findBySocial = function(
@@ -112,7 +116,9 @@ User.statics.findBySocial = function(
 
   return this.findOne({
     [key]: socialId,
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 User.statics.usersList = function(cursor?: string): Promise<any> {
@@ -121,7 +127,8 @@ User.statics.usersList = function(cursor?: string): Promise<any> {
   return this.find(query)
     .sort({ _id: -1 })
     .limit(15)
-    .lean();
+    .lean()
+    .exec();
 };
 
 User.statics.generate = function(profile: IUser): Promise<any> {
@@ -155,7 +162,9 @@ User.statics.followerCount = function(userId: string): Promise<any> {
       new: true,
       select: 'count.follower',
     }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 User.statics.unfollowerCount = function(userId: string): Promise<any> {
@@ -170,7 +179,9 @@ User.statics.unfollowerCount = function(userId: string): Promise<any> {
       new: true,
       select: 'count.follower',
     }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 User.statics.followingCount = function(userId: string): Promise<any> {
@@ -185,7 +196,9 @@ User.statics.followingCount = function(userId: string): Promise<any> {
       new: true,
       select: 'count.following',
     }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 User.statics.unfollowingCount = function(userId: string): Promise<any> {
@@ -200,7 +213,9 @@ User.statics.unfollowingCount = function(userId: string): Promise<any> {
       new: true,
       select: 'count.following',
     }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 User.statics.pinCount = function(userId: string): Promise<any> {
@@ -215,7 +230,9 @@ User.statics.pinCount = function(userId: string): Promise<any> {
       new: true,
       select: 'count.pin',
     }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 User.statics.unpinCount = function(userId: string): Promise<any> {
@@ -230,7 +247,9 @@ User.statics.unpinCount = function(userId: string): Promise<any> {
       new: true,
       select: 'count.pin',
     }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 const UserModel = model<IUser>('User', User) as IUserModel;

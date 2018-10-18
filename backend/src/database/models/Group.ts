@@ -43,7 +43,8 @@ Group.statics.groupList = function(
     .populate('user')
     .sort({ _id: -1 })
     .limit(15)
-    .lean();
+    .lean()
+    .exec();
 };
 
 const GroupModel = model<IGroup>('Group', Group) as IGroupModel;

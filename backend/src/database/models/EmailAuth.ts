@@ -30,7 +30,9 @@ EmailAuth.statics.findCode = function(code: string): Promise<any> {
   return this.findOne({
     code,
     logged: false,
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 EmailAuth.statics.use = function(code: string): Promise<any> {
@@ -42,7 +44,9 @@ EmailAuth.statics.use = function(code: string): Promise<any> {
       },
     },
     { new: true }
-  ).lean();
+  )
+    .lean()
+    .exec();
 };
 
 const EmailAuthModel = model<IEmailAuth>(

@@ -22,7 +22,9 @@ export const like = async (req: Request, res: Response): Promise<any> => {
     });
 
     await Pin.like(pinId);
-    const pin = await Pin.findById(pinId).lean();
+    const pin = await Pin.findById(pinId)
+      .lean()
+      .exec();
 
     if (!pin) {
       return res.status(500).json({
@@ -60,9 +62,13 @@ export const unlike = async (req: Request, res: Response): Promise<any> => {
         user: userId,
       },
     ],
-  }).lean();
+  })
+    .lean()
+    .exec();
   await Pin.unlike(pinId);
-  const pin = await Pin.findById(pinId).lean();
+  const pin = await Pin.findById(pinId)
+    .lean()
+    .exec();
 
   if (!pin) {
     return res.status(500).json({
@@ -89,7 +95,9 @@ export const getLike = async (req: Request, res: Response): Promise<any> => {
       liked = !!exists;
     }
 
-    const pin = await Pin.findById(pinId).lean();
+    const pin = await Pin.findById(pinId)
+      .lean()
+      .exec();
 
     if (!pin) {
       return res.status(500).json({

@@ -127,7 +127,9 @@ export const updatePin = async (req: Request, res: Response): Promise<any> => {
       {
         new: true,
       }
-    ).lean();
+    )
+      .lean()
+      .exec();
 
     if (!pin) {
       return res.status(500).json({
@@ -150,14 +152,26 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
 
   try {
     await Promise.all([
-      TagLink.deleteMany({ pinId }).lean(),
-      Like.deleteMany({ pin: pinId }).lean(),
-      Comment.deleteMany({ pin: pinId }).lean(),
-      Locker.deleteMany({ pin: pinId }).lean(),
-      GroupLink.deleteMany({ pin: pinId }).lean(),
+      TagLink.deleteMany({ pinId })
+        .lean()
+        .exec(),
+      Like.deleteMany({ pin: pinId })
+        .lean()
+        .exec(),
+      Comment.deleteMany({ pin: pinId })
+        .lean()
+        .exec(),
+      Locker.deleteMany({ pin: pinId })
+        .lean()
+        .exec(),
+      GroupLink.deleteMany({ pin: pinId })
+        .lean()
+        .exec(),
     ]);
 
-    await Pin.deleteOne({ _id: pinId }).lean();
+    await Pin.deleteOne({ _id: pinId })
+      .lean()
+      .exec();
     await User.unpinCount(userId);
 
     return res.status(204).json();

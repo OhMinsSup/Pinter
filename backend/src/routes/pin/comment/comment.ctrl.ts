@@ -41,6 +41,7 @@ export const writeComment = async (
         User.findOne({ 'profile.displayName': tag })
           .select('_id')
           .lean()
+          .exec()
       )
     );
     const tagIds = tagUserNames.map(id => id).filter(e => e);
@@ -68,7 +69,9 @@ export const deleteComment = async (
   const pinId: string = req['pin']._id;
 
   try {
-    const comment: IComment = await Comment.findById(commentId).lean();
+    const comment: IComment = await Comment.findById(commentId)
+      .lean()
+      .exec();
 
     if (!comment) {
       return res.status(404).json({
@@ -84,7 +87,9 @@ export const deleteComment = async (
           pin: pinId,
         },
       ],
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     return res.status(204).json();
   } catch (e) {

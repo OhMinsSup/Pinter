@@ -50,7 +50,8 @@ Comment.statics.readComment = function(commentId: string): Promise<any> {
         },
       ],
     })
-    .lean();
+    .lean()
+    .exec();
 };
 
 Comment.statics.getCommentList = function(pinId: string): Promise<any> {
@@ -67,7 +68,8 @@ Comment.statics.getCommentList = function(pinId: string): Promise<any> {
       ],
     })
     .sort({ _id: -1 })
-    .lean();
+    .lean()
+    .exec();
 };
 
 const CommentModel = model<IComment>('Comment', Comment) as ICommentModel;

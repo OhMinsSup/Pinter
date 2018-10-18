@@ -29,7 +29,9 @@ Like.statics.checkExists = function(
 ): Promise<any> {
   return this.findOne({
     $and: [{ user: userId }, { pin: pinId }],
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 const LikeModel = model<ILike>('Like', Like) as ILikeModel;

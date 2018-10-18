@@ -47,7 +47,8 @@ Locker.statics.lockerList = function(
     })
     .sort({ _id: -1 })
     .limit(10)
-    .lean();
+    .lean()
+    .exec();
 };
 
 Locker.statics.checkExists = function(
@@ -56,7 +57,9 @@ Locker.statics.checkExists = function(
 ): Promise<any> {
   return this.findOne({
     $and: [{ user: userId }, { pin: pinId }],
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 const LockerModel = model<ILocker>('Locker', Locker) as ILockerModel;

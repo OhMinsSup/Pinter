@@ -14,7 +14,9 @@ export const checkPinExistancy = async (
   const { id } = req.params;
 
   try {
-    const pin = await Pin.findById(id).lean();
+    const pin = await Pin.findById(id)
+      .lean()
+      .exec();
 
     if (!pin) {
       return res.status(404).json({

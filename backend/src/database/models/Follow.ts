@@ -32,7 +32,9 @@ Follow.statics.checkExists = function(
 ): Promise<any> {
   return this.findOne({
     $and: [{ following: followId }, { follower: userId }],
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 Follow.statics.followingList = function(
@@ -46,13 +48,15 @@ Follow.statics.followingList = function(
         .populate('following')
         .sort({ _id: -1 })
         .lean()
+        .exec()
     : this.find({
         follower: followerId,
       })
         .populate('following')
         .sort({ _id: -1 })
         .limit(10)
-        .lean();
+        .lean()
+        .exec();
 
   return data;
 };
@@ -68,13 +72,15 @@ Follow.statics.followerList = function(
         .populate('follower')
         .sort({ _id: -1 })
         .lean()
+        .exec()
     : this.find({
         following: followingId,
       })
         .populate('follower')
         .sort({ _id: -1 })
         .limit(10)
-        .lean();
+        .lean()
+        .exec();
 
   return data;
 };

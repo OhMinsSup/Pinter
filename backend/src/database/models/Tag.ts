@@ -42,7 +42,9 @@ Tag.statics.getTagId = async function(name: string): Promise<any> {
           ],
         },
       ],
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     if (!tag) {
       tag = await this.create({
@@ -64,7 +66,9 @@ Tag.statics.bulkGetNewId = async function(names: string[]): Promise<any> {
   try {
     const tagData: ITag[] = await this.find({
       name: names,
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     const missingTags = names.filter(
       name => tagData.findIndex(tag => tag.name === name) === -1
@@ -89,7 +93,9 @@ Tag.statics.bulkGetMissingId = async function(names: string[]): Promise<any> {
           name: names,
         },
       ],
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     const tagIds = tagData.map(tag => tag._id);
     return tagIds;
@@ -118,7 +124,9 @@ Tag.statics.findByTagName = function(name: string): Promise<any> {
         ],
       },
     ],
-  }).lean();
+  })
+    .lean()
+    .exec();
 };
 
 const TagModel = model<ITag>('Tag', Tag) as ITagModel;

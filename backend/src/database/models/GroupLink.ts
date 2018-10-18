@@ -44,7 +44,8 @@ GroupLink.statics.groupPinList = function(
     })
     .sort({ _id: -1 })
     .limit(20)
-    .lean();
+    .lean()
+    .exec();
 };
 
 const GroupLinkModel = model<IGroupLink>(

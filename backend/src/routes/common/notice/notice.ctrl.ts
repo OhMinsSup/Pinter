@@ -21,7 +21,8 @@ export const createNoticeRoom = async (
         path: 'creator',
         select: 'username profile.displayName profile.thumbnail',
       })
-      .lean();
+      .lean()
+      .exec();
 
     if (exists) {
       return res.json({
@@ -38,7 +39,8 @@ export const createNoticeRoom = async (
         path: 'creator',
         select: 'username profile.displayName profile.thumbnail',
       })
-      .lean();
+      .lean()
+      .exec();
 
     return res.json({
       noticeWithData: serializeNoticeRoom(noticeData),
@@ -65,10 +67,14 @@ export const sendMessage = async (
     // 내가 팔로우한 유저
     const followingUsers: IFollow[] = await Follow.find({
       follower: userId,
-    }).lean();
+    })
+      .lean()
+      .exec();
     const followerUsers: IFollow[] = await Follow.find({
       following: userId,
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     if (
       (!followingUsers || followingUsers.length === 0) &&
@@ -93,6 +99,7 @@ export const sendMessage = async (
             select: 'username profile.displayName profile.thumbnail',
           })
           .lean()
+          .exec()
       )
     );
 
@@ -123,7 +130,9 @@ export const getNoticeList = async (
   const userId: string = req['user']._id;
 
   try {
-    const notice: INotice = await Notice.findOne({ creator: userId }).lean();
+    const notice: INotice = await Notice.findOne({ creator: userId })
+      .lean()
+      .exec();
 
     if (!notice) {
       return res.status(404).json({
@@ -136,7 +145,8 @@ export const getNoticeList = async (
     })
       .populate('sender')
       .sort({ _id: -1 })
-      .lean();
+      .lean()
+      .exec();
 
     return res.json({
       message: message.map(m => {

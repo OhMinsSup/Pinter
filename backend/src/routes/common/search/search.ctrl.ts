@@ -27,7 +27,8 @@ export const serachPin = async (req: Request, res: Response): Promise<any> => {
       .populate('user')
       .sort({ _id: -1 })
       .limit(10)
-      .lean();
+      .lean()
+      .exec();
 
     const next =
       pins.length === 10 ? `/common/search/pin?cursor=${pins[9]._id}` : null;
@@ -81,7 +82,8 @@ export const serachUser = async (req: Request, res: Response): Promise<any> => {
     const users: IUser[] = await User.find(searchBy)
       .limit(10)
       .sort({ _id: -1 })
-      .lean();
+      .lean()
+      .exec();
 
     const next =
       users.length === 10 ? `/common/search/user?cursor=${users[9]._id}` : null;

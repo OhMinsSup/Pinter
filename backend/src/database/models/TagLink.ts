@@ -66,7 +66,9 @@ TagLink.statics.removeTagsPin = async function(
           $or: [{ pinId }, { tagId: tagIds }],
         },
       ],
-    });
+    })
+      .lean()
+      .exec();
   } catch (e) {
     throw e;
   }
@@ -82,7 +84,8 @@ TagLink.statics.getTagNames = function(pinId: string): Promise<any> {
       path: 'tagId',
       select: 'name',
     })
-    .lean();
+    .lean()
+    .exec();
 };
 
 const TagLinkModel = model<ITagLink>('TagLink', TagLink) as ITagLinkModel;

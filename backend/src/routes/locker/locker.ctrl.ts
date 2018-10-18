@@ -52,7 +52,9 @@ export const unLockerPin = async (
           pin: pinId,
         },
       ],
-    }).lean();
+    })
+      .lean()
+      .exec();
 
     return res.json({
       locker: true,

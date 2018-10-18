@@ -37,7 +37,9 @@ export const getTags = async (req: Request, res: Response): Promise<any> => {
         },
       },
       { $unwind: '$tag_docs' },
-    ]).sort(sortBy);
+    ])
+      .sort(sortBy)
+      .exec();
 
     return res.json(tagData.map(serializeTag));
   } catch (e) {
@@ -57,7 +59,8 @@ export const getTagInfo = async (req: Request, res: Response): Promise<any> => {
           path: 'user',
         },
       })
-      .lean();
+      .lean()
+      .exec();
 
     return res.json({
       pinWithData: pinData

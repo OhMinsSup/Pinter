@@ -78,7 +78,9 @@ export const unfollow = async (req: Request, res: Response): Promise<any> => {
       });
     }
 
-    await Follow.deleteOne({ following: followId, follower: userId }).lean();
+    await Follow.deleteOne({ following: followId, follower: userId })
+      .lean()
+      .exec();
     await User.unfollowerCount(userId);
     await User.unfollowingCount(followId);
 
