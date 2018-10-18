@@ -9,6 +9,7 @@ const cx = classNames.bind(styles);
 
 type Props = {
   onOpen: boolean;
+  groupId: string;
   onClick(): void;
   onSubmit(value: string, active: boolean): Promise<void>;
 };
@@ -41,7 +42,7 @@ class MakeGroupModal extends React.Component<Props, State> {
   };
 
   public render() {
-    const { onClick, onOpen, onSubmit } = this.props;
+    const { onClick, onOpen, onSubmit, groupId } = this.props;
     const { visible, value } = this.state;
     const { onAction, onChange } = this;
     return (
@@ -49,7 +50,9 @@ class MakeGroupModal extends React.Component<Props, State> {
         <div className={cx('make-group-modal')}>
           <div className={cx('group-form')}>
             <div className={cx('form-header')}>
-              <h5 className={cx('header')}>그룹 만들기</h5>
+              <h5 className={cx('header')}>
+                {groupId ? '그룹 수정하기' : '그룹 만들기'}
+              </h5>
             </div>
             <hr />
             <div className={cx('form-content')}>
@@ -104,7 +107,7 @@ class MakeGroupModal extends React.Component<Props, State> {
                   className={cx('btn')}
                   onClick={() => onSubmit(value, visible)}
                 >
-                  만들기
+                  {groupId ? '수정하기' : '만들기'}
                 </Button>
               </div>
             </div>

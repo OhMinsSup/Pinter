@@ -32,7 +32,7 @@ export const serachPin = async (req: Request, res: Response): Promise<any> => {
     const next =
       pins.length === 10 ? `/common/search/pin?cursor=${pins[9]._id}` : null;
 
-    res.json({
+    return res.json({
       next,
       Data: pins.map(serializePinList).map(pin => ({
         ...pin,
@@ -86,7 +86,7 @@ export const serachUser = async (req: Request, res: Response): Promise<any> => {
     const next =
       users.length === 10 ? `/common/search/user?cursor=${users[9]._id}` : null;
 
-    res.json({
+    return res.json({
       next,
       Data: users.map(serializeUsers),
     });

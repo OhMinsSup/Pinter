@@ -16,9 +16,16 @@ class MakePinGroupContainer extends React.Component<Props> {
   };
 
   public onSubmit = async (value: string, active: boolean) => {
-    const { GroupActions } = this.props;
+    const { GroupActions, group } = this.props;
 
     try {
+      if (group) {
+        const { groupId } = group;
+        await GroupActions.updateGroup(groupId, value, active);
+        GroupActions.setMakeGroup(false);
+        return;
+      }
+
       await GroupActions.createSubmitGroup({
         title: value,
         activation: active,
@@ -31,19 +38,28 @@ class MakePinGroupContainer extends React.Component<Props> {
   };
 
   public render() {
-    const { visible } = this.props;
+    const {
+      visible,
+      group: { groupId },
+    } = this.props;
     const { onClick, onSubmit } = this;
 
     if (!visible) return null;
 
     return (
-      <MakeGroupModal onSubmit={onSubmit} onClick={onClick} onOpen={visible} />
+      <MakeGroupModal
+        groupId={groupId}
+        onSubmit={onSubmit}
+        onClick={onClick}
+        onOpen={visible}
+      />
     );
   }
 }
 
 const mapStateToProps = ({ group }: StoreState) => ({
-  visible: group.MakeModal.visible,
+  visible: group.makeModal.visible,
+  group: group.group,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -9,6 +9,7 @@ type Props = {
   title: string;
   activation: boolean;
   visible: boolean;
+  onSetUpdate(): void;
   onSetDelete(): void;
 };
 
@@ -17,6 +18,7 @@ const GroupHeader: React.SFC<Props> = ({
   activation,
   onSetDelete,
   visible,
+  onSetUpdate,
 }) => {
   return (
     <div className={cx('group-header')}>
@@ -25,11 +27,8 @@ const GroupHeader: React.SFC<Props> = ({
           <h1 className={cx('title')}>{title}</h1>
           <p className={cx('active')}>{activation ? '비공개' : '공개'}</p>
         </div>
-        <Button theme="default" className={cx('btn')}>
+        <Button theme="default" className={cx('btn')} onClick={onSetUpdate}>
           그룹 수정
-        </Button>
-        <Button theme="default" className={cx('btn')}>
-          핀 추가
         </Button>
         <Button theme="default" className={cx('btn')} onClick={onSetDelete}>
           {visible ? '취소' : '핀 삭제'}

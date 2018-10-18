@@ -53,6 +53,8 @@ class GroupList extends React.Component<Props> {
 
     try {
       await GroupActions.deleteGroup(groupId);
+      const { initialize } = this;
+      initialize();
     } catch (e) {
       console.log(e);
     }

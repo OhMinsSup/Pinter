@@ -26,7 +26,7 @@ export const like = async (req: Request, res: Response): Promise<any> => {
 
     if (!pin) {
       return res.status(500).json({
-        name: '핀',
+        name: 'Pin',
         payload: '핀이 존재하지 않았습니다.',
       });
     }
@@ -66,7 +66,7 @@ export const unlike = async (req: Request, res: Response): Promise<any> => {
 
   if (!pin) {
     return res.status(500).json({
-      name: '핀',
+      name: 'Pin',
       payload: '핀이 존재하지 않았습니다.',
     });
   }
@@ -93,7 +93,7 @@ export const getLike = async (req: Request, res: Response): Promise<any> => {
 
     if (!pin) {
       return res.status(500).json({
-        name: '핀',
+        name: 'Pin',
         payload: '핀이 존재하지 않았습니다.',
       });
     }

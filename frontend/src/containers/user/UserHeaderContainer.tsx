@@ -119,7 +119,7 @@ const mapStateToProps = ({
   loading: common.profile.loading,
   visible: base.profile.visible,
   follow: follow.user.follow,
-  group: group.MakeModal.visible,
+  group: group.makeModal.visible,
   username: user.user && user.user.username,
   displayName: user.user && user.user.displayName,
 });

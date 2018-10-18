@@ -52,7 +52,7 @@ export const unLockerPin = async (
           pin: pinId,
         },
       ],
-    });
+    }).lean();
 
     return res.json({
       locker: true,

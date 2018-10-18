@@ -17,8 +17,11 @@ export const createGroupAPI = ({
   axios.post('/pin/groups/', { title, activation });
 export const deleteGroupAPI = (groupId: string): Promise<any> =>
   axios.delete(`/pin/groups/${groupId}`);
-export const updateGroupAPI = (groupId: string): Promise<any> =>
-  axios.put(`/pin/groups/${groupId}`);
+export const updateGroupAPI = (
+  groupId: string,
+  title: string,
+  activation: boolean
+): Promise<any> => axios.put(`/pin/groups/${groupId}`, { title, activation });
 export const nextAPI = (next: string): Promise<any> => axios.get(next);
 export const groupListAPI = (
   active: boolean,

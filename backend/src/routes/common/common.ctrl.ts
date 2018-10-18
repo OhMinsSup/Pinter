@@ -17,7 +17,7 @@ export const getUsers = async (req: Request, res: Response): Promise<any> => {
     const next =
       user.length === 15 ? `/common/users?cursor=${user[14]._id}` : null;
 
-    res.json({
+    return res.json({
       next,
       usersWithData: user.map(serializeUsers),
     });
@@ -35,7 +35,7 @@ export const getUserInfo = async (
   try {
     const user: IUser = await User.findByDisplayName(displayName);
 
-    res.json({
+    return res.json({
       username: user.username,
       displayName: user.profile.displayName,
       thumbnail: user.profile.thumbnail,

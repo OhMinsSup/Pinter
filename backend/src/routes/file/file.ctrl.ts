@@ -35,7 +35,7 @@ export const createSignedUrl = async (
   }
 
   try {
-    const { _id: id }: IUser = await User.findById(userId);
+    const { _id: id }: IUser = await User.findById(userId).lean();
     const filePath: string = `pinter-file/${displayName}/${id}/${
       file.originalname
     }`;

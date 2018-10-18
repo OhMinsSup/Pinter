@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as joi from 'joi';
 import Group, { IGroup } from '../../../database/models/Group';
 import User, { IUser } from '../../../database/models/User';
-import Pin from '../../../database/models/Pin';
+import Pin, { IPin } from '../../../database/models/Pin';
 import GroupLink, { IGroupLink } from '../../../database/models/GroupLink';
 import { serializeGroups, serializeGroupPin } from '../../../lib/serialize';
 
@@ -37,7 +37,7 @@ export const createGroup = async (
 
   if (!title) {
     return res.status(409).json({
-      name: 'group',
+      name: 'Group',
       payload: '제목을 입력하지 않아 그룹을 생성할 수 없습니다',
     });
   }
@@ -62,11 +62,11 @@ export const deleteGroup = async (
   const { groupId } = req.params;
 
   try {
-    const groupExists = await Group.findById(groupId).lean();
+    const groupExists: IGroup = await Group.findById(groupId).lean();
 
     if (!groupExists) {
       return res.status(404).json({
-        name: 'group',
+        name: 'Group',
         payload: '존재하지 않는 그룹',
       });
     }
@@ -108,7 +108,8 @@ export const updateGroup = async (
 
   const { title, activation }: BodySchema = req.body;
   const { groupId } = req.params;
-
+  console.log(title, activation, groupId);
+  
   try {
     const group: IGroup = await Group.findByIdAndUpdate(
       groupId,
@@ -120,6 +121,13 @@ export const updateGroup = async (
         new: true,
       }
     ).lean();
+
+    if (!group) {
+      return res.status(404).json({
+        name: 'Group',
+        payload: '그룹을 수정하지 못했습니다',
+      });
+    }
 
     return res.json({
       groupId: group._id,
@@ -141,7 +149,7 @@ export const groupAddPin = async (
   const { pinId, groupId }: BodySchema = req.body;
 
   try {
-    const [pinExists, groupExists] = await Promise.all([
+    const [pinExists, groupExists]: [IPin, IGroup] = await Promise.all([
       Pin.findById(pinId).lean(),
       Group.findById(groupId).lean(),
     ]);
@@ -153,9 +161,9 @@ export const groupAddPin = async (
       });
     }
 
-    const exists = await GroupLink.findOne({
+    const exists: IGroupLink = await GroupLink.findOne({
       $and: [{ group: groupExists._id }, { pin: pinExists._id }],
-    });
+    }).lean();
 
     if (exists) {
       return res.status(204).json();
@@ -179,7 +187,7 @@ export const groupDeletePin = async (
   const { groupId, pinId } = req.params;
 
   try {
-    const [pinExists, groupExists] = await Promise.all([
+    const [pinExists, groupExists]: [IPin, IGroup] = await Promise.all([
       Pin.findById(pinId).lean(),
       Group.findById(groupId).lean(),
     ]);

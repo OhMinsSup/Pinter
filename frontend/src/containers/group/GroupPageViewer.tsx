@@ -14,14 +14,18 @@ type Props = StateProps & DispatchProps & OwnProps;
 
 class GroupPageViewer extends React.Component<Props> {
   public onSetDelete = () => {
-    const { GroupActions, visible } = this.props;
-    console.log(visible);
+    const { GroupActions, deletePin } = this.props;
 
-    if (visible) {
+    if (deletePin) {
       GroupActions.setDeletePin(false);
     } else {
       GroupActions.setDeletePin(true);
     }
+  };
+
+  public onSetUpdate = () => {
+    const { GroupActions } = this.props;
+    GroupActions.setMakeGroup(true);
   };
 
   public initialize = async () => {
@@ -39,6 +43,15 @@ class GroupPageViewer extends React.Component<Props> {
     }
   };
 
+  public componentDidUpdate(preProps: Props) {
+    if (
+      preProps.deletePin !== this.props.deletePin ||
+      preProps.makeModal !== this.props.makeModal
+    ) {
+      this.initialize();
+    }
+  }
+
   public componentDidMount() {
     this.initialize();
   }
@@ -51,9 +64,9 @@ class GroupPageViewer extends React.Component<Props> {
         params: { id },
         url,
       },
-      visible,
+      deletePin,
     } = this.props;
-    const { onSetDelete } = this;
+    const { onSetDelete, onSetUpdate } = this;
 
     return (
       <React.Fragment>
@@ -61,7 +74,8 @@ class GroupPageViewer extends React.Component<Props> {
           title={title}
           activation={activation}
           onSetDelete={onSetDelete}
-          visible={visible}
+          onSetUpdate={onSetUpdate}
+          visible={deletePin}
         />
         <GroupPinList id={id} url={url} />
       </React.Fragment>
@@ -72,7 +86,8 @@ class GroupPageViewer extends React.Component<Props> {
 const mapStateToProps = ({ group }: StoreState) => ({
   title: group.group.title,
   activation: group.group.activation,
-  visible: group.deletePin.visible,
+  deletePin: group.deletePin.visible,
+  makeModal: group.makeModal.visible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

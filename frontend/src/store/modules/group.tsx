@@ -13,6 +13,7 @@ const GET_GROUP_SUCCESS = 'group/GET_GROUP_SUCCESS';
 const DELETE_GROUP = 'group/DELETE_GROUP';
 const DELETE_GROUP_PIN = 'group/DELETE_GROUP_PIN';
 const SET_DELETE_PIN = 'group/SET_DELETE_PIN';
+const UPDATE_GROUP = 'group/UPDATE_GROUP';
 
 export const groupCreators = {
   createSubmitGroup: createAction(CREATE_SUBMI_GROUP, groupAPI.createGroupAPI),
@@ -24,6 +25,7 @@ export const groupCreators = {
   deleteGroup: createAction(DELETE_GROUP, groupAPI.deleteGroupAPI),
   deleteGroupPin: createAction(DELETE_GROUP_PIN, groupAPI.groupDeletePinAPI),
   setDeletePin: createAction(SET_DELETE_PIN, (visible: boolean) => visible),
+  updateGroup: createAction(UPDATE_GROUP, groupAPI.updateGroupAPI),
 };
 
 type GetGroupAction = GenericResponseAction<
@@ -36,7 +38,7 @@ type SetNavActiveAction = ReturnType<typeof groupCreators.setNavActive>;
 type SetDeletePinAction = ReturnType<typeof groupCreators.setDeletePin>;
 
 export interface GroupState {
-  MakeModal: {
+  makeModal: {
     visible: boolean;
   };
   groupPinModal: {
@@ -56,7 +58,7 @@ export interface GroupState {
 }
 
 const initialState: GroupState = {
-  MakeModal: {
+  makeModal: {
     visible: false,
   },
   groupPinModal: {
@@ -80,7 +82,7 @@ export default handleActions<GroupState, any>(
     [SET_MAKE_GRUOP]: (state, action: SetMakeGroupAction) => {
       return porduce(state, draft => {
         if (action.payload === undefined) return;
-        draft.MakeModal.visible = action.payload;
+        draft.makeModal.visible = action.payload;
       });
     },
     [SET_GROUP_PIN]: (state, action: SetGroupPinAction) => {

@@ -8,6 +8,7 @@ import Like from '../../database/models/Like';
 import Locker from '../../database/models/Locker';
 import Comment from '../../database/models/Comment';
 import TagLink from '../../database/models/TagLink';
+import GroupLink from '../../database/models/GroupLink';
 import { filterUnique, formatShortDescription } from '../../lib/common';
 import { serializePin, serializePinList } from '../../lib/serialize';
 
@@ -102,46 +103,44 @@ export const updatePin = async (req: Request, res: Response): Promise<any> => {
   const { relationUrl, body, urls, tags }: BodySchema = req.body;
   const pinId: string = req['pin']._id;
 
-  if (tags) {
-    const currentTags: any[] = await TagLink.getTagNames(pinId);
-    const tagNames: string[] = currentTags.map(tag => tag.tagId.name);
-    const tagDiff: string[] = diff(tagNames.sort(), tags.sort()) || [];
-    const tagsToRemove: string[] = tagDiff
-      .filter(info => info[0] === '-')
-      .map(info => info[1]);
-    const tagsToAdd: string[] = tagDiff
-      .filter(info => info[0] === '+')
-      .map(info => info[1]);
+  const currentTags: any[] = await TagLink.getTagNames(pinId);
+  const tagNames: string[] = currentTags.map(tag => tag.tagId.name);
+  const tagDiff: string[] = diff(tagNames.sort(), tags.sort()) || [];
+  const tagsToRemove: string[] = tagDiff
+    .filter(info => info[0] === '-')
+    .map(info => info[1]);
+  const tagsToAdd: string[] = tagDiff
+    .filter(info => info[0] === '+')
+    .map(info => info[1]);
 
-    try {
-      await TagLink.removeTagsPin(pinId, tagsToRemove);
-      await TagLink.addTagsToPin(pinId, tagsToAdd);
+  try {
+    await TagLink.removeTagsPin(pinId, tagsToRemove);
+    await TagLink.addTagsToPin(pinId, tagsToAdd);
 
-      const pin: IPin = await Pin.findByIdAndUpdate(
-        pinId,
-        {
-          relationUrl,
-          body,
-          urls,
-        },
-        {
-          new: true,
-        }
-      ).lean();
-
-      if (!pin) {
-        return res.status(500).json({
-          name: '핀',
-          payload: '핀이 업데이트되지 않았습니다',
-        });
+    const pin: IPin = await Pin.findByIdAndUpdate(
+      pinId,
+      {
+        relationUrl,
+        body,
+        urls,
+      },
+      {
+        new: true,
       }
+    ).lean();
 
-      return res.json({
-        pinId: pin._id,
+    if (!pin) {
+      return res.status(500).json({
+        name: '핀',
+        payload: '핀이 업데이트되지 않았습니다',
       });
-    } catch (e) {
-      res.status(500).json(e);
     }
+
+    return res.json({
+      pinId: pin._id,
+    });
+  } catch (e) {
+    res.status(500).json(e);
   }
 };
 
@@ -155,6 +154,7 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
       Like.deleteMany({ pin: pinId }).lean(),
       Comment.deleteMany({ pin: pinId }).lean(),
       Locker.deleteMany({ pin: pinId }).lean(),
+      GroupLink.deleteMany({ pin: pinId }).lean(),
     ]);
 
     await Pin.deleteOne({ _id: pinId }).lean();
@@ -171,6 +171,11 @@ export const readPin = async (req: Request, res: Response): Promise<any> => {
 
   try {
     const pinData: IPin = await Pin.readPinById(id);
+
+    if (!pinData) {
+      return res.status(204).json();
+    }
+
     const tagData: ITag = await TagLink.getTagNames(id);
     return res.json(serializePin(pinData, tagData));
   } catch (e) {
