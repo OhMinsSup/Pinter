@@ -22,7 +22,11 @@ class Server {
 
   private middleware(): void {
     const { app } = this;
-    app.use(compresion());
+    app.use(
+      compresion({
+        level: 6,
+      })
+    );
     app.use(
       bodyParser.urlencoded({
         extended: false,
@@ -37,9 +41,11 @@ class Server {
       }
     );
     app.use(cors());
-    app.use((req, res, next) => {
-      corsMiddleware(req, res, next);
-    });
+    app.use(
+      (req, res, next): void => {
+        corsMiddleware(req, res, next);
+      }
+    );
     app.use(express.static(path.join(__dirname, '../../frontend/build/')));
   }
 

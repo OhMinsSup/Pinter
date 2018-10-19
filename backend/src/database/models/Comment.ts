@@ -30,6 +30,7 @@ const Comment = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        index: true,
       },
     ],
     text: String,

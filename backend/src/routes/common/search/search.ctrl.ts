@@ -4,6 +4,11 @@ import User, { IUser } from '../../../database/models/User';
 import { serializePinList, serializeUsers } from '../../../lib/serialize';
 import { formatShortDescription } from '../../../lib/common';
 
+/**@return {void}
+ * @description 핀 검색 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const serachPin = async (req: Request, res: Response): Promise<any> => {
   type BodySchema = {
     value: string;
@@ -45,6 +50,11 @@ export const serachPin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+/**@return {void}
+ * @description 유저 검색 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const serachUser = async (req: Request, res: Response): Promise<any> => {
   type BodySchema = {
     value?: string;

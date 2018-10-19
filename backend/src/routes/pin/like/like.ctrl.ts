@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import Pin from '../../../database/models/Pin';
 import Like, { ILike } from '../../../database/models/Like';
 
+/**@return {void}
+ * @description 좋아요 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const like = async (req: Request, res: Response): Promise<any> => {
   const pinId: string = req['pin']._id;
   const userId: string = req['user']._id;
@@ -42,6 +47,11 @@ export const like = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+/**@return {void}
+ * @description 안 좋아요 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const unlike = async (req: Request, res: Response): Promise<any> => {
   const pinId: string = req['pin']._id;
   const userId: string = req['user']._id;
@@ -83,11 +93,16 @@ export const unlike = async (req: Request, res: Response): Promise<any> => {
   });
 };
 
+/**@return {void}
+ * @description 좋아요 체크 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const getLike = async (req: Request, res: Response): Promise<any> => {
   const pinId: string = req['pin']._id;
   const userId: string = req['user']._id;
 
-  let liked = false;
+  let liked: boolean = false;
 
   try {
     if (userId) {

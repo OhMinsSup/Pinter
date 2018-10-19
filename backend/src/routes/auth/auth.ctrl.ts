@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
 import * as joi from 'joi';
 import { sendMail } from '../../lib/sendMail';
 import { generateToken, decodeToken } from '../../lib/token';
@@ -6,6 +6,11 @@ import getSocialProfile, { IProfile } from '../../lib/social';
 import User, { IUser } from '../../database/models/User';
 import EmailAuth, { IEmailAuth } from '../../database/models/EmailAuth';
 
+/**@return {void}
+ * @description 로그인및 회원가입시 메일을 보내는 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const sendAuthEmail = async (
   req: Request,
   res: Response
@@ -14,6 +19,7 @@ export const sendAuthEmail = async (
     email: string;
   };
 
+  // body값의 유효성 검사
   const schema = joi.object().keys({
     email: joi
       .string()
@@ -34,6 +40,7 @@ export const sendAuthEmail = async (
 
   try {
     const auth: IUser = await User.findByEmailOrUsername('email', email);
+
     const emailKeywords = auth
       ? {
           type: 'email-login',
@@ -44,10 +51,11 @@ export const sendAuthEmail = async (
           text: '회원가입',
         };
 
-    const verification = await EmailAuth.create({
+    const verification = await new EmailAuth({
       email,
-    });
+    }).save();
 
+    // 메일 보내기
     await sendMail({
       to: email,
       from: 'veloss <verification@gmail.com>',
@@ -78,6 +86,11 @@ export const sendAuthEmail = async (
   }
 };
 
+/**@return {void}
+ * @description 로컬 회원가입 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const localRegister = async (
   req: Request,
   res: Response
@@ -88,6 +101,7 @@ export const localRegister = async (
     username: string;
   };
 
+  // body값의 유효성 검사
   const schema = joi.object().keys({
     registerToken: joi.string().required(),
     displayName: joi
@@ -114,6 +128,7 @@ export const localRegister = async (
   const { registerToken, username, displayName }: BodySchema = req.body;
 
   try {
+    // 토큰화된 이메일을 이메일로 값을 가져온다.
     let decoded = await decodeToken(registerToken);
 
     if (!decoded) {
@@ -125,7 +140,7 @@ export const localRegister = async (
 
     const { email } = decoded;
 
-    const [emailExists, usernameExists]: IUser[] = await Promise.all([
+    const [emailExists, usernameExists]: [IUser, IUser] = await Promise.all([
       User.findByEmailOrUsername('email', email),
       User.findByEmailOrUsername('username', username),
     ]);
@@ -145,6 +160,13 @@ export const localRegister = async (
       },
     }).save();
 
+    if (!auth) {
+      return res.status(404).json({
+        name: 'User',
+        payload: '유저가 만들어지지 않았습니다.',
+      });
+    }
+
     const token: string = await User.generate(auth);
 
     if (!token) {
@@ -154,6 +176,7 @@ export const localRegister = async (
       });
     }
 
+    // 쿠키에 토큰값을 담는다
     res.cookie('access_token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -173,6 +196,11 @@ export const localRegister = async (
   }
 };
 
+/**@return {void}
+ * @description 로컬 로그인 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const localLogin = async (req: Request, res: Response): Promise<any> => {
   type BodySchema = {
     code: string;
@@ -201,7 +229,7 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
     const user: IUser = await User.findByEmailOrUsername('email', email);
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(404).json({
         name: '계정 체크',
         payload: '유저가 존재하지 않았습니다',
       });
@@ -235,8 +263,17 @@ export const localLogin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+/**@return {void}
+ * @description 이메일에 대해 발급받은 코드를 토큰화해서 넘겨주는 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const code = async (req: Request, res: Response): Promise<any> => {
-  const { code } = req.params;
+  type ParamsPayload = {
+    code: string;
+  };
+
+  const { code }: ParamsPayload = req.params;
 
   if (!code) {
     return res.status(400).json({
@@ -279,8 +316,13 @@ export const code = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+/**@return {void}
+ * @description 유저가 로그인 중인지를 체크하는 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const check = async (req: Request, res: Response): Promise<any> => {
-  const user = req['user'];
+  const user: IUser = req['user'];
 
   if (!user) {
     return res.status(401).json({
@@ -294,6 +336,10 @@ export const check = async (req: Request, res: Response): Promise<any> => {
   });
 };
 
+/**@return {void}
+ * @description 로그아웃 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ */
 export const logout = async (res: Response): Promise<any> => {
   res.cookie('access_token', null, {
     httpOnly: true,
@@ -303,6 +349,11 @@ export const logout = async (res: Response): Promise<any> => {
   return res.status(204).json();
 };
 
+/**@return {void}
+ * @description 소셜 회원가입 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const socialRegister = async (
   req: Request,
   res: Response
@@ -311,6 +362,10 @@ export const socialRegister = async (
     accessToken: string;
     displayName: string;
     username: string;
+  };
+
+  type ParamsPayload = {
+    provider: string;
   };
 
   const schema = joi.object().keys({
@@ -335,7 +390,7 @@ export const socialRegister = async (
     });
   }
 
-  const { provider } = req.params;
+  const { provider }: ParamsPayload = req.params;
   const { displayName, username, accessToken }: BodySchema = req.body;
 
   let profile: IProfile = null;
@@ -392,6 +447,13 @@ export const socialRegister = async (
       },
     });
 
+    if (!auth) {
+      return res.status(404).json({
+        name: 'User',
+        payload: '유저가 만들어지지 않았습니다.',
+      });
+    }
+
     const token: string = await User.generate(auth);
 
     if (!token) {
@@ -420,6 +482,11 @@ export const socialRegister = async (
   }
 };
 
+/**@return {void}
+ * @description 소셜 로그인 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const socialLogin = async (
   req: Request,
   res: Response
@@ -428,8 +495,12 @@ export const socialLogin = async (
     accessToken: string;
   };
 
+  type ParamsPayload = {
+    provider: string;
+  };
+
   const { accessToken }: BodySchema = req.body;
-  const { provider } = req.params;
+  const { provider }: ParamsPayload = req.params;
 
   let profile: IProfile = null;
 
@@ -499,6 +570,11 @@ export const socialLogin = async (
   }
 };
 
+/**@return {void}
+ * @description 해당 소셜계정으로 회원가입한 유저인지 아닌지를 체크라는 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const verifySocial = async (
   req: Request,
   res: Response

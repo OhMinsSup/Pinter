@@ -5,7 +5,13 @@ import User, { IUser } from '../../../database/models/User';
 import Pin, { IPin } from '../../../database/models/Pin';
 import GroupLink, { IGroupLink } from '../../../database/models/GroupLink';
 import { serializeGroups, serializeGroupPin } from '../../../lib/serialize';
+import { Types } from 'mongoose';
 
+/**@return {void}
+ * @description 그룹 생성 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const createGroup = async (
   req: Request,
   res: Response
@@ -55,11 +61,27 @@ export const createGroup = async (
   }
 };
 
+/**@return {void}
+ * @description 그룹 삭제 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const deleteGroup = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const { groupId } = req.params;
+  type ParamPayload = {
+    groupId: string;
+  };
+
+  const { groupId }: ParamPayload = req.params;
+
+  if (!Types.ObjectId.isValid(groupId)) {
+    return res.status(400).json({
+      name: 'id 유효성',
+      payload: '오브젝트 id가 아닙니다',
+    }); // 400 Bad Request
+  }
 
   try {
     const groupExists: IGroup = await Group.findById(groupId)
@@ -88,6 +110,11 @@ export const deleteGroup = async (
   }
 };
 
+/**@return {void}
+ * @description 그룹 수정 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const updateGroup = async (
   req: Request,
   res: Response
@@ -95,6 +122,10 @@ export const updateGroup = async (
   type BodySchema = {
     title: string;
     activation: boolean;
+  };
+
+  type ParamPayload = {
+    groupId: string;
   };
 
   const shcema = joi.object().keys({
@@ -115,8 +146,14 @@ export const updateGroup = async (
   }
 
   const { title, activation }: BodySchema = req.body;
-  const { groupId } = req.params;
-  console.log(title, activation, groupId);
+  const { groupId }: ParamPayload = req.params;
+
+  if (!Types.ObjectId.isValid(groupId)) {
+    return res.status(400).json({
+      name: 'id 유효성',
+      payload: '오브젝트 id가 아닙니다',
+    }); // 400 Bad Request
+  }
 
   try {
     const group: IGroup = await Group.findByIdAndUpdate(
@@ -147,6 +184,11 @@ export const updateGroup = async (
   }
 };
 
+/**@return {void}
+ * @description 그룹에 핀을 추가 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const groupAddPin = async (
   req: Request,
   res: Response
@@ -157,6 +199,13 @@ export const groupAddPin = async (
   };
 
   const { pinId, groupId }: BodySchema = req.body;
+
+  if (!Types.ObjectId.isValid(groupId) && !Types.ObjectId.isValid(pinId)) {
+    return res.status(400).json({
+      name: 'id 유효성',
+      payload: '오브젝트 id가 아닙니다',
+    }); // 400 Bad Request
+  }
 
   try {
     const [pinExists, groupExists]: [IPin, IGroup] = await Promise.all([
@@ -196,11 +245,28 @@ export const groupAddPin = async (
   }
 };
 
+/**@return {void}
+ * @description 그룹에 핀을 삭제 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const groupDeletePin = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const { groupId, pinId } = req.params;
+  type ParamPayload = {
+    groupId: string;
+    pinId: string;
+  };
+
+  const { groupId, pinId }: ParamPayload = req.params;
+
+  if (!Types.ObjectId.isValid(groupId) && !Types.ObjectId.isValid(pinId)) {
+    return res.status(400).json({
+      name: 'id 유효성',
+      payload: '오브젝트 id가 아닙니다',
+    }); // 400 Bad Request
+  }
 
   try {
     const [pinExists, groupExists]: [IPin, IGroup] = await Promise.all([
@@ -232,9 +298,23 @@ export const groupDeletePin = async (
   }
 };
 
+/**@return {void}
+ * @description 그룹 리스트 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const groupList = async (req: Request, res: Response): Promise<any> => {
-  const { active, displayName } = req.params;
-  const { cursor } = req.query;
+  type ParamsPayload = {
+    active: boolean;
+    displayName: string;
+  };
+
+  type QueryPayload = {
+    cursor?: string;
+  };
+
+  const { active, displayName }: ParamsPayload = req.params;
+  const { cursor }: QueryPayload = req.query;
 
   try {
     const user: IUser = await User.findByDisplayName(displayName);
@@ -269,12 +349,32 @@ export const groupList = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+/**@return {void}
+ * @description 그룹 핀 리스트 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const groupPinList = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const { groupId } = req.params;
-  const { cursor } = req.query;
+  type ParamsPayload = {
+    groupId: string;
+  };
+
+  type QueryPayload = {
+    cursor: string;
+  };
+
+  const { groupId }: ParamsPayload = req.params;
+  const { cursor }: QueryPayload = req.query;
+
+  if (!Types.ObjectId.isValid(groupId)) {
+    return res.status(400).json({
+      name: 'id 유효성',
+      payload: '오브젝트 id가 아닙니다',
+    }); // 400 Bad Request
+  }
 
   try {
     const group: IGroup = await Group.findById(groupId)
@@ -311,8 +411,17 @@ export const groupPinList = async (
   }
 };
 
+/**@return {void}
+ * @description 그룹 페이지 읽기 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const readGroup = async (req: Request, res: Response): Promise<any> => {
-  const { groupId } = req.params;
+  type ParamsPayload = {
+    groupId: string;
+  };
+
+  const { groupId }: ParamsPayload = req.params;
 
   try {
     const group: IGroup = await Group.findById(groupId)

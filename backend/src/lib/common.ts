@@ -36,7 +36,11 @@ export const checkObjectId = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
+  type ParamPayload = {
+    id: string;
+  };
+
+  const { id }: ParamPayload = req.params;
 
   if (!Types.ObjectId.isValid(id)) {
     return res.status(400); // 400 Bad Request

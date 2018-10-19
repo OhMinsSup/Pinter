@@ -4,6 +4,11 @@ import User, { IUser } from '../../database/models/User';
 import { serializeLocker } from '../../lib/serialize';
 import { formatShortDescription } from '../../lib/common';
 
+/**@return {void}
+ * @description 핀 저장 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const lockerPin = async (req: Request, res: Response): Promise<any> => {
   const userId: string = req['user']._id;
   const pinId: string = req['pin']._id;
@@ -28,6 +33,11 @@ export const lockerPin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+/**@return {void}
+ * @description 핀 저장 삭제 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const unLockerPin = async (
   req: Request,
   res: Response
@@ -64,6 +74,11 @@ export const unLockerPin = async (
   }
 };
 
+/**@return {void}
+ * @description 핀 저장 여부 체크 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const getLockerPin = async (
   req: Request,
   res: Response
@@ -87,9 +102,22 @@ export const getLockerPin = async (
   }
 };
 
+/**@return {void}
+ * @description 저장한 핀 리스트 (무한 스크롤) api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const lockerList = async (req: Request, res: Response): Promise<any> => {
-  const { cursor } = req.query;
-  const { displayName } = req.params;
+  type ParamPayload = {
+    displayName: string;
+  };
+
+  type QueryPayload = {
+    cursor?: string;
+  };
+
+  const { cursor }: QueryPayload = req.query;
+  const { displayName }: ParamPayload = req.params;
 
   try {
     const user: IUser = await User.findByDisplayName(displayName);
@@ -118,6 +146,7 @@ export const lockerList = async (req: Request, res: Response): Promise<any> => {
       ...pin,
       body: formatShortDescription(pin.body),
     }));
+
     return res.json({
       next,
       pinWithData,

@@ -10,6 +10,11 @@ const s3 = new AWS.S3({
   secretAccessKey: config.AWS_SECRET_KEY,
 });
 
+/**@return {void}
+ * @description 파일을 업로드하는 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const createSignedUrl = async (
   req: Request,
   res: Response
@@ -26,6 +31,7 @@ export const createSignedUrl = async (
   const userId: string = req['user']._id;
   const displayName: string = req['user'].displayName;
   const stats = filesize(file.size);
+
   // 10MB 크기 제한
   if (parseInt(stats, 10) > 10000) {
     res.status(413).json({
@@ -35,7 +41,9 @@ export const createSignedUrl = async (
   }
 
   try {
-    const { _id: id }: IUser = await User.findById(userId).lean();
+    const { _id: id }: IUser = await User.findById(userId)
+      .lean()
+      .exec();
     const filePath: string = `pinter-file/${displayName}/${id}/${
       file.originalname
     }`;

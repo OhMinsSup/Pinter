@@ -16,11 +16,13 @@ class MakePinGroupContainer extends React.Component<Props> {
   };
 
   public onSubmit = async (value: string, active: boolean) => {
-    const { GroupActions, group } = this.props;
+    const {
+      GroupActions,
+      group: { groupId },
+    } = this.props;
 
     try {
-      if (group) {
-        const { groupId } = group;
+      if (groupId) {
         await GroupActions.updateGroup(groupId, value, active);
         GroupActions.setMakeGroup(false);
         return;

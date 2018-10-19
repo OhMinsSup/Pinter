@@ -2,8 +2,18 @@ import { Request, Response } from 'express';
 import User, { IUser } from '../../database/models/User';
 import { serializeUsers } from '../../lib/serialize';
 
+/**@return {void}
+ * @description 유저 리스트 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const getUsers = async (req: Request, res: Response): Promise<any> => {
-  const { cursor } = req.query;
+  type QueryPayload = {
+    cursor?: string;
+  };
+
+  const { cursor }: QueryPayload = req.query;
+
   try {
     const user: IUser[] = await User.usersList(cursor);
 
@@ -26,11 +36,20 @@ export const getUsers = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+/**@return {void}
+ * @description 유저 정보 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const getUserInfo = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const { displayName } = req.params;
+  type ParamPayload = {
+    displayName: string;
+  };
+
+  const { displayName }: ParamPayload = req.params;
 
   try {
     const user: IUser = await User.findByDisplayName(displayName);

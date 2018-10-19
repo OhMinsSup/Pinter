@@ -7,6 +7,11 @@ import Follow, { IFollow } from '../../../database/models/Follow';
 import { serializeNoticeRoom } from '../../../lib/serialize';
 import { filterUnique } from '../../../lib/common';
 
+/**@return {void}
+ * @description 알림방 생성및 체크 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const createNoticeRoom = async (
   req: Request,
   res: Response
@@ -50,6 +55,11 @@ export const createNoticeRoom = async (
   }
 };
 
+/**@return {void}
+ * @description 핀 작성, 수정, 팔로우, 언팔로우, 좋아요, 안좋아요를 메세지 보내는 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const sendMessage = async (
   req: Request,
   res: Response
@@ -123,6 +133,11 @@ export const sendMessage = async (
   }
 };
 
+/**@return {void}
+ * @description 알림 메세지 리스트 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const getNoticeList = async (
   req: Request,
   res: Response

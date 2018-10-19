@@ -181,7 +181,11 @@ export const deletePin = async (req: Request, res: Response): Promise<any> => {
 };
 
 export const readPin = async (req: Request, res: Response): Promise<any> => {
-  const { id } = req.params;
+  type ParamPayload = {
+    id: string;
+  };
+
+  const { id }: ParamPayload = req.params;
 
   try {
     const pinData: IPin = await Pin.readPinById(id);
@@ -198,8 +202,16 @@ export const readPin = async (req: Request, res: Response): Promise<any> => {
 };
 
 export const listPin = async (req: Request, res: Response): Promise<any> => {
-  const { displayName } = req.params;
-  const { cursor } = req.query;
+  type ParamPayload = {
+    displayName: string;
+  };
+
+  type QueryPayload = {
+    cursor?: string;
+  };
+
+  const { displayName }: ParamPayload = req.params;
+  const { cursor }: QueryPayload = req.query;
 
   let userId: string = '';
 

@@ -3,8 +3,14 @@ import * as joi from 'joi';
 import Comment, { IComment } from '../../../database/models/Comment';
 import User, { IUser } from '../../../database/models/User';
 import Pin from '../../../database/models/Pin';
+import { Types } from 'mongoose';
 import { serializeComment } from '../../../lib/serialize';
 
+/**@return {void}
+ * @description 댓글 작성 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const writeComment = async (
   req: Request,
   res: Response
@@ -61,12 +67,24 @@ export const writeComment = async (
   }
 };
 
+/**@return {void}
+ * @description 댓글 삭제 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const deleteComment = async (
   req: Request,
   res: Response
 ): Promise<any> => {
   const { commentId } = req.params;
   const pinId: string = req['pin']._id;
+
+  if (!Types.ObjectId.isValid(commentId)) {
+    return res.status(400).json({
+      name: 'id 유효성',
+      payload: '오브젝트 id가 아닙니다',
+    }); // 400 Bad Request
+  }
 
   try {
     const comment: IComment = await Comment.findById(commentId)
@@ -97,6 +115,11 @@ export const deleteComment = async (
   }
 };
 
+/**@return {void}
+ * @description 댓글 리스트 api
+ * @param {Response} res HTTP 요청을 받으면 Express 응용 프로그램이 보내는 HTTP 응답을 나타냅니다
+ * @param {Request} req HTTP 요청을 나타내며 요청 쿼리 문자열, 매개 변수, 본문, HTTP 헤더 등에 대한 속성을 포함합니다
+ */
 export const getCommentList = async (
   req: Request,
   res: Response
