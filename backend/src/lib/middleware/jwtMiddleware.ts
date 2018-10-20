@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { decodeToken, generateToken } from '../token';
 
+/**
+ * @description JWT 미들웨어
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @returns {NextFunction} next()
+ */
 export async function jwtMiddleware(
   req: Request,
   res: Response,

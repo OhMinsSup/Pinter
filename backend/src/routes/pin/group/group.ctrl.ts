@@ -200,7 +200,7 @@ export const groupAddPin = async (
 
   const { pinId, groupId }: BodySchema = req.body;
 
-  if (!Types.ObjectId.isValid(groupId) && !Types.ObjectId.isValid(pinId)) {
+  if (!Types.ObjectId.isValid(groupId) || !Types.ObjectId.isValid(pinId)) {
     return res.status(400).json({
       name: 'id 유효성',
       payload: '오브젝트 id가 아닙니다',

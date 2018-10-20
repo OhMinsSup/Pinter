@@ -20,6 +20,7 @@ class Server {
     this.routes();
   }
 
+  // 미들웨어
   private middleware(): void {
     const { app } = this;
     app.use(
@@ -49,6 +50,7 @@ class Server {
     app.use(express.static(path.join(__dirname, '../../frontend/build/')));
   }
 
+  // db 연결
   private initializeDb(): void {
     const MONGO_URL: string = config.MONGODB_WEB_URL;
     (mongoose as any).Promise = global.Promise;
@@ -67,6 +69,7 @@ class Server {
       });
   }
 
+  // 라우터
   private routes(): void {
     const { app } = this;
     app.use(router);

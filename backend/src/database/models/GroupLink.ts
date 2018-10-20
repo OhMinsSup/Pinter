@@ -16,6 +16,7 @@ const GroupLink = new Schema({
   group: {
     type: Schema.Types.ObjectId,
     ref: 'Group',
+    index: true,
   },
   pin: {
     type: Schema.Types.ObjectId,

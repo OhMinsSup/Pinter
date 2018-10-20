@@ -8,6 +8,14 @@ type MailTypes = {
   html: string;
 };
 
+/**
+ * @description nodemailer를 통해서 메일 보내기
+ * @param {string} to
+ * @param {string} from
+ * @param {string} subject
+ * @param {string} html
+ * @returns {void}
+ */
 export const sendMail = ({ to, from, subject, html }: MailTypes) => {
   let transporter = nodemailer.createTransport({
     service: 'Gmail',

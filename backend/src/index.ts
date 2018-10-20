@@ -6,6 +6,7 @@ const port = normalizePort(config.PORT || 5000);
 Server.set('port', port);
 
 const server = http.createServer(Server);
+
 server.listen(port, () => console.log(`Server listening on port ${port} ✅`));
 server.on('error', onError);
 
