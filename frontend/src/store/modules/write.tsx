@@ -95,7 +95,7 @@ const initialState: WriteState = {
   form: {
     relation_url: '',
     body: '',
-    tags: ['teag', 'hello', 'xptm'],
+    tags: [],
     urls: [],
   },
   upload: {

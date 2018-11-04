@@ -11,11 +11,9 @@ type Props = {
 
 const Write: React.SFC<Props> = ({ history, location }) => {
   return (
-    <React.Fragment>
-      <WriteTemplate header={<HeaderContainer />}>
-        <MakePin history={history} location={location} />
-      </WriteTemplate>
-    </React.Fragment>
+    <WriteTemplate header={<HeaderContainer />}>
+      <MakePin history={history} location={location} />
+    </WriteTemplate>
   );
 };
 
