@@ -14,7 +14,7 @@ export const userCreators = {
   checkUser: createPromiseThunk(CHECK_USER, UserAPI.checkAPI),
   setUser: createAction(SET_USER, (payload: UserSubState) => payload),
   process: createAction(PROCESS),
-  logout: createAction(LOGOUT),
+  logout: createAction(LOGOUT, UserAPI.logoutAPI),
 };
 
 type CheckUserAction = GenericResponseAction<{ user: UserSubState }, string>;
